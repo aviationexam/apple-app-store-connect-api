@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppleAppStoreConnect", "src\AppleAppStoreConnect\AppleAppStoreConnect.csproj", "{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionFiles", "_SolutionFiles", "{A0CB57C1-6B09-4FFC-A90D-232DF7099DB6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		GitVersion.yml = GitVersion.yml
+		README.md = README.md
+		src\WarningConfiguration.targets = src\WarningConfiguration.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
