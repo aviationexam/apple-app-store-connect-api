@@ -9,7 +9,7 @@
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <ProjectName>Apple.AppStoreConnect</ProjectName>
+    <ProjectName>Aviationexam.Apple.AppStoreConnect</ProjectName>
   </PropertyGroup>
 
   <PropertyGroup>
