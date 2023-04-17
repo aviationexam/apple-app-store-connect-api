@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppleAppStoreConnect", "src\AppleAppStoreConnect\AppleAppStoreConnect.csproj", "{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect", "src\Apple.AppStoreConnect\Apple.AppStoreConnect.csproj", "{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionFiles", "_SolutionFiles", "{A0CB57C1-6B09-4FFC-A90D-232DF7099DB6}"
 	ProjectSection(SolutionItems) = preProject

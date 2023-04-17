@@ -9,7 +9,7 @@
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <ProjectName>AppleAppStoreConnect</ProjectName>
+    <ProjectName>Apple.AppStoreConnect</ProjectName>
   </PropertyGroup>
 
   <Import Project="..\WarningConfiguration.targets" />
