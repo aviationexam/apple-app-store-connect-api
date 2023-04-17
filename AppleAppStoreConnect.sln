@@ -10,6 +10,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionFiles", "_Solution
 		GitVersion.yml = GitVersion.yml
 		README.md = README.md
 		src\WarningConfiguration.targets = src\WarningConfiguration.targets
+		.github\dependabot.yml = .github\dependabot.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{41F367B1-2907-4A57-BCE7-253D144AEC3B}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\nightly-release.yml = .github\workflows\nightly-release.yml
+		.github\workflows\pr-build.yml = .github\workflows\pr-build.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
 Global
@@ -22,5 +31,8 @@ Global
 		{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{41F367B1-2907-4A57-BCE7-253D144AEC3B} = {A0CB57C1-6B09-4FFC-A90D-232DF7099DB6}
 	EndGlobalSection
 EndGlobal
