@@ -2,7 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
+    <PackageLicense>MIT</PackageLicense>
+    <RepositoryUrl>https://github.com/aviationexam/apple-app-store-connect-api</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <ProjectName>AppleAppStoreConnect</ProjectName>
   </PropertyGroup>
+
+  <Import Project="..\WarningConfiguration.targets" />
 
 </Project>
