@@ -364,3 +364,4 @@ ASALocalRun/
 /Build
 /GeneratedFiles
 **/*.appsettings.json5
+/src/Apple.AppStoreConnect/app-store-connect-openapi-specification.zip
