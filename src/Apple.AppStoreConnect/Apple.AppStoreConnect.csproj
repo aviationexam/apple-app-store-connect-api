@@ -28,9 +28,14 @@
   </ItemGroup>
 
   <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore">
-    <Message Importance="High" Text="Downloading $(AppStoreConnectOpenApiSpecificationUrl) to the $(MSBuildProjectDirectory)" />
+    <Message Importance="High" Text="Downloading $(AppStoreConnectOpenApiSpecificationUrl) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
 
-    <Exec WorkingDirectory="$(ProjectDir)" Command="curl -sS $(AppStoreConnectOpenApiSpecificationUrl) --output $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)"/>
+    <Exec
+      WorkingDirectory="$(ProjectDir)"
+      Command="curl -sS $(AppStoreConnectOpenApiSpecificationUrl) --output $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)"
+    />
+
+    <Message Importance="High" Text="Extracting $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" />
 
     <Unzip
       SourceFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)"
