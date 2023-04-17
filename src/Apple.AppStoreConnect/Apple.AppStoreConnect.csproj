@@ -12,6 +12,10 @@
     <ProjectName>Apple.AppStoreConnect</ProjectName>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <AppStoreConnectOpenApiSpecificationUrl>https://developer.apple.com/sample-code/app-store-connect/app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationUrl>
+  </PropertyGroup>
+
   <Import Project="..\WarningConfiguration.targets" />
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
@@ -20,5 +24,11 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="7.0.0" />
   </ItemGroup>
+
+  <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore">
+    <Message Importance="High" Text="Downloading $(AppStoreConnectOpenApiSpecificationUrl) to the $(MSBuildProjectDirectory)" />
+
+    <Exec WorkingDirectory="$(ProjectDir)" Command="curl -sS $(AppStoreConnectOpenApiSpecificationUrl) --output $(MSBuildProjectDirectory)/app-store-connect-openapi-specification.zip"/>
+  </Target>
 
 </Project>
