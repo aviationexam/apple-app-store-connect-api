@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
     <Nullable>enable</Nullable>
     <PackageLicense>MIT</PackageLicense>
     <RepositoryUrl>https://github.com/aviationexam/apple-app-store-connect-api</RepositoryUrl>
@@ -15,7 +15,7 @@
   <Import Project="..\WarningConfiguration.targets" />
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="H.NSwag.Generator" Version="13.18.2.70" />
+    <PackageReference Include="H.NSwag.Generator" Version="13.18.2.71" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
@@ -25,6 +25,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="app-store-connect-openapi-specification\" />
   </ItemGroup>
 
 </Project>

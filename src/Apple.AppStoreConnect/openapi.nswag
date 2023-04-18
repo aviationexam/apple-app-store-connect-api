@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "../Apple.AppStoreConnect.OpenApiDocument/app-store-connect-openapi-specification/openapi.json",
+      "url": "app-store-connect-openapi-specification/openapi.json",
       "output": null,
       "newLineBehavior": "Auto"
     }
@@ -41,7 +41,7 @@
       "serializeTypeInformation": false,
       "queryNullValue": "",
       "className": "{controller}Client",
-      "operationGenerationMode": "MultipleClientsFromOperationId",
+      "operationGenerationMode": "MultipleClientsFromFirstTagAndPathSegments",
       "additionalNamespaceUsages": [],
       "additionalContractNamespaceUsages": [],
       "generateOptionalParameters": false,

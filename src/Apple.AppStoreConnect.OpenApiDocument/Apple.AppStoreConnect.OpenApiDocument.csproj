@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
     <Nullable>enable</Nullable>
     <PackageLicense>MIT</PackageLicense>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>..\..\GeneratedFiles\_OpenApiDocument</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -12,10 +14,21 @@
     <AppStoreConnectOpenApiSpecificationFile>app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationFile>
     <AppStoreConnectOpenApiSpecificationExtracted>app-store-connect-openapi-specification</AppStoreConnectOpenApiSpecificationExtracted>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <ResultOpenApiDestination>$(MSBuildProjectDirectory)/../Apple.AppStoreConnect/$(AppStoreConnectOpenApiSpecificationExtracted)</ResultOpenApiDestination>
+  </PropertyGroup>
 
   <Import Project="..\WarningConfiguration.targets" />
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+  <Import Project="..\Apple.AppStoreConnect.OpenApiDocument.Generator\Apple.AppStoreConnect.OpenApiDocument.Generator.props" />
+
+  <ItemGroup>
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/openapi.json" OpenApi="Apple.AppStoreConnect" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument.Generator\Apple.AppStoreConnect.OpenApiDocument.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
 
   <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec">
