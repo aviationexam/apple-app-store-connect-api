@@ -15,6 +15,8 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
 {
     public const string Id = "OATG";
 
+    private static ReadOnlySpan<byte> Utf8Bom => new byte[] { 0xEF, 0xBB, 0xBF };
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var source = context.AdditionalTextsProvider
@@ -61,7 +63,7 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
             Indented = true,
         };
 
-        var documentOptions = new JsonDocumentOptions
+        var documentOptions = new JsonReaderOptions
         {
             CommentHandling = JsonCommentHandling.Skip,
         };
@@ -69,54 +71,114 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
         Directory.CreateDirectory(source.resultOpenApiDestination);
 
         // This is a hack until source-generator support embedded resources
-        using var destinationFile = new FileStream(
+        using var destinationFileStream = new FileStream(
             Path.Combine(source.resultOpenApiDestination, Path.GetFileName(source.textFile.Path)),
             FileMode.Create, FileAccess.Write, FileShare.Write
         );
 
-        using var sourceJson = File.OpenRead(source.textFile.Path);
-        using var writer = new Utf8JsonWriter(destinationFile, options: writerOptions);
+        using var jsonWriter = new Utf8JsonWriter(destinationFileStream, options: writerOptions);
 
+        ReadOnlySpan<byte> jsonReadOnlySpan = File.ReadAllBytes(source.textFile.Path);
+
+        if (jsonReadOnlySpan.StartsWith(Utf8Bom))
+        {
+            jsonReadOnlySpan = jsonReadOnlySpan[Utf8Bom.Length..];
+        }
+
+        var jsonReader = new Utf8JsonReader(jsonReadOnlySpan, isFinalBlock: false, state: default);
+
+        try
+        {
+            ReadJson(ref jsonReader, jsonWriter);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(
+                e.StackTrace
+            );
+        }
+
+        /*
         using var documentReader = JsonDocument.Parse(sourceJson, documentOptions);
 
         var root = documentReader.RootElement;
 
-        if (root.ValueKind == JsonValueKind.Object)
-        {
-            writer.WriteStartObject();
-        }
-        else
-        {
-            yield break;
-        }
-
+        writer.WriteStartObject();
 
         foreach (var property in root.EnumerateObject())
         {
             foreach (
-                var processComponent in ProcessSchema(
+                var processComponent in ProcessJsonObject(
                     property, writer,
                     ProcessRoot
                 ))
             {
-                yield return $"  {processComponent}";
+                yield return $"{processComponent}";
             }
         }
 
         writer.WriteEndObject();
+*/
+        jsonWriter.Flush();
+        destinationFileStream.Flush(flushToDisk: true);
 
-        writer.Flush();
-        destinationFile.Flush(flushToDisk: true);
+        yield break;
+    }
+
+    private static void ReadJson(
+        ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter
+    )
+    {
+        while (jsonReader.Read())
+        {
+            var tokenType = jsonReader.TokenType;
+
+            switch (tokenType)
+            {
+                case JsonTokenType.StartObject:
+                    jsonWriter.WriteStartObject();
+
+                    jsonWriter.WriteStartArray("customJsonFormatting");
+
+                    jsonWriter.WriteStartObject();
+
+                    jsonWriter.WritePropertyName("value");
+                    jsonWriter.WriteRawValue("""
+"abc"
+""");
+                    //ReadObject(ref jsonReader, jsonWriter);
+
+                    jsonWriter.WriteEndObject();
+
+                    jsonWriter.WriteEndArray();
+
+                    jsonWriter.WriteEndObject();
+
+                    break;
+                case JsonTokenType.PropertyName:
+
+                    break;
+            }
+        }
+    }
+
+    private static void ReadObject(
+        ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter
+    )
+    {
+        while (jsonReader.Read())
+        {
+        }
     }
 
     private static IEnumerable<string> ProcessRoot(JsonProperty component, Utf8JsonWriter writer)
     {
-        yield return component.Name;
+        yield return component.Name + component.GetType().Name;
 
         if (component.Name == "components")
         {
             foreach (
-                var processComponent in ProcessSchema(
+                var processComponent in ProcessJsonObject(
                     component, writer,
                     ProcessComponents
                 ))
@@ -124,20 +186,27 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
                 yield return $"  {processComponent}";
             }
         }
+        else if (component.Name == "paths")
+        {
+            using var nullWriter = new Utf8JsonWriter(Stream.Null);
+            component.WriteTo(nullWriter);
+        }
         else
         {
-            component.WriteTo(writer);
+            using var nullWriter = new Utf8JsonWriter(Stream.Null);
+            component.WriteTo(nullWriter);
+            //component.WriteTo(writer);
         }
     }
 
     private static IEnumerable<string> ProcessComponents(JsonProperty component, Utf8JsonWriter writer)
     {
-        yield return component.Name;
-
         if (component.Name == "schemas")
         {
+            yield return component.Name;
+
             foreach (
-                var processComponent in ProcessSchema(
+                var processComponent in ProcessJsonObject(
                     component, writer,
                     ProcessComponentsSchema
                 ))
@@ -153,33 +222,87 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
 
     private static IEnumerable<string> ProcessComponentsSchema(JsonProperty component, Utf8JsonWriter writer)
     {
-        yield return component.Name;
-        component.WriteTo(writer);
+        if (component.Name == "SubscriptionStatusUrlVersion")
+        {
+            yield return component.Name;
+
+            foreach (
+                var processComponent in ProcessJsonObject(
+                    component, writer,
+                    ProcessComponentsSchema
+                ))
+            {
+                yield return $"  {processComponent}";
+            }
+        }
+        else
+        {
+            component.WriteTo(writer);
+        }
     }
 
-    private static IEnumerable<string> ProcessSchema(
+    private static IEnumerable<string> ProcessJsonObject(
         JsonProperty component,
         Utf8JsonWriter writer,
         Func<JsonProperty, Utf8JsonWriter, IEnumerable<string>> callback
     )
     {
-        if (component.Value.ValueKind == JsonValueKind.Object)
+        if (component.Value.ValueKind is JsonValueKind.String)
         {
-            writer.WritePropertyName(component.Name);
-            writer.WriteStartObject();
-        }
-        else
-        {
+            component.WriteTo(writer);
+
             yield break;
         }
 
-        foreach (var property in component.Value.EnumerateObject())
+        if (component.Value.ValueKind is JsonValueKind.Object)
         {
-            yield return property.Name;
+            writer.WritePropertyName(component.Name);
+            writer.WriteStartObject();
 
-            property.WriteTo(writer);
+            using var nullWriter = new Utf8JsonWriter(Stream.Null);
+            component.WriteTo(nullWriter);
+            //foreach (var property in component.Value.EnumerateObject())
+            //{
+            //    foreach (
+            //        var processComponent in callback(
+            //            property,
+            //            writer
+            //        )
+            //    )
+            //    {
+            //        yield return $"  {processComponent}";
+            //    }
+            //}
+
+            writer.WriteEndObject();
         }
+    }
 
-        writer.WriteEndObject();
+    private static IEnumerable<string> ProcessJsonArray(
+        JsonProperty component,
+        Utf8JsonWriter writer,
+        Func<JsonProperty, Utf8JsonWriter, IEnumerable<string>> callback
+    )
+    {
+        if (component.Value.ValueKind is JsonValueKind.Array)
+        {
+            writer.WritePropertyName(component.Name);
+            writer.WriteStartArray();
+
+            foreach (var property in component.Value.EnumerateObject())
+            {
+                foreach (
+                    var processComponent in callback(
+                        property,
+                        writer
+                    )
+                )
+                {
+                    yield return $"  {processComponent}";
+                }
+            }
+
+            writer.WriteEndArray();
+        }
     }
 }
