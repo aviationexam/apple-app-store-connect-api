@@ -29,7 +29,7 @@
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="7.0.0" />
   </ItemGroup>
 
-  <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore">
+  <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec">
     <Message Importance="High" Text="Downloading $(AppStoreConnectOpenApiSpecificationUrl) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
 
     <Exec
