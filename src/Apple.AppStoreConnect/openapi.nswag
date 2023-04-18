@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "app-store-connect-openapi-specification/openapi.json",
+      "url": "../Apple.AppStoreConnect.OpenApiDocument/app-store-connect-openapi-specification/openapi.json",
       "output": null,
       "newLineBehavior": "Auto"
     }

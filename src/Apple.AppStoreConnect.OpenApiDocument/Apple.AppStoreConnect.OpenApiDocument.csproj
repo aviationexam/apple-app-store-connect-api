@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <PackageLicense>MIT</PackageLicense>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AppStoreConnectOpenApiSpecificationUrl>https://developer.apple.com/sample-code/app-store-connect/app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationUrl>
+    <AppStoreConnectOpenApiSpecificationFile>app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationFile>
+    <AppStoreConnectOpenApiSpecificationExtracted>app-store-connect-openapi-specification</AppStoreConnectOpenApiSpecificationExtracted>
+  </PropertyGroup>
+
+  <Import Project="..\WarningConfiguration.targets" />
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+  </ItemGroup>
+
+  <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec">
+    <Message Importance="High" Text="Downloading $(AppStoreConnectOpenApiSpecificationUrl) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
+
+    <Exec WorkingDirectory="$(ProjectDir)" Command="curl -sS $(AppStoreConnectOpenApiSpecificationUrl) --output $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
+
+    <Message Importance="High" Text="Extracting $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" />
+
+    <Unzip SourceFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" DestinationFolder="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" OverwriteReadOnlyFiles="true" />
+  </Target>
+
+</Project>

@@ -12,12 +12,6 @@
     <ProjectName>Aviationexam.Apple.AppStoreConnect</ProjectName>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <AppStoreConnectOpenApiSpecificationUrl>https://developer.apple.com/sample-code/app-store-connect/app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationUrl>
-    <AppStoreConnectOpenApiSpecificationFile>app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationFile>
-    <AppStoreConnectOpenApiSpecificationExtracted>app-store-connect-openapi-specification</AppStoreConnectOpenApiSpecificationExtracted>
-  </PropertyGroup>
-
   <Import Project="..\WarningConfiguration.targets" />
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
@@ -29,21 +23,8 @@
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="7.0.0" />
   </ItemGroup>
 
-  <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec">
-    <Message Importance="High" Text="Downloading $(AppStoreConnectOpenApiSpecificationUrl) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
-
-    <Exec
-      WorkingDirectory="$(ProjectDir)"
-      Command="curl -sS $(AppStoreConnectOpenApiSpecificationUrl) --output $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)"
-    />
-
-    <Message Importance="High" Text="Extracting $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" />
-
-    <Unzip
-      SourceFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)"
-      DestinationFolder="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)"
-      OverwriteReadOnlyFiles="true"
-    />
-  </Target>
+  <ItemGroup>
+    <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" />
+  </ItemGroup>
 
 </Project>
