@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Generator": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Apple.AppStoreConnect.OpenApiDocument\\Apple.AppStoreConnect.OpenApiDocument.csproj"
+    }
+  }
+}
