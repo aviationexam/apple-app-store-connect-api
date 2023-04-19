@@ -29,10 +29,10 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);AddGenerationTimeReferences2</GetTargetPathDependsOn>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);AddGenerationTimeReferencesBclAsyncInterfaces</GetTargetPathDependsOn>
   </PropertyGroup>
-  
-  <Target Name="AddGenerationTimeReferences2" DependsOnTargets="ResolveReferences">
+
+  <Target Name="AddGenerationTimeReferencesBclAsyncInterfaces" DependsOnTargets="ResolveReferences">
     <ItemGroup>
       <TargetPathWithTargetPlatformMoniker Include="$(PkgMicrosoft_Bcl_AsyncInterfaces)\lib\netstandard2.0\Microsoft.Bcl.AsyncInterfaces.dll" IncludeRuntimeDependency="false" />
     </ItemGroup>
