@@ -117,6 +117,7 @@ public static partial class AppStoreConnectExtensions
 
     private static string GetNamespaceFrom(SyntaxNode s) => s.Parent switch
     {
+        FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDeclarationSyntax => fileScopedNamespaceDeclarationSyntax.Name.ToString(),
         NamespaceDeclarationSyntax namespaceDeclarationSyntax => namespaceDeclarationSyntax.Name.ToString(),
         null => string.Empty, // or whatever you want to do
         _ => GetNamespaceFrom(s.Parent)
