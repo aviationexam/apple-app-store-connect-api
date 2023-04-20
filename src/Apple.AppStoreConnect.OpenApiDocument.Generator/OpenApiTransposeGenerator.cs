@@ -18,7 +18,7 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var source = context.AdditionalTextsProvider
+        context.AdditionalTextsProvider
             .Where(static text => text.Path.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase))
             .Combine(context.AnalyzerConfigOptionsProvider)
             .Where(static ((AdditionalText textFile, AnalyzerConfigOptionsProvider analyzerConfigOptionsProvider) x) =>
@@ -32,12 +32,11 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
                     x.GetRequiredGlobalOption("ResultOpenApiDestination")
                 )
             )
-            .SelectAndReportExceptions(GetSourceCode, context, Id);
-
-        context.RegisterSourceOutput(source, static (_, _) => { });
+            .SelectAndReportExceptions(GetSourceCode, context, Id)
+            .AddSource(context);
     }
 
-    private static int GetSourceCode(
+    private static FileWithName GetSourceCode(
         (AdditionalText textFile, string resultOpenApiDestination) source,
         CancellationToken cancellationToken = default
     )
@@ -85,6 +84,6 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
         jsonWriter.Flush();
         destinationFileStream.Flush(flushToDisk: true);
 
-        return 0;
+        return FileWithName.Empty;
     }
 }
