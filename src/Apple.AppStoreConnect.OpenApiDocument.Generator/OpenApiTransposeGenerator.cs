@@ -3,7 +3,6 @@ using H.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
@@ -35,25 +34,10 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
             )
             .SelectAndReportExceptions(GetSourceCode, context, Id);
 
-        context.RegisterSourceOutput(source, static (context, properties) =>
-        {
-            foreach (var property in properties)
-            {
-                context.ReportDiagnostic(Diagnostic.Create(
-                    new DiagnosticDescriptor(
-                        $"{Id}_0001",
-                        "Processed property",
-                        $"Processed property {property}",
-                        "Apple.AppStoreConnect.OpenApiDocument.Generator",
-                        DiagnosticSeverity.Error,
-                        true
-                    ), null
-                ));
-            }
-        });
+        context.RegisterSourceOutput(source, static (_, _) => { });
     }
 
-    private static IEnumerable<string> GetSourceCode(
+    private static int GetSourceCode(
         (AdditionalText textFile, string resultOpenApiDestination) source,
         CancellationToken cancellationToken = default
     )
@@ -101,6 +85,6 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
         jsonWriter.Flush();
         destinationFileStream.Flush(flushToDisk: true);
 
-        yield break;
+        return 0;
     }
 }
