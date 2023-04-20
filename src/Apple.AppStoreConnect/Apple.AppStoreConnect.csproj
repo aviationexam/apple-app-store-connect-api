@@ -10,6 +10,8 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <ProjectName>Aviationexam.Apple.AppStoreConnect</ProjectName>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>..\..\GeneratedFiles\AppStoreConnect</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
   <Import Project="..\WarningConfiguration.targets" />
