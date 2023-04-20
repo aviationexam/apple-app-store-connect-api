@@ -20,11 +20,6 @@ public class DependencyInjectionGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        if (!Debugger.IsAttached)
-        {
-            Debugger.Launch();
-        }
-
         context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
             "AppStoreConnectDependencyInjectionAttribute.g.cs",
             SourceText.From(SourceGenerationHelper.AppStoreConnectDependencyInjectionAttribute, Encoding.UTF8)
@@ -60,27 +55,72 @@ public class DependencyInjectionGenerator : IIncrementalGenerator
         CancellationToken cancellationToken
     )
     {
-        var syntaxTree = item.extensionClassDeclarationSyntax.SyntaxTree;
+        if (!Debugger.IsAttached)
+        {
+            Debugger.Launch();
+        }
+
+        var extensionClassDeclarationSyntax = item.extensionClassDeclarationSyntax;
+        var className = extensionClassDeclarationSyntax.Identifier.Text;
+        var syntaxTree = extensionClassDeclarationSyntax.SyntaxTree;
 
         var tree = syntaxTree
             .WithRootAndOptions(syntaxTree
                     .GetCompilationUnitRoot()
                     .WithAttributeLists(SyntaxFactory.List<AttributeListSyntax>())
                     .WithUsings(SyntaxFactory.List<UsingDirectiveSyntax>())
-                    .WithMembers(SyntaxFactory.List<MemberDeclarationSyntax>())
+                    .WithMembers(SyntaxFactory.SingletonList<SyntaxNode>(
+                        SyntaxFactory.FileScopedNamespaceDeclaration(
+                                SyntaxFactory.IdentifierName(GetNamespaceFrom(extensionClassDeclarationSyntax))
+                            )
+                            .WithMembers(SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
+                                SyntaxFactory.ClassDeclaration(className)
+                                    .WithTypeParameterList(extensionClassDeclarationSyntax.TypeParameterList)
+                                    //.WithModifiers(SyntaxFactory.TokenList(GetTypeModifiers()))
+                            ))
+                    ))
                     .NormalizeWhitespace(), syntaxTree.Options
             );
 
         var classUnit = tree.GetCompilationUnitRoot(cancellationToken).ToFullString();
 
+        var a = """
+
+public static partial class AppStoreConnectExtensions
+{
+    static partial void GetHttpClientDeclaration(
+        IServiceCollection serviceCollection,
+        IReadOnlyDictionary<Type, Action<IHttpClientBuilder>> httpClientConfigurations
+    )
+    {
+        var httpClientBuilder = new DefaultHttpClientBuilder(
+                serviceCollection, "Apple.AppStoreConnect.IAgeRatingDeclarationsClient"
+            )
+            .AddTypedClient<IAgeRatingDeclarationsClient, AgeRatingDeclarationsClient>();
+
+        if (httpClientConfigurations.TryGetValue(typeof(IAgeRatingDeclarationsClient), out var httpClientConfiguration))
+        {
+            httpClientConfiguration(httpClientBuilder);
+        }
+    }
+}
+""";
+
         return (
-            fileName: item.extensionClassDeclarationSyntax.Identifier.Text + ".g.cs",
+            fileName: $"{className}.g.cs",
             sourceText: SourceText.From(
                 classUnit,
                 Encoding.Default
             )
         );
     }
+
+    private static string GetNamespaceFrom(SyntaxNode s) => s.Parent switch
+    {
+        NamespaceDeclarationSyntax namespaceDeclarationSyntax => namespaceDeclarationSyntax.Name.ToString(),
+        null => string.Empty, // or whatever you want to do
+        _ => GetNamespaceFrom(s.Parent)
+    };
 
     private static ClassDeclarationSyntax? GetSemanticTargetForGeneration(
         GeneratorSyntaxContext context, CancellationToken cancellationToken
@@ -94,8 +134,7 @@ public class DependencyInjectionGenerator : IIncrementalGenerator
         {
             foreach (var attributeSyntax in attributeListSyntax.Attributes)
             {
-                if (ModelExtensions.GetSymbolInfo(context.SemanticModel, attributeSyntax).Symbol is not IMethodSymbol
-                    attributeSymbol)
+                if (context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol is not IMethodSymbol attributeSymbol)
                 {
                     // weird, we couldn't get the symbol, ignore it
                     continue;
@@ -104,7 +143,7 @@ public class DependencyInjectionGenerator : IIncrementalGenerator
                 var attributeContainingTypeSymbol = attributeSymbol.ContainingType;
                 var fullName = attributeContainingTypeSymbol.ToDisplayString();
 
-                if (fullName == SourceGenerationHelper.AppStoreConnectDependencyInjectionAttributeFullname)
+                if (fullName is SourceGenerationHelper.AppStoreConnectDependencyInjectionAttributeFullname)
                 {
                     return classDeclarationSyntax;
                 }
