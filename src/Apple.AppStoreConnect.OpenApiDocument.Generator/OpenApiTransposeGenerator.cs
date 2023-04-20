@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
@@ -59,11 +58,6 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
         CancellationToken cancellationToken = default
     )
     {
-        if (!Debugger.IsAttached)
-        {
-            Debugger.Launch();
-        }
-
         var writerOptions = new JsonWriterOptions
         {
             Indented = true,
