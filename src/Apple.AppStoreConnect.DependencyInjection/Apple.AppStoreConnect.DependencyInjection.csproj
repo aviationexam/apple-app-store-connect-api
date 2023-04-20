@@ -22,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Apple.AppStoreConnect\Apple.AppStoreConnect.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\Apple.AppStoreConnect\Apple.AppStoreConnect.csproj" />
+    <ProjectReference Include="..\Apple.AppStoreConnect.DependencyInjection.Generator\Apple.AppStoreConnect.DependencyInjection.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
+
 </Project>
