@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.OpenA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.DependencyInjection", "src\Apple.AppStoreConnect.DependencyInjection\Apple.AppStoreConnect.DependencyInjection.csproj", "{F6F69E08-219D-4D94-9979-BFED994DF3BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.DependencyInjection.Generator", "rc\Apple.AppStoreConnect.DependencyInjection.Generator\Apple.AppStoreConnect.DependencyInjection.Generator.csproj", "{28C1B7E9-6C2A-439B-B101-C67C9C0C1923}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.DependencyInjection.Generator", "src\Apple.AppStoreConnect.DependencyInjection.Generator\Apple.AppStoreConnect.DependencyInjection.Generator.csproj", "{28C1B7E9-6C2A-439B-B101-C67C9C0C1923}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
