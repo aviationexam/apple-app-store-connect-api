@@ -64,23 +64,29 @@ public class DependencyInjectionGenerator : IIncrementalGenerator
         var className = extensionClassDeclarationSyntax.Identifier.Text;
         var syntaxTree = extensionClassDeclarationSyntax.SyntaxTree;
 
-        var tree = syntaxTree
-            .WithRootAndOptions(syntaxTree
-                    .GetCompilationUnitRoot()
-                    .WithAttributeLists(SyntaxFactory.List<AttributeListSyntax>())
-                    .WithUsings(SyntaxFactory.List<UsingDirectiveSyntax>())
-                    .WithMembers(SyntaxFactory.SingletonList<SyntaxNode>(
-                        SyntaxFactory.FileScopedNamespaceDeclaration(
-                                SyntaxFactory.IdentifierName(GetNamespaceFrom(extensionClassDeclarationSyntax))
-                            )
-                            .WithMembers(SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
-                                SyntaxFactory.ClassDeclaration(className)
-                                    .WithTypeParameterList(extensionClassDeclarationSyntax.TypeParameterList)
-                                    //.WithModifiers(SyntaxFactory.TokenList(GetTypeModifiers()))
-                            ))
-                    ))
-                    .NormalizeWhitespace(), syntaxTree.Options
-            );
+        var tree = syntaxTree.WithRootAndOptions(syntaxTree
+                .GetCompilationUnitRoot()
+                .WithAttributeLists(SyntaxFactory.List<AttributeListSyntax>())
+                .WithUsings(SyntaxFactory.List(new[]
+                {
+                    SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("Microsoft.Extensions.DependencyInjection")),
+                    SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System")),
+                    SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Collections.Generic"))
+                }))
+                .WithMembers(SyntaxFactory.SingletonList<SyntaxNode>(
+                    SyntaxFactory.FileScopedNamespaceDeclaration(
+                            SyntaxFactory.IdentifierName(GetNamespaceFrom(extensionClassDeclarationSyntax))
+                        )
+                        .WithMembers(SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
+                            SyntaxFactory.ClassDeclaration(className)
+                                .WithTypeParameterList(extensionClassDeclarationSyntax.TypeParameterList)
+                                .WithModifiers(extensionClassDeclarationSyntax.Modifiers)
+                                .WithMembers(SyntaxFactory.List(GetClassMembers(item.interfaceDeclarationsSyntax)))
+                        ))
+                ))
+                .NormalizeWhitespace(),
+            syntaxTree.Options
+        );
 
         var classUnit = tree.GetCompilationUnitRoot(cancellationToken).ToFullString();
 
@@ -115,9 +121,32 @@ public static partial class AppStoreConnectExtensions
         );
     }
 
+    private static readonly SyntaxToken ServiceCollectionToken = SyntaxFactory.Identifier("serviceCollection");
+    private static readonly SyntaxToken HttpClientConfigurationsToken = SyntaxFactory.Identifier("httpClientConfigurations");
+
+    private static IEnumerable<MemberDeclarationSyntax> GetClassMembers(
+        ImmutableArray<HttpClientDeclaration> interfaceDeclarationsSyntax
+    )
+    {
+        yield return SyntaxFactory.MethodDeclaration(SyntaxFactory.IdentifierName("void"), "GetHttpClientDeclaration")
+            .WithModifiers(SyntaxFactory.TokenList(
+                SyntaxFactory.Token(SyntaxKind.StaticKeyword),
+                SyntaxFactory.Token(SyntaxKind.PartialKeyword)
+            ))
+            .WithParameterList(SyntaxFactory.ParameterList(SyntaxFactory.SeparatedList(
+                new[]
+                {
+                    SyntaxFactory.Parameter(ServiceCollectionToken).WithType(SyntaxFactory.IdentifierName("IServiceCollection")),
+                    SyntaxFactory.Parameter(HttpClientConfigurationsToken).WithType(SyntaxFactory.IdentifierName("IReadOnlyDictionary<Type, Action<IHttpClientBuilder>>"))
+                }
+            )))
+            .WithBody(SyntaxFactory.Block());
+    }
+
     private static string GetNamespaceFrom(SyntaxNode s) => s.Parent switch
     {
-        FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDeclarationSyntax => fileScopedNamespaceDeclarationSyntax.Name.ToString(),
+        FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDeclarationSyntax =>
+            fileScopedNamespaceDeclarationSyntax.Name.ToString(),
         NamespaceDeclarationSyntax namespaceDeclarationSyntax => namespaceDeclarationSyntax.Name.ToString(),
         null => string.Empty, // or whatever you want to do
         _ => GetNamespaceFrom(s.Parent)
