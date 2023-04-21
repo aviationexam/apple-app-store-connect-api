@@ -1,9 +1,10 @@
-﻿using H.Generators;
+using H.Generators;
 using H.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System;
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
@@ -13,9 +14,11 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
 {
     public const string Id = "OATG";
 
+    private static ReadOnlySpan<byte> Utf8Bom => new byte[] { 0xEF, 0xBB, 0xBF };
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var source = context.AdditionalTextsProvider
+        context.AdditionalTextsProvider
             .Where(static text => text.Path.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase))
             .Combine(context.AnalyzerConfigOptionsProvider)
             .Where(static ((AdditionalText textFile, AnalyzerConfigOptionsProvider analyzerConfigOptionsProvider) x) =>
@@ -29,38 +32,58 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
                     x.GetRequiredGlobalOption("ResultOpenApiDestination")
                 )
             )
-            .SelectAndReportExceptions(GetSourceCode, context, Id);
-
-        context.RegisterSourceOutput(source, static (context, resultJson) =>
-        {
-            Directory.CreateDirectory(resultJson.Destination);
-
-            // This is a hack until source-generator support embedded resources
-            using var file = new FileStream(
-                Path.Combine(resultJson.Destination, resultJson.Filename),
-                FileMode.Create, FileAccess.Write, FileShare.Write
-            );
-
-            resultJson.Stream.CopyTo(file);
-            file.Flush(flushToDisk: true);
-        });
+            .SelectAndReportExceptions(GetSourceCode, context, Id)
+            .AddSource(context);
     }
 
-    private static ResultJson GetSourceCode(
+    private static FileWithName GetSourceCode(
         (AdditionalText textFile, string resultOpenApiDestination) source,
         CancellationToken cancellationToken = default
     )
     {
-        return new ResultJson(
-            Destination: source.resultOpenApiDestination,
-            Filename: Path.GetFileName(source.textFile.Path),
-            Stream: File.OpenRead(source.textFile.Path)
-        );
-    }
+        var writerOptions = new JsonWriterOptions
+        {
+            Indented = true,
+        };
 
-    private record ResultJson(
-        string Destination,
-        string Filename,
-        Stream Stream
-    );
+        var documentOptions = new JsonReaderOptions
+        {
+            CommentHandling = JsonCommentHandling.Skip,
+        };
+
+        Directory.CreateDirectory(source.resultOpenApiDestination);
+
+        // This is a hack until source-generator support embedded resources
+        using var destinationFileStream = new FileStream(
+            Path.Combine(source.resultOpenApiDestination, Path.GetFileName(source.textFile.Path)),
+            FileMode.Create, FileAccess.Write, FileShare.Write
+        );
+
+        using var jsonWriter = new Utf8JsonWriter(destinationFileStream, options: writerOptions);
+
+        ReadOnlySpan<byte> jsonReadOnlySpan = File.ReadAllBytes(source.textFile.Path);
+
+        if (jsonReadOnlySpan.StartsWith(Utf8Bom))
+        {
+            jsonReadOnlySpan = jsonReadOnlySpan[Utf8Bom.Length..];
+        }
+
+        var jsonReader = new Utf8JsonReader(jsonReadOnlySpan, documentOptions);
+
+        try
+        {
+            JsonIterator.ProcessJson(ref jsonReader, jsonWriter);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(
+                e.StackTrace
+            );
+        }
+
+        jsonWriter.Flush();
+        destinationFileStream.Flush(flushToDisk: true);
+
+        return FileWithName.Empty;
+    }
 }

@@ -34,7 +34,9 @@ jobs:
       - name: Build with .Net
         run: dotnet build --configuration Release --no-restore --nologo "-p:Version=${{ steps.gitversion.outputs.NuGetVersionV2 }}"
       - name: Pack with .Net
-        run: dotnet pack --nologo --no-build --configuration Release --output nuget-packages -p:PackageVersion=${{ steps.gitversion.outputs.NuGetVersionV2 }} src/Apple.AppStoreConnect/Apple.AppStoreConnect.csproj
+        run: |
+          dotnet pack --nologo --no-build --configuration Release --output nuget-packages -p:PackageVersion=${{ steps.gitversion.outputs.NuGetVersionV2 }} src/Apple.AppStoreConnect/Apple.AppStoreConnect.csproj
+          dotnet pack --nologo --no-build --configuration Release --output nuget-packages -p:PackageVersion=${{ steps.gitversion.outputs.NuGetVersionV2 }} src/Apple.AppStoreConnect.DependencyInjection/Apple.AppStoreConnect.DependencyInjection.csproj
       - uses: actions/upload-artifact@v3
         with:
           name: Nuget-packages-${{ steps.gitversion.outputs.NuGetVersionV2 }}

@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.OpenA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.OpenApiDocument.Generator", "src\Apple.AppStoreConnect.OpenApiDocument.Generator\Apple.AppStoreConnect.OpenApiDocument.Generator.csproj", "{AACBF52E-C970-4B1C-8510-7AD957CFF36E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.DependencyInjection", "src\Apple.AppStoreConnect.DependencyInjection\Apple.AppStoreConnect.DependencyInjection.csproj", "{F6F69E08-219D-4D94-9979-BFED994DF3BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.DependencyInjection.Generator", "src\Apple.AppStoreConnect.DependencyInjection.Generator\Apple.AppStoreConnect.DependencyInjection.Generator.csproj", "{28C1B7E9-6C2A-439B-B101-C67C9C0C1923}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,14 @@ Global
 		{AACBF52E-C970-4B1C-8510-7AD957CFF36E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AACBF52E-C970-4B1C-8510-7AD957CFF36E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AACBF52E-C970-4B1C-8510-7AD957CFF36E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6F69E08-219D-4D94-9979-BFED994DF3BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6F69E08-219D-4D94-9979-BFED994DF3BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6F69E08-219D-4D94-9979-BFED994DF3BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6F69E08-219D-4D94-9979-BFED994DF3BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28C1B7E9-6C2A-439B-B101-C67C9C0C1923}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28C1B7E9-6C2A-439B-B101-C67C9C0C1923}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28C1B7E9-6C2A-439B-B101-C67C9C0C1923}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28C1B7E9-6C2A-439B-B101-C67C9C0C1923}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{41F367B1-2907-4A57-BCE7-253D144AEC3B} = {A0CB57C1-6B09-4FFC-A90D-232DF7099DB6}

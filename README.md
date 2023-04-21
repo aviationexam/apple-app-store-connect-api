@@ -4,16 +4,42 @@
 
 # Apple AppStoreConnect
 
+## Install
+```xml
+<ItemGroup>
+    <PackageReference Include="Apple.AppStoreConnect" Version="" />
+    <PackageReference Include="Apple.AppStoreConnect.DependencyInjection" Version="" />
+</ItemGroup>
+```
+
 ## How to configure library
 
 Add library to the dependency container
 
 ```cs
+using Apple.AppStoreConnect.DependencyInjection;
 
+IServiceCollection serviceCollection;
+
+serviceCollection.AddAppleAppStoreConnect();
+// OR
+serviceCollection.AddAppleAppStoreConnect(new Dictionary<Type, Action<IHttpClientBuilder>> {
+  [typeof(IAppStoreConnectClient)] = httpClientBuilder => {
+    // here you can configure all managed http clients
+  },
+
+  [typeof(IAgeRatingDeclarationsClient)] = httpClientBuilder => {
+    // or you can configure one specific http client
+  },
+});
 ```
 
 ## How to use library
 
+There are many clients generated from `openapi.json`.
+This library make some minor changes to the document, mainly to improve quality of generated client or to fix some issues.
+
+Generated clients follows naming convention: `I{tags.first}Client`, you can simply access it using dependency injection or from your service provider.
 ```cs
 
 ```

@@ -9,28 +9,21 @@
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <ProjectName>Aviationexam.Apple.AppStoreConnect</ProjectName>
+    <ProjectName>Aviationexam.Apple.AppStoreConnect.DependencyInjection</ProjectName>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>..\..\GeneratedFiles\AppStoreConnect</CompilerGeneratedFilesOutputPath>
+    <CompilerGeneratedFilesOutputPath>..\..\GeneratedFiles\DependencyInjection</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
   <Import Project="..\WarningConfiguration.targets" />
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="H.NSwag.Generator" Version="13.18.2.71" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="app-store-connect-openapi-specification\" />
+    <ProjectReference Include="..\Apple.AppStoreConnect\Apple.AppStoreConnect.csproj" />
+    <ProjectReference Include="..\Apple.AppStoreConnect.DependencyInjection.Generator\Apple.AppStoreConnect.DependencyInjection.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
