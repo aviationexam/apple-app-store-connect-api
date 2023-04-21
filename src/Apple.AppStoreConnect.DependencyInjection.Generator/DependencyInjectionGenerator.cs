@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -55,11 +54,6 @@ public class DependencyInjectionGenerator : IIncrementalGenerator
         CancellationToken cancellationToken
     )
     {
-        if (!Debugger.IsAttached)
-        {
-            Debugger.Launch();
-        }
-
         var extensionClassDeclarationSyntax = item.extensionClassDeclarationSyntax;
         var className = extensionClassDeclarationSyntax.Identifier.Text;
         var syntaxTree = extensionClassDeclarationSyntax.SyntaxTree;
@@ -138,11 +132,43 @@ public class DependencyInjectionGenerator : IIncrementalGenerator
         ImmutableArray<HttpClientDeclaration> interfaceDeclarationsSyntax
     )
     {
+        const string hasHttpClientGlobalConfigurationVariable = "hasHttpClientConfiguration";
+        const string httpClientGlobalConfigurationVariable = "httpClientConfiguration";
+
+        yield return SyntaxFactory.LocalDeclarationStatement(SyntaxFactory
+            .VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+            .AddVariables(
+                SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(hasHttpClientGlobalConfigurationVariable))
+                    .WithInitializer(SyntaxFactory.EqualsValueClause(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(HttpClientConfigurationsParameter),
+                                SyntaxFactory.Token(SyntaxKind.DotToken),
+                                SyntaxFactory.IdentifierName("TryGetValue")
+                            ),
+                            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(new[]
+                            {
+                                SyntaxFactory.Argument(
+                                    SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(AppStoreConnectClient))
+                                ),
+                                SyntaxFactory.Argument(SyntaxFactory.DeclarationExpression(
+                                    SyntaxFactory.IdentifierName("var"),
+                                    SyntaxFactory.SingleVariableDesignation(
+                                        SyntaxFactory.Identifier(httpClientGlobalConfigurationVariable))
+                                )).WithRefOrOutKeyword(SyntaxFactory.Token(SyntaxKind.OutKeyword)),
+                            }))
+                        )
+                    ))
+            )
+        );
+
         foreach (var interfaceDeclarationSyntax in interfaceDeclarationsSyntax)
         {
             var interfaceName = interfaceDeclarationSyntax.Interface.Name;
             var implementationName = interfaceDeclarationSyntax.Implementation.Name;
             var httpClientBuilderVariable = $"httpClientBuilder{interfaceName}";
+            var httpClientConfigurationVariable = $"httpClientConfiguration{interfaceName}";
 
             var httpClientBuilderExpression = SyntaxFactory
                 .ObjectCreationExpression(SyntaxFactory.IdentifierName(DefaultHttpClientBuilderClass))
@@ -174,7 +200,7 @@ public class DependencyInjectionGenerator : IIncrementalGenerator
                 )
             );
 
-            var httpClientBuilderVariableSyntax = SyntaxFactory.LocalDeclarationStatement(SyntaxFactory
+            yield return SyntaxFactory.LocalDeclarationStatement(SyntaxFactory
                 .VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
                 .AddVariables(
                     SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(httpClientBuilderVariable))
@@ -184,29 +210,56 @@ public class DependencyInjectionGenerator : IIncrementalGenerator
                 )
             );
 
-            yield return httpClientBuilderVariableSyntax;
-        }
+            yield return SyntaxFactory.IfStatement(
+                SyntaxFactory.IdentifierName(hasHttpClientGlobalConfigurationVariable),
+                SyntaxFactory.Block(SyntaxFactory.SingletonList(
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName(httpClientGlobalConfigurationVariable)
+                            )
+                            .AddArgumentListArguments(
+                                SyntaxFactory.Argument(
+                                    SyntaxFactory.IdentifierName(httpClientBuilderVariable)
+                                )
+                            )
+                    )
+                ))
+            );
 
-        var a = """
-public static partial class AppStoreConnectExtensions
-{
-    static partial void GetHttpClientDeclaration(
-        IServiceCollection serviceCollection,
-        IReadOnlyDictionary<Type, Action<IHttpClientBuilder>> httpClientConfigurations
-    )
-    {
-        var httpClientBuilder = new DefaultHttpClientBuilder(
-                serviceCollection, "Apple.AppStoreConnect.IAgeRatingDeclarationsClient"
-            )
-            .AddTypedClient<IAgeRatingDeclarationsClient, AgeRatingDeclarationsClient>();
-
-        if (httpClientConfigurations.TryGetValue(typeof(IAgeRatingDeclarationsClient), out var httpClientConfiguration))
-        {
-            httpClientConfiguration(httpClientBuilder);
+            yield return SyntaxFactory.IfStatement(
+                SyntaxFactory.InvocationExpression(
+                    SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        SyntaxFactory.IdentifierName(HttpClientConfigurationsParameter),
+                        SyntaxFactory.Token(SyntaxKind.DotToken),
+                        SyntaxFactory.IdentifierName("TryGetValue")
+                    ),
+                    SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(new[]
+                    {
+                        SyntaxFactory.Argument(
+                            SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(interfaceName))
+                        ),
+                        SyntaxFactory.Argument(SyntaxFactory.DeclarationExpression(
+                            SyntaxFactory.IdentifierName("var"),
+                            SyntaxFactory.SingleVariableDesignation(
+                                SyntaxFactory.Identifier(httpClientConfigurationVariable))
+                        )).WithRefOrOutKeyword(SyntaxFactory.Token(SyntaxKind.OutKeyword)),
+                    }))
+                ),
+                SyntaxFactory.Block(SyntaxFactory.SingletonList(
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName(httpClientConfigurationVariable)
+                            )
+                            .AddArgumentListArguments(
+                                SyntaxFactory.Argument(
+                                    SyntaxFactory.IdentifierName(httpClientBuilderVariable)
+                                )
+                            )
+                    )
+                ))
+            );
         }
-    }
-}
-""";
     }
 
     private static string GetNamespaceFrom(SyntaxNode s) => s.Parent switch
