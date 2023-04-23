@@ -33,6 +33,9 @@ public static partial class AppStoreConnectExtensions
         );
 
         serviceCollection.TryAddEnumerable(ServiceDescriptor
+            .Singleton<IPostConfigureOptions<AppleAuthenticationOptions>, AppleAuthenticationPostConfigure>()
+        );
+        serviceCollection.TryAddEnumerable(ServiceDescriptor
             .Singleton<IValidateOptions<AppleAuthenticationOptions>, AppleAuthenticationOptionsValidate>()
         );
 
