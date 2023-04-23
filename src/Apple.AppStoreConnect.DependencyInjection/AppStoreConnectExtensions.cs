@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,10 @@ public static partial class AppStoreConnectExtensions
 
         optionsBuilder(serviceCollection
             .AddOptions<AppleAuthenticationOptions>()
+        );
+
+        serviceCollection.TryAddEnumerable(ServiceDescriptor
+            .Singleton<IValidateOptions<AppleAuthenticationOptions>, AppleAuthenticationOptionsValidate>()
         );
 
         GetHttpClientDeclaration(serviceCollection, httpClientConfigurations);
