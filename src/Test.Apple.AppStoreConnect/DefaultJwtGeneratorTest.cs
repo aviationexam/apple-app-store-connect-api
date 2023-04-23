@@ -2,13 +2,13 @@ using Apple.AppStoreConnect;
 using Apple.AppStoreConnect.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System;
-using System.IO;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IO;
 using System.Threading.Tasks;
 using Xunit;
 
