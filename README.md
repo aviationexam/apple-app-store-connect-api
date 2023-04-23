@@ -21,8 +21,14 @@ using Apple.AppStoreConnect.DependencyInjection;
 
 IServiceCollection serviceCollection;
 
-serviceCollection.AddAppleAppStoreConnect(
-  optionsBuilder => optionsBuilder.Configure()
+serviceCollection.AddAppleAppStoreConnect(optionsBuilder => optionsBuilder
+  .Configure()
+  .ValidateDataAnnotations()
+);
+// OR
+serviceCollection.AddAppleAppStoreConnect(optionsBuilder => optionsBuilder
+  .Bind(builder.Configuration.GetSection(MyConfigOptions.MyConfig))
+  .ValidateDataAnnotations()
 );
 // OR
 serviceCollection.AddAppleAppStoreConnect(
