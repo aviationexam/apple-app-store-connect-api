@@ -1,3 +1,4 @@
+using Apple.AppStoreConnect.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -26,7 +27,8 @@ public static partial class AppStoreConnectExtensions
     )
     {
         serviceCollection
-            .AddHttpClient();
+            .AddHttpClient()
+            .AddSingleton<IJwtGenerator, DefaultJwtGenerator>();
 
         optionsBuilder(serviceCollection
             .AddOptions<AppleAuthenticationOptions>()
