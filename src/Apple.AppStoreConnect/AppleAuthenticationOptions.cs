@@ -34,5 +34,5 @@ public sealed class AppleAuthenticationOptions
     public JsonWebTokenHandler SecurityTokenHandler { get; set; } = default!;
 
     [Required]
-    public TimeSpan ClientSecretExpiresAfter { get; set; }
+    public TimeSpan JwtExpiresAfter { get; set; }
 }

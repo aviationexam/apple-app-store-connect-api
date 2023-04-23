@@ -7,10 +7,17 @@ public sealed class AppleAuthenticationOptionsValidate : IValidateOptions<AppleA
 {
     public ValidateOptionsResult Validate(string? name, AppleAuthenticationOptions options)
     {
-        if (options.ClientSecretExpiresAfter <= TimeSpan.Zero)
+        if (options.JwtExpiresAfter <= TimeSpan.Zero)
         {
             return ValidateOptionsResult.Fail(
-                $"The '{nameof(options.ClientSecretExpiresAfter)}' option must be a positive value, '{options.ClientSecretExpiresAfter}' given."
+                $"The '{nameof(options.JwtExpiresAfter)}' option must be a positive value, '{options.JwtExpiresAfter}' given."
+            );
+        }
+
+        if (options.JwtExpiresAfter > TimeSpan.FromMinutes(20))
+        {
+            return ValidateOptionsResult.Fail(
+                $"The '{nameof(options.JwtExpiresAfter)}' option must not be bigger than 20 minutes, '{options.JwtExpiresAfter}' given."
             );
         }
 

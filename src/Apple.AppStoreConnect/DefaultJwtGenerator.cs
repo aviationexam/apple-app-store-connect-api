@@ -82,7 +82,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
     )
     {
         var now = _clock.UtcNow;
-        var expiresAt = now.Add(appleAuthenticationOptions.ClientSecretExpiresAfter).UtcDateTime;
+        var expiresAt = now.Add(appleAuthenticationOptions.JwtExpiresAfter).UtcDateTime;
 
         Log.GeneratingNewJwtToken(_logger, appleAuthenticationOptions.KeyId, expiresAt);
 
