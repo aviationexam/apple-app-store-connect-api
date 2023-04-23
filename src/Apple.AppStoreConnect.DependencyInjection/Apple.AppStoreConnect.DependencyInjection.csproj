@@ -9,7 +9,7 @@
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <ProjectName>Aviationexam.Apple.AppStoreConnect.DependencyInjection</ProjectName>
+    <PackageId>Aviationexam.Apple.AppStoreConnect.DependencyInjection</PackageId>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>..\..\GeneratedFiles\DependencyInjection</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>

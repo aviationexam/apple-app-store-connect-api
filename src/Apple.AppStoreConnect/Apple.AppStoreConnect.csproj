@@ -9,7 +9,7 @@
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <ProjectName>Aviationexam.Apple.AppStoreConnect</ProjectName>
+    <PackageId>Aviationexam.Apple.AppStoreConnect</PackageId>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>..\..\GeneratedFiles\AppStoreConnect</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
