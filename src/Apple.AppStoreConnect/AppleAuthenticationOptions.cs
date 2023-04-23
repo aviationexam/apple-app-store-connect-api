@@ -1,4 +1,4 @@
-﻿using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.JsonWebTokens;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;

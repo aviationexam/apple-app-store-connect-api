@@ -1,4 +1,4 @@
-﻿using Apple.AppStoreConnect.Interfaces;
+using Apple.AppStoreConnect.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
