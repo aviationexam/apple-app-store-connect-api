@@ -21,17 +21,22 @@ using Apple.AppStoreConnect.DependencyInjection;
 
 IServiceCollection serviceCollection;
 
-serviceCollection.AddAppleAppStoreConnect();
+serviceCollection.AddAppleAppStoreConnect(
+  optionsBuilder => optionsBuilder.Configure()
+);
 // OR
-serviceCollection.AddAppleAppStoreConnect(new Dictionary<Type, Action<IHttpClientBuilder>> {
-  [typeof(IAppStoreConnectClient)] = httpClientBuilder => {
-    // here you can configure all managed http clients
-  },
+serviceCollection.AddAppleAppStoreConnect(
+  optionsBuilder => optionsBuilder.Configure(),
+  new Dictionary<Type, Action<IHttpClientBuilder>> {
+    [typeof(IAppStoreConnectClient)] = httpClientBuilder => {
+      // here you can configure all managed http clients
+    },
 
-  [typeof(IAgeRatingDeclarationsClient)] = httpClientBuilder => {
-    // or you can configure one specific http client
-  },
-});
+    [typeof(IAgeRatingDeclarationsClient)] = httpClientBuilder => {
+      // or you can configure one specific http client
+    },
+  }
+);
 ```
 
 ## How to use library
