@@ -22,19 +22,19 @@ public class DefaultJwtGeneratorTest
         var serviceCollection = new ServiceCollection()
             .Configure<AppleAuthenticationOptions>(x =>
             {
-                x.KeyId = "KeyId";
-                x.IssuerId = "IssuerId";
+                x.KeyId = "TestKeyId";
+                x.IssuerId = "9E35F3F8-D597-45D3-84FE-5F8A386C070B";
                 x.TokenAudience = "appstoreconnect-v1";
                 x.PrivateKey = static async (keyId, cancellationToken) =>
                 {
-                    var physicalFileProvider = new PhysicalFileProvider("");
+                    var physicalFileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory());
                     var fileInfo = physicalFileProvider.GetFileInfo($"AuthKey_{keyId}.p8");
                     await using var stream = fileInfo.CreateReadStream();
                     using var reader = new StreamReader(stream);
 
                     return (await reader.ReadToEndAsync(cancellationToken)).AsMemory();
                 };
-                x.ClientSecretExpiresAfter = TimeSpan.FromMinutes(30);
+                x.JwtExpiresAfter = TimeSpan.FromMinutes(20);
             })
             .AddSingleton<IJwtGenerator, DefaultJwtGenerator>()
             .AddMemoryCache()
