@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
 
-public record PathItem(JsonTokenType TokenType, string? PropertyName)
+public record PathItem(JsonTokenType TokenType, string? PropertyName, PathItem? ParentPathItem = null)
 {
     public IReadOnlyDictionary<string, string> Properties => _properties;
 
@@ -13,15 +13,18 @@ public record PathItem(JsonTokenType TokenType, string? PropertyName)
 
     public void AddUsefulProperty(ReadOnlySpan<byte> property, ReadOnlySpan<byte> value)
     {
-        if (
-            property.SequenceEqual("tags"u8)
-            || property.SequenceEqual("name"u8)
-        )
+        if (property.SequenceEqual("name"u8))
         {
             var propertyString = Encoding.UTF8.GetString(property.ToArray());
             var propertyValue = Encoding.UTF8.GetString(value.ToArray());
 
             _properties.Add(propertyString, propertyValue);
+        }
+        else if (ParentPathItem != null && PropertyName == "tags")
+        {
+            var propertyValue = Encoding.UTF8.GetString(value.ToArray());
+
+            ParentPathItem._properties.Add(PropertyName, propertyValue);
         }
     }
 

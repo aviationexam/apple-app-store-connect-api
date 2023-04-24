@@ -13,14 +13,16 @@ public static class PathItemStackExtensions
         ref ReadOnlySpan<byte> lastProperty
     )
     {
+        var parent = path.Count > 0 ? path.Peek() : null;
+
         if (!lastProperty.IsEmpty)
         {
-            path.Push(new PathItem(tokenType, Encoding.UTF8.GetString(lastProperty.ToArray())));
+            path.Push(new PathItem(tokenType, Encoding.UTF8.GetString(lastProperty.ToArray()), parent));
             lastProperty = null;
         }
         else
         {
-            path.Push(new PathItem(tokenType, null));
+            path.Push(new PathItem(tokenType, null, parent));
         }
     }
 }
