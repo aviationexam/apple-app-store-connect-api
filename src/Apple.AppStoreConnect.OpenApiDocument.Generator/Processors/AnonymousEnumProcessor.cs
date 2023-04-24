@@ -34,7 +34,11 @@ public static class AnonymousEnumProcessor
         {
             var jsonReaderClone = jsonReader;
 
-            if (TryReadInner(ref jsonReaderClone, jsonWriter, context))
+            if (
+                path.ElementAt(0).Properties.TryGetValue("name", out var name)
+                && path.ElementAt(2).Properties.TryGetValue("tags", out var tag)
+                && TryReadInner(name, tag, ref jsonReaderClone, jsonWriter, context)
+            )
             {
                 jsonWriter.WriteNullValue();
 
@@ -53,6 +57,7 @@ public static class AnonymousEnumProcessor
     }
 
     private static bool TryReadInner(
+        string tag, string name,
         ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter,
         TransposeContext context
     )
@@ -186,7 +191,7 @@ public static class AnonymousEnumProcessor
             return false;
         }
 
-        var reference = context.GetEnumComponentReference(enumValues);
+        var reference = context.GetEnumComponentReference(tag, name.AsSpan(), enumValues);
 
         /*
             var enums = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
