@@ -76,6 +76,8 @@ public static class JsonIterator
                         throw new Exception();
                     }
 
+                    path.Peek().AddUsefulProperty(lastProperty, jsonReader.ValueSpan);
+
                     jsonWriter.WriteStringValue(jsonReader.ValueSpan);
                     break;
                 case JsonTokenType.Number:
