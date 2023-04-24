@@ -74,12 +74,10 @@ public static class AnonymousEnumProcessor
             switch (tokenType)
             {
                 case JsonTokenType.StartObject:
-                    innerDepth++;
                     path.WritePathItem(tokenType, ref lastProperty);
 
                     break;
                 case JsonTokenType.EndObject:
-                    innerDepth--;
                     if (path.Count > 0)
                     {
                         path.Pop();
@@ -87,12 +85,10 @@ public static class AnonymousEnumProcessor
 
                     break;
                 case JsonTokenType.StartArray:
-                    innerDepth++;
                     path.WritePathItem(tokenType, ref lastProperty);
 
                     break;
                 case JsonTokenType.EndArray:
-                    innerDepth--;
                     if (path.Count > 0)
                     {
                         path.Pop();
@@ -124,17 +120,50 @@ public static class AnonymousEnumProcessor
                     }
 
                     if (
-                        innerDepth == 1
-                        && !lastProperty.IsEmpty
+                        !lastProperty.IsEmpty
                         && lastProperty.SequenceEqual("type"u8)
-                        && !jsonReader.ValueSpan.SequenceEqual("array"u8)
                     )
                     {
-                        return false;
+                        if (path.Count == 1)
+                        {
+                            if (jsonReader.ValueSpan.SequenceEqual("array"u8))
+                            {
+                                arrayTypeCheck = true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                        else if (
+                            path.Count == 2
+                            && path.SequenceEqual(new PathItem[]
+                            {
+                                new(JsonTokenType.StartObject, "items"),
+                                new(JsonTokenType.StartObject, null),
+                            })
+                        )
+                        {
+                            if (jsonReader.ValueSpan.SequenceEqual("string"u8))
+                            {
+                                arrayItemTypeCheck = true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    else if (
+                        !lastProperty.IsEmpty
+                        && lastProperty.SequenceEqual("enum"u8)
+                    )
+                    {
                     }
 
                     var value = Encoding.UTF8.GetString(jsonReader.ValueSpan.ToArray());
-                    innerJson.Append('"' + value + '"');
+
+                    enumValues.Add(value);
 
                     break;
                 case JsonTokenType.Number:
@@ -146,7 +175,7 @@ public static class AnonymousEnumProcessor
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (innerDepth == 0)
+            if (path.Count == 0)
             {
                 break;
             }
