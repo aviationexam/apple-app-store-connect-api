@@ -34,7 +34,7 @@ public static class AnonymousEnumProcessor
         {
             var jsonReaderClone = jsonReader;
 
-            if (TryReadInner(ref jsonReaderClone, jsonWriter))
+            if (TryReadInner(ref jsonReaderClone, jsonWriter, context))
             {
                 jsonWriter.WriteNullValue();
 
@@ -53,7 +53,8 @@ public static class AnonymousEnumProcessor
     }
 
     private static bool TryReadInner(
-        ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter
+        ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter,
+        TransposeContext context
     )
     {
         var innerJson = new StringBuilder();
@@ -61,7 +62,11 @@ public static class AnonymousEnumProcessor
         var path = new Stack<PathItem>();
         ReadOnlySpan<byte> lastProperty = default;
 
-        var innerDepth = 0;
+        var arrayTypeCheck = false;
+        var arrayItemTypeCheck = false;
+
+        var enumValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
         while (jsonReader.Read())
         {
             var tokenType = jsonReader.TokenType;
@@ -133,16 +138,9 @@ public static class AnonymousEnumProcessor
 
                     break;
                 case JsonTokenType.Number:
-                    innerJson.Append(jsonReader.GetInt32());
-                    break;
                 case JsonTokenType.True:
-                    innerJson.Append("true");
-                    break;
                 case JsonTokenType.False:
-                    innerJson.Append("false");
-                    break;
                 case JsonTokenType.Null:
-                    innerJson.Append("null");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -153,6 +151,13 @@ public static class AnonymousEnumProcessor
                 break;
             }
         }
+
+        if (!arrayTypeCheck || !arrayItemTypeCheck)
+        {
+            return false;
+        }
+
+        var reference = context.GetEnumComponentReference(enumValues);
 
         /*
             var enums = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
