@@ -22,7 +22,7 @@ public static class JsonIterator
             switch (tokenType)
             {
                 case JsonTokenType.StartObject:
-                    WritePathItem(tokenType, path, ref lastProperty);
+                    path.WritePathItem(tokenType, ref lastProperty);
 
                     jsonWriter.WriteStartObject();
                     break;
@@ -35,7 +35,7 @@ public static class JsonIterator
                     jsonWriter.WriteEndObject();
                     break;
                 case JsonTokenType.StartArray:
-                    WritePathItem(tokenType, path, ref lastProperty);
+                    path.WritePathItem(tokenType, ref lastProperty);
 
                     jsonWriter.WriteStartArray();
                     break;
@@ -91,22 +91,6 @@ public static class JsonIterator
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-    }
-
-    private static void WritePathItem(
-        JsonTokenType tokenType,
-        Stack<PathItem> path, ref ReadOnlySpan<byte> lastProperty
-    )
-    {
-        if (!lastProperty.IsEmpty)
-        {
-            path.Push(new PathItem(tokenType, Encoding.UTF8.GetString(lastProperty.ToArray())));
-            lastProperty = null;
-        }
-        else
-        {
-            path.Push(new PathItem(tokenType, null));
         }
     }
 
