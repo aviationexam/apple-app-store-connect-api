@@ -26,10 +26,6 @@ public static partial class AppStoreConnectExtensions
         IReadOnlyDictionary<Type, Action<IHttpClientBuilder>> httpClientConfigurations
     )
     {
-        serviceCollection
-            .AddHttpClient()
-            .AddSingleton<IJwtGenerator, DefaultJwtGenerator>();
-
         optionsBuilder(serviceCollection
             .AddOptions<AppleAuthenticationOptions>()
         );
@@ -41,8 +37,10 @@ public static partial class AppStoreConnectExtensions
             .Singleton<IValidateOptions<AppleAuthenticationOptions>, AppleAuthenticationOptionsValidate>()
         );
 
+        serviceCollection.TryAddSingleton<IJwtGenerator, DefaultJwtGenerator>();
         serviceCollection.TryAddSingleton<IHttpClientConfiguration, DefaultHttpClientConfiguration>();
 
+        serviceCollection.AddHttpClient();
         GetHttpClientDeclaration(serviceCollection, httpClientConfigurations);
 
         return serviceCollection;
