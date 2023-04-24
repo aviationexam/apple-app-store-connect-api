@@ -16,6 +16,7 @@ public sealed class DefaultHttpClientConfiguration : IHttpClientConfiguration
     }
 
     public async Task ConfigureHttpRequestMessageAsync(
+        IAppStoreConnectClient httpClient,
         HttpRequestMessage httpRequestMessage,
         CancellationToken cancellationToken
     )

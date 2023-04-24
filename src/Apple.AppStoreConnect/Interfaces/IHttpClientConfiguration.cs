@@ -7,6 +7,7 @@ namespace Apple.AppStoreConnect.Interfaces;
 public interface IHttpClientConfiguration
 {
     Task ConfigureHttpRequestMessageAsync(
+        IAppStoreConnectClient httpClient,
         HttpRequestMessage httpRequestMessage,
         CancellationToken cancellationToken
     );

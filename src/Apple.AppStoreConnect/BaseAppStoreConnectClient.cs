@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Apple.AppStoreConnect;
 
-public abstract class BaseAppStoreConnectClient
+public abstract class BaseAppStoreConnectClient : IAppStoreConnectClient
 {
     private readonly IHttpClientConfiguration _httpClientConfiguration;
 
@@ -18,7 +18,11 @@ public abstract class BaseAppStoreConnectClient
     {
         var httpRequestMessage = new HttpRequestMessage();
 
-        await _httpClientConfiguration.ConfigureHttpRequestMessageAsync(httpRequestMessage, cancellationToken);
+        await _httpClientConfiguration.ConfigureHttpRequestMessageAsync(
+            this,
+            httpRequestMessage,
+            cancellationToken
+        );
 
         return httpRequestMessage;
     }
