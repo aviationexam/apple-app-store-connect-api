@@ -30,9 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="AuthKey_testKeyId.p8">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Update="AuthKey_testKeyId.p8" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
