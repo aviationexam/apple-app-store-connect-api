@@ -11,12 +11,12 @@
   "codeGenerators": {
     "openApiToCSharpClient": {
       "clientBaseClass": "Apple.AppStoreConnect.BaseAppStoreConnectClient",
-      "configurationClass": null,
+      "configurationClass": "Apple.AppStoreConnect.Interfaces.IHttpClientConfiguration",
       "generateClientClasses": true,
       "generateClientInterfaces": true,
       "clientBaseInterface": "Apple.AppStoreConnect.Interfaces.IAppStoreConnectClient",
       "injectHttpClient": true,
-      "disposeHttpClient": true,
+      "disposeHttpClient": false,
       "protectedMethods": [],
       "generateExceptionClasses": true,
       "exceptionClass": "ApiException",

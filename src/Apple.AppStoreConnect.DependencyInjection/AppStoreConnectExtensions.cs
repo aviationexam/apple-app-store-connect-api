@@ -41,6 +41,8 @@ public static partial class AppStoreConnectExtensions
             .Singleton<IValidateOptions<AppleAuthenticationOptions>, AppleAuthenticationOptionsValidate>()
         );
 
+        serviceCollection.TryAddSingleton<IHttpClientConfiguration, DefaultHttpClientConfiguration>();
+
         GetHttpClientDeclaration(serviceCollection, httpClientConfigurations);
 
         return serviceCollection;
