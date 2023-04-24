@@ -1,7 +1,7 @@
 using Apple.AppStoreConnect.OpenApiDocument.Generator.Processors;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
@@ -14,6 +14,7 @@ public static class JsonIterator
     {
         var path = new Stack<PathItem>();
         ReadOnlySpan<byte> lastProperty = null;
+        var context = new TransposeContext();
 
         while (jsonReader.Read())
         {
@@ -59,7 +60,8 @@ public static class JsonIterator
 
                     TryProcessItems(
                         path, lastProperty,
-                        ref jsonReader, jsonWriter
+                        ref jsonReader, jsonWriter,
+                        context
                     );
                     break;
 
@@ -94,13 +96,20 @@ public static class JsonIterator
         }
     }
 
+    [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Local")]
     private static bool TryProcessItems(
         IReadOnlyCollection<PathItem> path,
         ReadOnlySpan<byte> lastProperty,
-        ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter
+        ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter,
+        TransposeContext context
     ) => SubscriptionStatusUrlVersionProcessor.TryProcessItem(
         path,
         lastProperty,
         ref jsonReader, jsonWriter
+    ) || AnonymousEnumProcessor.TryProcessItem(
+        path,
+        lastProperty,
+        ref jsonReader, jsonWriter,
+        context
     );
 }
