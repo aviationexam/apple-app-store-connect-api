@@ -25,10 +25,11 @@ public class DefaultJwtGeneratorTest
                 x.KeyId = "TestKeyId";
                 x.IssuerId = "9E35F3F8-D597-45D3-84FE-5F8A386C070B";
                 x.TokenAudience = "appstoreconnect-v1";
-                x.PrivateKey = static async (keyId, cancellationToken) =>
+                x.PrivateKey = async (keyId, cancellationToken) =>
                 {
-                    var physicalFileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory());
-                    var fileInfo = physicalFileProvider.GetFileInfo($"AuthKey_{keyId}.p8");
+                    var type = GetType();
+                    var fileProvider = new EmbeddedFileProvider(type.Assembly, type.Namespace);
+                    var fileInfo = fileProvider.GetFileInfo($"AuthKey_{keyId}.p8");
                     await using var stream = fileInfo.CreateReadStream();
                     using var reader = new StreamReader(stream);
 
@@ -38,13 +39,11 @@ public class DefaultJwtGeneratorTest
             })
             .AddSingleton<IJwtGenerator, DefaultJwtGenerator>()
             .AddMemoryCache()
-            .AddLogging(loggingBuilder =>
-            {
-                loggingBuilder
-                    .AddFilter("Apple.AppStoreConnect", LogLevel.Trace)
-                    .AddConsole()
-                    .AddDebug();
-            })
+            .AddLogging(loggingBuilder => loggingBuilder
+                .AddFilter("Apple.AppStoreConnect", LogLevel.Trace)
+                .AddConsole()
+                .AddDebug()
+            )
             .AddSingleton<ISystemClock, SystemClock>()
             .AddSingleton<CryptoProviderFactory>(_ => CryptoProviderFactory.Default);
 
