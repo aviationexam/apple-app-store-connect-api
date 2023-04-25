@@ -37,7 +37,8 @@ public static class AnonymousEnumProcessor
             if (
                 path.ElementAt(0).Properties.TryGetValue("name", out var name)
                 && path.ElementAt(2).Properties.TryGetValue("tags", out var tag)
-                && TryReadInner(path, tag, name, ref jsonReaderClone, jsonWriter, context)
+                && path.ElementAt(2).Properties.TryGetValue("operationId", out var operationId)
+                && TryReadInner(path, tag, name, operationId, ref jsonReaderClone, jsonWriter, context)
             )
             {
                 var innerTokenStartIndex = jsonReaderClone.TokenStartIndex;
@@ -99,7 +100,7 @@ public static class AnonymousEnumProcessor
 
     private static bool TryReadInner(
         IReadOnlyCollection<PathItem> parentPath,
-        string tag, string name,
+        string tag, string name, string operationId,
         ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter,
         TransposeContext context
     )
@@ -235,7 +236,12 @@ public static class AnonymousEnumProcessor
             return false;
         }
 
-        var reference = context.GetEnumComponentReference(parentPath, tag, name.AsSpan(), enumValues);
+        var reference = context.GetEnumComponentReference(
+            parentPath,
+            tag, name.AsSpan(),
+            operationId.AsSpan(),
+            enumValues
+        );
 
         jsonWriter.WriteStartObject();
 

@@ -14,6 +14,7 @@ public sealed class TransposeContext
         IReadOnlyCollection<PathItem> parentPath,
         string tag,
         ReadOnlySpan<char> parameterName,
+        ReadOnlySpan<char> operationId,
         IReadOnlyCollection<string> enumValues
     )
     {
@@ -33,14 +34,87 @@ public sealed class TransposeContext
                 httpMethod = httpMethodSpan.ToString();
             }
 
-            var name = $"{tag}{httpMethod}{componentName}";
-            componentSchema = VerifyComponentSchema(name, enumValues);
-            var i = 2;
-            while (componentSchema is null)
+            componentSchema = VerifyComponentSchema($"{tag}{httpMethod}{componentName}", enumValues);
+        }
+
+        if (
+            componentSchema is null
+            && operationId.IndexOf('-') is var dashIndex and > 0
+        )
+        {
+            dashIndex++;
+            operationId = operationId[dashIndex..];
+            dashIndex = operationId.IndexOf('-');
+
+            ReadOnlySpan<char> operationSuffix;
+            if (dashIndex > 0)
             {
-                componentSchema = VerifyComponentSchema($"{name}{i}", enumValues);
-                i++;
+                operationSuffix = operationId[(dashIndex + 1)..];
+                operationId = operationId[..dashIndex];
             }
+            else
+            {
+                operationSuffix = operationId;
+                operationId = default;
+            }
+
+            if (
+                operationId.Length > 0
+                && char.IsLower(operationId[0])
+            )
+            {
+                var operationIdSpan = operationId.ToArray().AsSpan();
+                operationIdSpan[0] = char.ToUpperInvariant(operationIdSpan[0]);
+
+                operationId = operationIdSpan;
+            }
+
+            if (
+                !operationId.IsEmpty
+                && operationId.Length > tag.Length
+                && !operationId.SequenceEqual("AppPricePoints".AsSpan())
+            )
+            {
+                if (operationId[..(tag.Length - 1)].SequenceEqual(tag.AsSpan()[..^1]))
+                {
+                    operationId = operationId[(tag.Length - 1)..];
+                }
+            }
+
+            var i = 0;
+            Span<char> operationName = new char[operationSuffix.Length];
+            while (operationSuffix.IndexOf('_') is var underscoreIndex and > 0)
+            {
+                var token = operationSuffix[..underscoreIndex];
+                token.CopyTo(operationName[i..]);
+
+                if (char.IsLower(operationName[i]))
+                {
+                    operationName[i] = char.ToUpperInvariant(operationName[i]);
+                }
+
+                i += token.Length;
+                operationSuffix = operationSuffix[(underscoreIndex + 1)..];
+            }
+
+            operationSuffix.CopyTo(operationName[i..]);
+            if (char.IsLower(operationName[i]))
+            {
+                operationName[i] = char.ToUpperInvariant(operationName[i]);
+            }
+
+            i += operationSuffix.Length;
+            operationName = operationName[..i];
+
+            componentSchema = VerifyComponentSchema(
+                $"{tag}{operationId.ToString()}{operationName.ToString()}{componentName}",
+                enumValues
+            );
+        }
+
+        if (componentSchema is null)
+        {
+            throw new NullReferenceException($"{nameof(componentSchema)} should not be null");
         }
 
         return $"#/components/schemas/{componentSchema}";
