@@ -21,6 +21,12 @@ using Apple.AppStoreConnect.DependencyInjection;
 
 IServiceCollection serviceCollection;
 
+// you may need to add these dependencies
+using Microsoft.Extensions.Internal;
+serviceCollection
+  .AddMemoryCache()
+  .AddSingleton<ISystemClock, SystemClock>();
+
 serviceCollection.AddAppleAppStoreConnect(optionsBuilder => optionsBuilder
   .Configure()
   .ValidateDataAnnotations()
