@@ -42,6 +42,7 @@ public static class JsonIterator
                     );
 
                     jsonWriter.WriteEndObject();
+                    lastProperty = default;
                     break;
                 case JsonTokenType.StartArray:
                     path.WritePathItem(tokenType, ref lastProperty);
@@ -55,6 +56,7 @@ public static class JsonIterator
                     }
 
                     jsonWriter.WriteEndArray();
+                    lastProperty = default;
                     break;
                 case JsonTokenType.PropertyName:
                     if (jsonReader.HasValueSequence)
