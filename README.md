@@ -22,11 +22,13 @@ using Apple.AppStoreConnect.DependencyInjection;
 IServiceCollection serviceCollection;
 
 // you may need to add these dependencies
+serviceCollection.AddMemoryCache();
 using Microsoft.Extensions.Internal;
-serviceCollection
-  .AddMemoryCache()
-  .AddSingleton<ISystemClock, SystemClock>();
+serviceCollection.TryAddSingleton<ISystemClock, SystemClock>();
+using Microsoft.IdentityModel.Tokens;
+serviceCollection.TryAddSingleton<CryptoProviderFactory>(_ => CryptoProviderFactory.Default);
 
+// configure AppStoreConnect services
 serviceCollection.AddAppleAppStoreConnect(optionsBuilder => optionsBuilder
   .Configure()
   .ValidateDataAnnotations()
