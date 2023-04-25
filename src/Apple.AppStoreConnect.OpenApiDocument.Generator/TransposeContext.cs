@@ -33,7 +33,14 @@ public sealed class TransposeContext
                 httpMethod = httpMethodSpan.ToString();
             }
 
-            componentSchema = VerifyComponentSchema($"{tag}{httpMethod}{componentName}", enumValues);
+            var name = $"{tag}{httpMethod}{componentName}";
+            componentSchema = VerifyComponentSchema(name, enumValues);
+            var i = 2;
+            while (componentSchema is null)
+            {
+                componentSchema = VerifyComponentSchema($"{name}{i}", enumValues);
+                i++;
+            }
         }
 
         return $"#/components/schemas/{componentSchema}";
