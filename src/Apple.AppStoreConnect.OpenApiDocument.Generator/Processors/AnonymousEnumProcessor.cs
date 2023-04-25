@@ -37,11 +37,9 @@ public static class AnonymousEnumProcessor
             if (
                 path.ElementAt(0).Properties.TryGetValue("name", out var name)
                 && path.ElementAt(2).Properties.TryGetValue("tags", out var tag)
-                && TryReadInner(name, tag, ref jsonReaderClone, jsonWriter, context)
+                && TryReadInner(path, tag, name, ref jsonReaderClone, jsonWriter, context)
             )
             {
-                jsonWriter.WriteNullValue();
-
                 var innerTokenStartIndex = jsonReaderClone.TokenStartIndex;
 
                 while (innerTokenStartIndex > jsonReader.TokenStartIndex && jsonReader.Read())
@@ -56,7 +54,51 @@ public static class AnonymousEnumProcessor
         return false;
     }
 
+    public static bool TryWriteAdditional(
+        PathItem? pathItem,
+        IReadOnlyCollection<PathItem> path,
+        Utf8JsonWriter jsonWriter,
+        TransposeContext context
+    )
+    {
+        if (
+            pathItem == new PathItem(JsonTokenType.StartObject, "schemas")
+            && path.SequenceEqual(new PathItem[]
+            {
+                new(JsonTokenType.StartObject, "components"),
+                new(JsonTokenType.StartObject, null),
+            })
+        )
+        {
+            foreach (var enumComponentValue in context.EnumComponentValues)
+            {
+                jsonWriter.WritePropertyName(enumComponentValue.Key);
+                jsonWriter.WriteStartObject();
+
+                jsonWriter.WritePropertyName("type"u8);
+                jsonWriter.WriteStringValue("string"u8);
+
+                jsonWriter.WritePropertyName("enum"u8);
+                jsonWriter.WriteStartArray();
+
+                foreach (var enumValue in enumComponentValue.Value)
+                {
+                    jsonWriter.WriteStringValue(enumValue);
+                }
+
+                jsonWriter.WriteEndArray();
+
+                jsonWriter.WriteEndObject();
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     private static bool TryReadInner(
+        IReadOnlyCollection<PathItem> parentPath,
         string tag, string name,
         ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter,
         TransposeContext context
@@ -191,7 +233,20 @@ public static class AnonymousEnumProcessor
             return false;
         }
 
-        var reference = context.GetEnumComponentReference(tag, name.AsSpan(), enumValues);
+        var reference = context.GetEnumComponentReference(parentPath, tag, name.AsSpan(), enumValues);
+
+        jsonWriter.WriteStartObject();
+
+        jsonWriter.WritePropertyName("type"u8);
+        jsonWriter.WriteStringValue("array"u8);
+
+        jsonWriter.WritePropertyName("items"u8);
+        jsonWriter.WriteStartObject();
+        jsonWriter.WritePropertyName("$ref"u8);
+        jsonWriter.WriteStringValue(reference);
+        jsonWriter.WriteEndObject();
+
+        jsonWriter.WriteEndObject();
 
         /*
             var enums = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

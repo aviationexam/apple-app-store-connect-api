@@ -28,10 +28,18 @@ public static class JsonIterator
                     jsonWriter.WriteStartObject();
                     break;
                 case JsonTokenType.EndObject:
+                    PathItem? pathItem = null;
                     if (path.Count > 0)
                     {
-                        path.Pop();
+                        pathItem = path.Pop();
                     }
+
+                    TryWriteAdditional(
+                        pathItem,
+                        path,
+                        jsonWriter,
+                        context
+                    );
 
                     jsonWriter.WriteEndObject();
                     break;
@@ -112,6 +120,19 @@ public static class JsonIterator
         path,
         lastProperty,
         ref jsonReader, jsonWriter,
+        context
+    );
+
+    [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Local")]
+    private static bool TryWriteAdditional(
+        PathItem? pathItem,
+        IReadOnlyCollection<PathItem> path,
+        Utf8JsonWriter jsonWriter,
+        TransposeContext context
+    ) => AnonymousEnumProcessor.TryWriteAdditional(
+        pathItem,
+        path,
+        jsonWriter,
         context
     );
 }
