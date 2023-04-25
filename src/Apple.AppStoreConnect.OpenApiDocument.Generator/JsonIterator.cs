@@ -1,7 +1,7 @@
 using Apple.AppStoreConnect.OpenApiDocument.Generator.Processors;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
@@ -14,6 +14,7 @@ public static class JsonIterator
     {
         var path = new Stack<PathItem>();
         ReadOnlySpan<byte> lastProperty = null;
+        var context = new TransposeContext();
 
         while (jsonReader.Read())
         {
@@ -22,20 +23,29 @@ public static class JsonIterator
             switch (tokenType)
             {
                 case JsonTokenType.StartObject:
-                    WritePathItem(tokenType, path, ref lastProperty);
+                    path.WritePathItem(tokenType, ref lastProperty);
 
                     jsonWriter.WriteStartObject();
                     break;
                 case JsonTokenType.EndObject:
+                    PathItem? pathItem = null;
                     if (path.Count > 0)
                     {
-                        path.Pop();
+                        pathItem = path.Pop();
                     }
 
+                    TryWriteAdditional(
+                        pathItem,
+                        path,
+                        jsonWriter,
+                        context
+                    );
+
                     jsonWriter.WriteEndObject();
+                    lastProperty = default;
                     break;
                 case JsonTokenType.StartArray:
-                    WritePathItem(tokenType, path, ref lastProperty);
+                    path.WritePathItem(tokenType, ref lastProperty);
 
                     jsonWriter.WriteStartArray();
                     break;
@@ -46,6 +56,7 @@ public static class JsonIterator
                     }
 
                     jsonWriter.WriteEndArray();
+                    lastProperty = default;
                     break;
                 case JsonTokenType.PropertyName:
                     if (jsonReader.HasValueSequence)
@@ -59,7 +70,8 @@ public static class JsonIterator
 
                     TryProcessItems(
                         path, lastProperty,
-                        ref jsonReader, jsonWriter
+                        ref jsonReader, jsonWriter,
+                        context
                     );
                     break;
 
@@ -73,6 +85,8 @@ public static class JsonIterator
                     {
                         throw new Exception();
                     }
+
+                    path.Peek().AddUsefulProperty(lastProperty, jsonReader.ValueSpan);
 
                     jsonWriter.WriteStringValue(jsonReader.ValueSpan);
                     break;
@@ -94,29 +108,33 @@ public static class JsonIterator
         }
     }
 
-    private static void WritePathItem(
-        JsonTokenType tokenType,
-        Stack<PathItem> path, ref ReadOnlySpan<byte> lastProperty
-    )
-    {
-        if (!lastProperty.IsEmpty)
-        {
-            path.Push(new PathItem(tokenType, Encoding.UTF8.GetString(lastProperty.ToArray())));
-            lastProperty = null;
-        }
-        else
-        {
-            path.Push(new PathItem(tokenType, null));
-        }
-    }
-
+    [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Local")]
     private static bool TryProcessItems(
         IReadOnlyCollection<PathItem> path,
         ReadOnlySpan<byte> lastProperty,
-        ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter
+        ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter,
+        TransposeContext context
     ) => SubscriptionStatusUrlVersionProcessor.TryProcessItem(
         path,
         lastProperty,
         ref jsonReader, jsonWriter
+    ) || AnonymousEnumProcessor.TryProcessItem(
+        path,
+        lastProperty,
+        ref jsonReader, jsonWriter,
+        context
+    );
+
+    [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Local")]
+    private static bool TryWriteAdditional(
+        PathItem? pathItem,
+        IReadOnlyCollection<PathItem> path,
+        Utf8JsonWriter jsonWriter,
+        TransposeContext context
+    ) => AnonymousEnumProcessor.TryWriteAdditional(
+        pathItem,
+        path,
+        jsonWriter,
+        context
     );
 }
