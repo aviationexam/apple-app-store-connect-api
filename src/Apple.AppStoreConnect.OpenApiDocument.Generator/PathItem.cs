@@ -13,7 +13,10 @@ public record PathItem(JsonTokenType TokenType, string? PropertyName, PathItem? 
 
     public void AddUsefulProperty(ReadOnlySpan<byte> property, ReadOnlySpan<byte> value)
     {
-        if (property.SequenceEqual("name"u8))
+        if (
+            property.SequenceEqual("name"u8)
+            || property.SequenceEqual("operationId"u8)
+        )
         {
             var propertyString = Encoding.UTF8.GetString(property.ToArray());
             var propertyValue = Encoding.UTF8.GetString(value.ToArray());
