@@ -202,15 +202,17 @@ public static class AnonymousEnumProcessor
                         }
                     }
                     else if (
-                        !lastProperty.IsEmpty
-                        && lastProperty.SequenceEqual("enum"u8)
+                        lastProperty.IsEmpty
+                        && path.SequenceEqual(new PathItem[]
+                        {
+                            new(JsonTokenType.StartArray, "enum"),
+                            new(JsonTokenType.StartObject, "items"),
+                            new(JsonTokenType.StartObject, null),
+                        })
                     )
                     {
+                        enumValues.Add(Encoding.UTF8.GetString(jsonReader.ValueSpan.ToArray()));
                     }
-
-                    var value = Encoding.UTF8.GetString(jsonReader.ValueSpan.ToArray());
-
-                    enumValues.Add(value);
 
                     break;
                 case JsonTokenType.Number:
@@ -247,40 +249,6 @@ public static class AnonymousEnumProcessor
         jsonWriter.WriteEndObject();
 
         jsonWriter.WriteEndObject();
-
-        /*
-            var enums = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            while (jsonReader.Read())
-            {
-                var tokenType = jsonReader.TokenType;
-
-                if (tokenType == JsonTokenType.StartArray)
-                {
-                    jsonWriter.WriteStartArray();
-                }
-                else if (tokenType == JsonTokenType.String)
-                {
-                    enums.Add(jsonReader.GetString()!);
-                }
-                else if (tokenType == JsonTokenType.EndArray)
-                {
-                    var reference = context.GetEnumComponentReference(enums);
-
-                    foreach (var enumValue in enums)
-                    {
-                        jsonWriter.WriteStringValue(enumValue);
-                    }
-
-                    jsonWriter.WriteEndArray();
-                    break;
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException(nameof(tokenType), tokenType, "");
-                }
-            }
-            */
 
         return true;
     }
