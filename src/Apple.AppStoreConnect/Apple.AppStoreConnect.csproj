@@ -22,7 +22,6 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
     <PackageReference Include="H.NSwag.Generator" Version="13.18.2.71" PrivateAssets="All" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
