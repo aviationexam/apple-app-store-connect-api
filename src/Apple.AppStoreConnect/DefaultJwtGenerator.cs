@@ -82,7 +82,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
     )
     {
         var now = _clock.UtcNow;
-        var expiresAt = now.Add(appleAuthenticationOptions.JwtExpiresAfter).UtcDateTime;
+        var expiresAt = now.Add(appleAuthenticationOptions.JwtExpiresAfter);
 
         Log.GeneratingNewJwtToken(_logger, appleAuthenticationOptions.KeyId, expiresAt);
 
@@ -90,7 +90,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
         {
             Audience = appleAuthenticationOptions.TokenAudience,
             IssuedAt = now.UtcDateTime,
-            Expires = expiresAt,
+            Expires = expiresAt.UtcDateTime,
             Issuer = appleAuthenticationOptions.IssuerId,
         };
 
@@ -162,7 +162,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
         internal static partial void GeneratingNewJwtToken(
             ILogger logger,
             string keyId,
-            DateTime expiresAt
+            DateTimeOffset expiresAt
         );
 
         [LoggerMessage(
