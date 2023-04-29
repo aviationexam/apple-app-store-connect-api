@@ -17,7 +17,8 @@ public static class AnonymousAttributesProcessor
     {
         if (
             (
-                lastProperty.SequenceEqual("attributes"u8)
+                lastProperty.SequenceEqual("data"u8)
+                || lastProperty.SequenceEqual("attributes"u8)
                 || lastProperty.SequenceEqual("relationships"u8)
             )
             && path.Count == 5
@@ -51,32 +52,18 @@ public static class AnonymousAttributesProcessor
                 return false;
             }
 
-            var jsonDocument = JsonDocument.ParseValue(ref jsonReader);
-
-            var property = jsonDocument.RootElement.ToString();
-
             var component = path.ElementAt(1)!;
+            var lastPropertySpan = Encoding.UTF8.GetString(lastProperty.ToArray()).AsSpan();
 
-            var componentNameLength = component.PropertyName!.Length;
+            using var jsonDocument = JsonDocument.ParseValue(ref jsonReader);
+            var jsonDocumentContent = jsonDocument.RootElement;
 
-            var titleSpan = new char[
-                componentNameLength
-                + lastProperty.Length
-            ].AsSpan();
-
-            component.PropertyName.AsSpan().CopyTo(titleSpan);
-            Encoding.UTF8.GetString(lastProperty.ToArray())
-                .AsSpan()
-                .CopyTo(titleSpan[componentNameLength..]);
-
-            if (char.IsLower(titleSpan[componentNameLength]))
-            {
-                titleSpan[componentNameLength] = char.ToUpperInvariant(titleSpan[componentNameLength]);
-            }
-
-            var referenceName = context.AddComponent(
-                titleSpan.ToString(),
-                property
+            var referenceName = ProcessItemInternal(
+                component.PropertyName!.AsSpan(),
+                lastPropertySpan,
+                ref jsonDocumentContent,
+                jsonWriter,
+                context
             );
 
             jsonWriter.WriteStartObject();
@@ -86,6 +73,58 @@ public static class AnonymousAttributesProcessor
         }
 
         return false;
+    }
+
+    private static string ProcessItemInternal(
+        ReadOnlySpan<char> typePrefix,
+        ReadOnlySpan<char> lastPropertySpan,
+        ref JsonElement jsonDocumentContent,
+        Utf8JsonWriter jsonWriter,
+        TransposeContext context
+    )
+    {
+        var componentNameLength = typePrefix.Length;
+
+        var titleSpan = new char[
+            componentNameLength
+            + lastPropertySpan.Length
+        ].AsSpan();
+
+        typePrefix.CopyTo(titleSpan);
+        lastPropertySpan.CopyTo(titleSpan[componentNameLength..]);
+
+        if (char.IsLower(titleSpan[componentNameLength]))
+        {
+            titleSpan[componentNameLength] = char.ToUpperInvariant(titleSpan[componentNameLength]);
+        }
+
+        if (jsonDocumentContent.TryGetProperty("properties"u8, out var innerProperties))
+        {
+            foreach (var innerProperty in innerProperties.EnumerateObject())
+            {
+                if (
+                    innerProperty.Name
+                        is "attributes"
+                        or "relationships"
+                    && innerProperty.Value.TryGetProperty("properties"u8, out var subProperty))
+                {
+                    var referenceName = ProcessItemInternal(
+                        titleSpan,
+                        innerProperty.Name.AsSpan(),
+                        ref subProperty,
+                        jsonWriter,
+                        context
+                    );
+                }
+            }
+        }
+
+        var property = jsonDocumentContent.ToString();
+
+        return context.AddComponent(
+            titleSpan.ToString(),
+            property
+        );
     }
 
     public static bool TryWriteAdditional(
