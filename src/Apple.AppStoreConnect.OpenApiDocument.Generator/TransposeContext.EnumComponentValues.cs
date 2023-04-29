@@ -4,11 +4,13 @@ using System.Linq;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
 
-public sealed class TransposeContext
+public sealed partial class TransposeContext
 {
     public IReadOnlyDictionary<string, IReadOnlyCollection<string>> EnumComponentValues => _enumComponentValues;
 
     private readonly Dictionary<string, IReadOnlyCollection<string>> _enumComponentValues = new();
+
+    public string GetReferenceName(string componentSchema) => $"#/components/schemas/{componentSchema}";
 
     public string GetEnumComponentReference(
         IReadOnlyCollection<PathItem> parentPath,
@@ -117,7 +119,7 @@ public sealed class TransposeContext
             throw new NullReferenceException($"{nameof(componentSchema)} should not be null");
         }
 
-        return $"#/components/schemas/{componentSchema}";
+        return GetReferenceName(componentSchema);
     }
 
     private string? VerifyComponentSchema(string componentSchema, IReadOnlyCollection<string> enumValues)
