@@ -16,7 +16,10 @@ public static class AnonymousAttributesProcessor
     )
     {
         if (
-            lastProperty.SequenceEqual("attributes"u8)
+            (
+                lastProperty.SequenceEqual("attributes"u8)
+                || lastProperty.SequenceEqual("relationships"u8)
+            )
             && path.Count == 5
             && path.Take(1).SequenceEqual(new PathItem[]
             {
@@ -31,6 +34,23 @@ public static class AnonymousAttributesProcessor
             })
         )
         {
+            var jsonReaderClone = jsonReader;
+
+            if (
+                !jsonReaderClone.Read()
+                || jsonReaderClone.TokenType is not JsonTokenType.StartObject
+                || !jsonReaderClone.Read()
+                || jsonReaderClone.TokenType is not JsonTokenType.PropertyName
+                || !jsonReaderClone.ValueSpan.SequenceEqual("type"u8)
+                || !jsonReaderClone.Read()
+                || jsonReaderClone.TokenType is not JsonTokenType.String
+                || !jsonReaderClone.ValueSpan.SequenceEqual("object"u8)
+            )
+            {
+                // verify there is object and not a reference
+                return false;
+            }
+
             var jsonDocument = JsonDocument.ParseValue(ref jsonReader);
 
             var property = jsonDocument.RootElement.ToString();
