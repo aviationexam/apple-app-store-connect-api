@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
 
 public sealed partial class TransposeContext
 {
-    public IReadOnlyDictionary<string, string> RenamedComponentValues => _renamedComponentValues;
+    public IReadOnlyDictionary<string, JsonNode> RenamedComponentValues => _renamedComponentValues;
 
-    private readonly Dictionary<string, string> _renamedComponentValues = new();
+    private readonly Dictionary<string, JsonNode> _renamedComponentValues = new();
 
-    public string AddComponent(string typeNameSpan, string json)
+    public string AddComponent(string typeNameSpan, JsonNode json)
     {
         if (!_renamedComponentValues.TryGetValue(typeNameSpan, out _))
         {

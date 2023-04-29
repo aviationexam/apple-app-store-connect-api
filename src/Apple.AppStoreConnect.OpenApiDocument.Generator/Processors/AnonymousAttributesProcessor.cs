@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator.Processors;
 
@@ -55,14 +56,12 @@ public static class AnonymousAttributesProcessor
             var component = path.ElementAt(1)!;
             var lastPropertySpan = Encoding.UTF8.GetString(lastProperty.ToArray()).AsSpan();
 
-            using var jsonDocument = JsonDocument.ParseValue(ref jsonReader);
-            var jsonDocumentContent = jsonDocument.RootElement;
+            var jsonNode = JsonNode.Parse(ref jsonReader) ?? throw new NullReferenceException("jsonNode");
 
             var referenceName = ProcessItemInternal(
                 component.PropertyName!.AsSpan(),
                 lastPropertySpan,
-                ref jsonDocumentContent,
-                jsonWriter,
+                jsonNode,
                 context
             );
 
@@ -78,8 +77,7 @@ public static class AnonymousAttributesProcessor
     private static string ProcessItemInternal(
         ReadOnlySpan<char> typePrefix,
         ReadOnlySpan<char> lastPropertySpan,
-        ref JsonElement jsonDocumentContent,
-        Utf8JsonWriter jsonWriter,
+        JsonNode jsonNode,
         TransposeContext context
     )
     {
@@ -98,32 +96,36 @@ public static class AnonymousAttributesProcessor
             titleSpan[componentNameLength] = char.ToUpperInvariant(titleSpan[componentNameLength]);
         }
 
-        if (jsonDocumentContent.TryGetProperty("properties"u8, out var innerProperties))
+        if (jsonNode["properties"] is { } innerProperties)
         {
-            foreach (var innerProperty in innerProperties.EnumerateObject())
+            foreach (var innerProperty in innerProperties.AsObject().ToList())
             {
                 if (
-                    innerProperty.Name
+                    innerProperty.Key
                         is "attributes"
                         or "relationships"
-                    && innerProperty.Value.TryGetProperty("properties"u8, out var subProperty))
+                    && innerProperty.Value is { } subProperty)
                 {
+                    // TODO find a way how to update innerProperty to become a reference
                     var referenceName = ProcessItemInternal(
                         titleSpan,
-                        innerProperty.Name.AsSpan(),
-                        ref subProperty,
-                        jsonWriter,
+                        innerProperty.Key.AsSpan(),
+                        subProperty,
                         context
                     );
+
+                    innerProperties[innerProperty.Key] = JsonNode.Parse($$"""
+                    {
+                      "$ref": "{{referenceName}}"
+                    }
+                    """);
                 }
             }
         }
 
-        var property = jsonDocumentContent.ToString();
-
         return context.AddComponent(
             titleSpan.ToString(),
-            property
+            jsonNode
         );
     }
 
@@ -146,7 +148,7 @@ public static class AnonymousAttributesProcessor
             foreach (var renamedComponentValue in context.RenamedComponentValues)
             {
                 jsonWriter.WritePropertyName(renamedComponentValue.Key);
-                jsonWriter.WriteRawValue(renamedComponentValue.Value);
+                renamedComponentValue.Value.WriteTo(jsonWriter);
             }
 
             return true;
