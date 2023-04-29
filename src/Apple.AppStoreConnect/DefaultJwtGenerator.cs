@@ -132,7 +132,13 @@ public partial class DefaultJwtGenerator : IJwtGenerator
             KeyId = keyId,
         };
 
-        return new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);
+        return new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256)
+        {
+            CryptoProviderFactory = new CryptoProviderFactory
+            {
+                CacheSignatureProviders = false,
+            },
+        };
     }
 
     private static partial class Log
