@@ -25,8 +25,6 @@ IServiceCollection serviceCollection;
 serviceCollection.AddMemoryCache();
 using Microsoft.Extensions.Internal;
 serviceCollection.TryAddSingleton<ISystemClock, SystemClock>();
-using Microsoft.IdentityModel.Tokens;
-serviceCollection.TryAddSingleton<CryptoProviderFactory>(_ => CryptoProviderFactory.Default);
 
 // configure AppStoreConnect services
 serviceCollection.AddAppleAppStoreConnect(optionsBuilder => optionsBuilder

@@ -15,21 +15,18 @@ public partial class DefaultJwtGenerator : IJwtGenerator
 {
     private readonly IMemoryCache _cache;
     private readonly ISystemClock _clock;
-    private readonly CryptoProviderFactory _cryptoProviderFactory;
     private readonly IOptions<AppleAuthenticationOptions> _appleAuthenticationOptions;
     private readonly ILogger _logger;
 
     public DefaultJwtGenerator(
         IMemoryCache cache,
         ISystemClock clock,
-        CryptoProviderFactory cryptoProviderFactory,
         IOptions<AppleAuthenticationOptions> appleAuthenticationOptions,
         ILogger<DefaultJwtGenerator> logger
     )
     {
         _cache = cache;
         _clock = clock;
-        _cryptoProviderFactory = cryptoProviderFactory;
         _appleAuthenticationOptions = appleAuthenticationOptions;
         _logger = logger;
     }
@@ -82,7 +79,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
     )
     {
         var now = _clock.UtcNow;
-        var expiresAt = now.Add(appleAuthenticationOptions.JwtExpiresAfter).UtcDateTime;
+        var expiresAt = now.Add(appleAuthenticationOptions.JwtExpiresAfter);
 
         Log.GeneratingNewJwtToken(_logger, appleAuthenticationOptions.KeyId, expiresAt);
 
@@ -90,7 +87,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
         {
             Audience = appleAuthenticationOptions.TokenAudience,
             IssuedAt = now.UtcDateTime,
-            Expires = expiresAt,
+            Expires = expiresAt.UtcDateTime,
             Issuer = appleAuthenticationOptions.IssuerId,
         };
 
@@ -135,11 +132,12 @@ public partial class DefaultJwtGenerator : IJwtGenerator
             KeyId = keyId,
         };
 
-        // Use a custom CryptoProviderFactory so that keys are not cached and then disposed of, see below:
-        // https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/1302
         return new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256)
         {
-            CryptoProviderFactory = _cryptoProviderFactory,
+            CryptoProviderFactory = new CryptoProviderFactory
+            {
+                CacheSignatureProviders = false,
+            },
         };
     }
 
@@ -162,7 +160,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
         internal static partial void GeneratingNewJwtToken(
             ILogger logger,
             string keyId,
-            DateTime expiresAt
+            DateTimeOffset expiresAt
         );
 
         [LoggerMessage(
