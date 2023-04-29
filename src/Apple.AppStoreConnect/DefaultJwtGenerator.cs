@@ -15,21 +15,18 @@ public partial class DefaultJwtGenerator : IJwtGenerator
 {
     private readonly IMemoryCache _cache;
     private readonly ISystemClock _clock;
-    private readonly CryptoProviderFactory _cryptoProviderFactory;
     private readonly IOptions<AppleAuthenticationOptions> _appleAuthenticationOptions;
     private readonly ILogger _logger;
 
     public DefaultJwtGenerator(
         IMemoryCache cache,
         ISystemClock clock,
-        CryptoProviderFactory cryptoProviderFactory,
         IOptions<AppleAuthenticationOptions> appleAuthenticationOptions,
         ILogger<DefaultJwtGenerator> logger
     )
     {
         _cache = cache;
         _clock = clock;
-        _cryptoProviderFactory = cryptoProviderFactory;
         _appleAuthenticationOptions = appleAuthenticationOptions;
         _logger = logger;
     }
@@ -135,12 +132,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
             KeyId = keyId,
         };
 
-        // Use a custom CryptoProviderFactory so that keys are not cached and then disposed of, see below:
-        // https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/1302
-        return new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256)
-        {
-            CryptoProviderFactory = _cryptoProviderFactory,
-        };
+        return new SigningCredentials(key, SecurityAlgorithms.EcdsaSha256);
     }
 
     private static partial class Log

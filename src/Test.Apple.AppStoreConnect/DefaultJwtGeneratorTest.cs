@@ -6,7 +6,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -44,8 +43,7 @@ public class DefaultJwtGeneratorTest
                 .AddConsole()
                 .AddDebug()
             )
-            .AddSingleton<ISystemClock, SystemClock>()
-            .AddSingleton<CryptoProviderFactory>(_ => CryptoProviderFactory.Default);
+            .AddSingleton<ISystemClock, SystemClock>();
 
         serviceCollection.TryAddEnumerable(ServiceDescriptor
             .Singleton<IPostConfigureOptions<AppleAuthenticationOptions>, AppleAuthenticationPostConfigure>()
@@ -92,8 +90,7 @@ public class DefaultJwtGeneratorTest
                 .AddConsole()
                 .AddDebug()
             )
-            .AddSingleton<ISystemClock, SystemClock>()
-            .AddSingleton<CryptoProviderFactory>(_ => CryptoProviderFactory.Default);
+            .AddSingleton<ISystemClock, SystemClock>();
 
         serviceCollection.TryAddEnumerable(ServiceDescriptor
             .Singleton<IPostConfigureOptions<AppleAuthenticationOptions>, AppleAuthenticationPostConfigure>()
