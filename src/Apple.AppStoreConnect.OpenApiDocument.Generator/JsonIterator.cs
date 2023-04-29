@@ -123,6 +123,11 @@ public static class JsonIterator
         lastProperty,
         ref jsonReader, jsonWriter,
         context
+    ) || AnonymousAttributesProcessor.TryProcessItem(
+        path,
+        lastProperty,
+        ref jsonReader, jsonWriter,
+        context
     );
 
     [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Local")]
@@ -131,10 +136,22 @@ public static class JsonIterator
         IReadOnlyCollection<PathItem> path,
         Utf8JsonWriter jsonWriter,
         TransposeContext context
-    ) => AnonymousEnumProcessor.TryWriteAdditional(
-        pathItem,
-        path,
-        jsonWriter,
-        context
-    );
+    )
+    {
+        var response = AnonymousEnumProcessor.TryWriteAdditional(
+            pathItem,
+            path,
+            jsonWriter,
+            context
+        );
+
+        response = AnonymousAttributesProcessor.TryWriteAdditional(
+            pathItem,
+            path,
+            jsonWriter,
+            context
+        ) || response;
+
+        return response;
+    }
 }
