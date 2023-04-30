@@ -47,10 +47,34 @@ public static class AnonymousComplexPropertyProcessor
                 || !jsonReaderClone.ValueSpan.SequenceEqual("type"u8)
                 || !jsonReaderClone.Read()
                 || jsonReaderClone.TokenType is not JsonTokenType.String
-                || !jsonReaderClone.ValueSpan.SequenceEqual("object"u8)
             )
             {
+                return false;
+            }
+
+            var isObject = jsonReaderClone.ValueSpan.SequenceEqual("object"u8);
+            var isArray = jsonReaderClone.ValueSpan.SequenceEqual("array"u8);
+
+            if (!isObject && !isArray)
+            {
                 // verify there is object and not a reference
+                return false;
+            }
+
+            if (
+                isArray && (
+                    !jsonReaderClone.Read()
+                    || jsonReaderClone.TokenType is not JsonTokenType.PropertyName
+                    || !jsonReaderClone.ValueSpan.SequenceEqual("items"u8)
+                    || !jsonReaderClone.Read()
+                    || jsonReaderClone.TokenType is not JsonTokenType.StartObject
+                    || !jsonReaderClone.Read()
+                    || jsonReaderClone.TokenType is not JsonTokenType.PropertyName
+                    || jsonReaderClone.ValueSpan.SequenceEqual("$ref"u8)
+                )
+            )
+            {
+                // verify there is array of objects and not a references
                 return false;
             }
 
@@ -59,17 +83,35 @@ public static class AnonymousComplexPropertyProcessor
 
             var jsonNode = JsonNode.Parse(ref jsonReader) ?? throw new NullReferenceException("jsonNode");
 
-            var referenceName = ProcessItemInternal(
-                component.PropertyName!.AsSpan(),
-                lastPropertySpan,
-                jsonNode,
-                context
-            );
+            if (isObject)
+            {
+                var referenceName = ProcessItemInternal(
+                    component.PropertyName!.AsSpan(),
+                    lastPropertySpan,
+                    jsonNode,
+                    context
+                );
 
-            jsonWriter.WriteStartObject();
-            jsonWriter.WritePropertyName("$ref"u8);
-            jsonWriter.WriteStringValue(referenceName);
-            jsonWriter.WriteEndObject();
+                jsonWriter.WriteStartObject();
+                jsonWriter.WritePropertyName("$ref"u8);
+                jsonWriter.WriteStringValue(referenceName);
+                jsonWriter.WriteEndObject();
+            }
+            else if (isArray)
+            {
+                jsonNode["items"] = ProcessItemInternal(
+                    component.PropertyName!.AsSpan(),
+                    lastPropertySpan,
+                    jsonNode["items"]!,
+                    context
+                ).GetReferenceJsonNode();
+
+                jsonNode.WriteTo(jsonWriter);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException();
+            }
         }
 
         return false;
