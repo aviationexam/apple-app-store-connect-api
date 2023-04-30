@@ -101,10 +101,10 @@ public static class AnonymousAttributesProcessor
             foreach (var innerProperty in innerProperties.AsObject().ToList())
             {
                 if (
-                    innerProperty.Key
-                        is "attributes"
-                        or "relationships"
-                    && innerProperty.Value is { } subProperty)
+                    innerProperty.Value is { } subProperty
+                    && subProperty["type"]?.GetValue<string>() == "object"
+                    && subProperty["properties"] is not null
+                )
                 {
                     // TODO find a way how to update innerProperty to become a reference
                     var referenceName = ProcessItemInternal(
