@@ -18,12 +18,7 @@ public static class AnonymousComplexPropertyProcessor
     )
     {
         if (
-            (
-                lastProperty.SequenceEqual("data"u8)
-                || lastProperty.SequenceEqual("attributes"u8)
-                || lastProperty.SequenceEqual("relationships"u8)
-            )
-            && path.Count == 5
+            path.Count == 5
             && path.Take(1).SequenceEqual(new PathItem[]
             {
                 new(JsonTokenType.StartObject, "properties"),
@@ -70,7 +65,13 @@ public static class AnonymousComplexPropertyProcessor
                     || jsonReaderClone.TokenType is not JsonTokenType.StartObject
                     || !jsonReaderClone.Read()
                     || jsonReaderClone.TokenType is not JsonTokenType.PropertyName
-                    || jsonReaderClone.ValueSpan.SequenceEqual("$ref"u8)
+                    || !jsonReaderClone.ValueSpan.SequenceEqual("type"u8)
+                    || !jsonReaderClone.Read()
+                    || jsonReaderClone.TokenType is not JsonTokenType.String
+                    || (
+                        !jsonReaderClone.ValueSpan.SequenceEqual("array"u8)
+                        && !jsonReaderClone.ValueSpan.SequenceEqual("object"u8)
+                    )
                 )
             )
             {
