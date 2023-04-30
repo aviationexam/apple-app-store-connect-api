@@ -8,7 +8,7 @@ using System.Text.Json.Nodes;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator.Processors;
 
-public static class AnonymousAttributesProcessor
+public static class AnonymousComplexPropertyProcessor
 {
     public static bool TryProcessItem(
         IReadOnlyCollection<PathItem> path,

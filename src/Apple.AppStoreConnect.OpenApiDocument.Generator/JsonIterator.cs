@@ -124,7 +124,7 @@ public static class JsonIterator
         lastProperty,
         ref jsonReader, jsonWriter,
         context
-    ) || AnonymousAttributesProcessor.TryProcessItem(
+    ) || AnonymousComplexPropertyProcessor.TryProcessItem(
         path,
         lastProperty,
         ref jsonReader, jsonWriter,
@@ -146,7 +146,7 @@ public static class JsonIterator
             context
         );
 
-        response = AnonymousAttributesProcessor.TryWriteAdditional(
+        response = AnonymousComplexPropertyProcessor.TryWriteAdditional(
             pathItem,
             path,
             jsonWriter,
