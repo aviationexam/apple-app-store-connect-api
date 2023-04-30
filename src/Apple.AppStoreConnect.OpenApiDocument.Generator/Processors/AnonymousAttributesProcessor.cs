@@ -1,3 +1,4 @@
+using Apple.AppStoreConnect.OpenApiDocument.Generator.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,20 +82,7 @@ public static class AnonymousAttributesProcessor
         TransposeContext context
     )
     {
-        var componentNameLength = typePrefix.Length;
-
-        var titleSpan = new char[
-            componentNameLength
-            + lastPropertySpan.Length
-        ].AsSpan();
-
-        typePrefix.CopyTo(titleSpan);
-        lastPropertySpan.CopyTo(titleSpan[componentNameLength..]);
-
-        if (char.IsLower(titleSpan[componentNameLength]))
-        {
-            titleSpan[componentNameLength] = char.ToUpperInvariant(titleSpan[componentNameLength]);
-        }
+        var titleSpan = typePrefix.CreateTypeName(lastPropertySpan);
 
         if (jsonNode["properties"] is { } innerProperties)
         {
