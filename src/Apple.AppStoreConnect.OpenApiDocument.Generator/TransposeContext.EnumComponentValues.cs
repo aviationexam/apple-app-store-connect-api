@@ -1,3 +1,4 @@
+using Apple.AppStoreConnect.OpenApiDocument.Generator.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,19 @@ public sealed partial class TransposeContext
     private readonly Dictionary<string, IReadOnlyCollection<string>> _enumComponentValues = new();
 
     public string GetReferenceName(string componentSchema) => $"#/components/schemas/{componentSchema}";
+
+    public string GetEnumComponentReference(
+        ReadOnlySpan<char> typePrefix,
+        ReadOnlySpan<char> lastPropertySpan,
+        IReadOnlyCollection<string> enumValues
+    )
+    {
+        var componentSchema = typePrefix.CreateTypeName(lastPropertySpan).ToString();
+
+        _enumComponentValues.Add(componentSchema, enumValues);
+
+        return GetReferenceName(componentSchema);
+    }
 
     public string GetEnumComponentReference(
         IReadOnlyCollection<PathItem> parentPath,
