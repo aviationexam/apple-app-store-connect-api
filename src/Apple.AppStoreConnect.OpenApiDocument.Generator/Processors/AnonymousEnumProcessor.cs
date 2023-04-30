@@ -1,3 +1,4 @@
+using Apple.AppStoreConnect.OpenApiDocument.Generator.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
