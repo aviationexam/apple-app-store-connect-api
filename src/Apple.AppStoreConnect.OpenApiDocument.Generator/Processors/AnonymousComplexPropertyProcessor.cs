@@ -90,18 +90,30 @@ public static class AnonymousComplexPropertyProcessor
             {
                 if (innerProperty.Value is { } subProperty)
                 {
-                    string? referenceName = null;
                     if (
                         subProperty["type"]?.GetValue<string>() == "object"
                         && subProperty["properties"] is not null
                     )
                     {
-                        referenceName = ProcessItemInternal(
+                        innerProperties[innerProperty.Key] = ProcessItemInternal(
                             titleSpan,
                             innerProperty.Key.AsSpan(),
                             subProperty,
                             context
-                        );
+                        ).GetReferenceJsonNode();
+                    }
+                    else if (
+                        subProperty["type"]?.GetValue<string>() == "array"
+                        && subProperty["items"] is { } itemsJsonNode
+                        && itemsJsonNode["$ref"] is null
+                    )
+                    {
+                        subProperty["items"] = ProcessItemInternal(
+                            titleSpan,
+                            innerProperty.Key.AsSpan(),
+                            itemsJsonNode,
+                            context
+                        ).GetReferenceJsonNode();
                     }
                     else if (
                         subProperty["type"]?.GetValue<string>() == "string"
@@ -114,20 +126,11 @@ public static class AnonymousComplexPropertyProcessor
                             enumValues.Add(enumValue!.GetValue<string>());
                         }
 
-                        referenceName = context.GetEnumComponentReference(
+                        innerProperties[innerProperty.Key] = context.GetEnumComponentReference(
                             titleSpan,
                             innerProperty.Key.AsSpan(),
                             enumValues
-                        );
-                    }
-
-                    if (referenceName is not null)
-                    {
-                        innerProperties[innerProperty.Key] = JsonNode.Parse($$"""
-                        {
-                          "$ref": "{{referenceName}}"
-                        }
-                        """);
+                        ).GetReferenceJsonNode();
                     }
                 }
             }
