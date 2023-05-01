@@ -239,11 +239,7 @@ public class NSwagGenerator : IIncrementalGenerator
             GenerateUpdateJsonSerializerSettingsMethod = settings.GenerateUpdateJsonSerializerSettingsMethod,
         });
 
-        return "// " + Path.Combine(settings.TemplateDirectory, "File.Header" + ".liquid")
-        +"\n// " + Path.GetFullPath(Path.Combine(templateDirectory, "File.Header" + ".liquid"))
-        +"\n\n" + File.ReadAllText(Path.Combine(templateDirectory, "File.Header" + ".liquid"));
-
-        //return generator.GenerateFile();
+        return generator.GenerateFile();
     }
 
     #endregion
