@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using H.Generators.Extensions;
+﻿using H.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using NJsonSchema.CodeGeneration.CSharp;
@@ -34,11 +33,6 @@ public class NSwagGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        if (!Debugger.IsAttached)
-        {
-            Debugger.Launch();
-        }
-
         context.AdditionalTextsProvider
             .Where(static text => text.Path.EndsWith(".nswag", StringComparison.InvariantCultureIgnoreCase))
             .Combine(context.AnalyzerConfigOptionsProvider
