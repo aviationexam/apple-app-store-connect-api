@@ -36,13 +36,4 @@
     <!--ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" /-->
   </ItemGroup>
 
-  <ItemGroup>
-    <_CopyItems Include="NswagTemplates\*.*" />
-    <None Include="app-store-connect-openapi-specification\NswagTemplates\*" Visible="false" />
-  </ItemGroup>
-
-  <Target Name="CopyNswagTemplates" BeforeTargets="BeforeBuild">
-    <Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(ProjectDir)/app-store-connect-openapi-specification/NswagTemplates" />
-  </Target>
-
 </Project>
