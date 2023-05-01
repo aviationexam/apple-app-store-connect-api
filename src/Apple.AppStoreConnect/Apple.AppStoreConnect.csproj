@@ -39,7 +39,7 @@
     <None Include="app-store-connect-openapi-specification\NswagTemplates\*" Visible="false" />
   </ItemGroup>
 
-  <Target Name="CopyNswagTemplates" BeforeTargets="Build">
+  <Target Name="CopyNswagTemplates" BeforeTargets="BeforeBuild">
     <Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(ProjectDir)/app-store-connect-openapi-specification/NswagTemplates" />
 
     <Exec WorkingDirectory="$(ProjectDir)/app-store-connect-openapi-specification/NswagTemplates" Command="ls -la" />
