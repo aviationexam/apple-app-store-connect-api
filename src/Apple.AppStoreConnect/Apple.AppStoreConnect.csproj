@@ -20,6 +20,7 @@
   </PropertyGroup>
 
   <Import Project="..\WarningConfiguration.targets" />
+  <Import Project="..\NSwagGenerator\NSwagGenerator.props" />
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
     <PackageReference Include="H.NSwag.Generator" Version="13.18.2.71" PrivateAssets="All" />
@@ -31,7 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\NSwagGenerator\NSwagGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <!--ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" /-->
   </ItemGroup>
 
   <ItemGroup>
