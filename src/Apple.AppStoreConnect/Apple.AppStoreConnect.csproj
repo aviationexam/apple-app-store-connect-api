@@ -20,10 +20,9 @@
   </PropertyGroup>
 
   <Import Project="..\WarningConfiguration.targets" />
-  <Import Project="..\NSwagGenerator\NSwagGenerator.props" />
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <!--PackageReference Include="H.NSwag.Generator" Version="13.18.2.71" PrivateAssets="All" /-->
+    <PackageReference Include="H.NSwag.Generator" Version="13.18.2.72" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
@@ -32,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NSwagGenerator\NSwagGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" />
   </ItemGroup>
 
