@@ -86,7 +86,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Audience = appleAuthenticationOptions.TokenAudience,
-            IssuedAt = now.UtcDateTime,
+            IssuedAt = appleAuthenticationOptions.SetIssuedAt ? now.UtcDateTime : null,
             Expires = expiresAt.UtcDateTime,
             Issuer = appleAuthenticationOptions.IssuerId,
         };
