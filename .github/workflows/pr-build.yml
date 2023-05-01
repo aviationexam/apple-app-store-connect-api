@@ -22,6 +22,12 @@ jobs:
         run: dotnet restore --nologo
       - name: Build
         run: dotnet build --no-restore --nologo --configuration Release
+      - name: Archive GeneratedFiles
+        if: failure()
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: GeneratedFiles
+          path: GeneratedFiles
       - name: Test
         run: dotnet test --nologo --no-build --configuration Release
 
