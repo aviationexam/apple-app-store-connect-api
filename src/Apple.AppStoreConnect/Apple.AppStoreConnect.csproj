@@ -41,8 +41,6 @@
 
   <Target Name="CopyNswagTemplates" BeforeTargets="BeforeBuild">
     <Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(ProjectDir)/app-store-connect-openapi-specification/NswagTemplates" />
-
-    <Exec WorkingDirectory="$(ProjectDir)/app-store-connect-openapi-specification/NswagTemplates" Command="ls -la" />
   </Target>
 
 </Project>
