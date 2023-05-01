@@ -89,7 +89,7 @@
       "generateOptionalPropertiesAsNullable": true,
       "generateNullableReferenceTypes": true,
       "generateNativeRecords": true,
-      "templateDirectory": null,
+      "templateDirectory": "NswagTemplates",
       "typeNameGeneratorType": null,
       "propertyNameGeneratorType": null,
       "enumNameGeneratorType": null,

@@ -1,3 +1,4 @@
+using Apple.AppStoreConnect.OpenApiDocument.Generator.Extensions;
 using Apple.AppStoreConnect.OpenApiDocument.Generator.Processors;
 using System;
 using System.Collections.Generic;
@@ -123,6 +124,11 @@ public static class JsonIterator
         lastProperty,
         ref jsonReader, jsonWriter,
         context
+    ) || AnonymousComplexPropertyProcessor.TryProcessItem(
+        path,
+        lastProperty,
+        ref jsonReader, jsonWriter,
+        context
     );
 
     [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Local")]
@@ -131,10 +137,22 @@ public static class JsonIterator
         IReadOnlyCollection<PathItem> path,
         Utf8JsonWriter jsonWriter,
         TransposeContext context
-    ) => AnonymousEnumProcessor.TryWriteAdditional(
-        pathItem,
-        path,
-        jsonWriter,
-        context
-    );
+    )
+    {
+        var response = AnonymousEnumProcessor.TryWriteAdditional(
+            pathItem,
+            path,
+            jsonWriter,
+            context
+        );
+
+        response = AnonymousComplexPropertyProcessor.TryWriteAdditional(
+            pathItem,
+            path,
+            jsonWriter,
+            context
+        ) || response;
+
+        return response;
+    }
 }

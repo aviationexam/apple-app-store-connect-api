@@ -5,6 +5,7 @@
     <LangVersion>11.0</LangVersion>
     <Nullable>enable</Nullable>
     <PackageLicense>MIT</PackageLicense>
+    <ProjectName>AppStoreConnect.OpenApiDocument</ProjectName>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>..\..\GeneratedFiles\_OpenApiDocument</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
@@ -14,7 +15,7 @@
     <AppStoreConnectOpenApiSpecificationFile>app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationFile>
     <AppStoreConnectOpenApiSpecificationExtracted>app-store-connect-openapi-specification</AppStoreConnectOpenApiSpecificationExtracted>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <ResultOpenApiDestination>$(MSBuildProjectDirectory)/../Apple.AppStoreConnect/$(AppStoreConnectOpenApiSpecificationExtracted)</ResultOpenApiDestination>
   </PropertyGroup>

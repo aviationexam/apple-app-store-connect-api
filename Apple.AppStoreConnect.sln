@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.Depen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Apple.AppStoreConnect", "src\Test.Apple.AppStoreConnect\Test.Apple.AppStoreConnect.csproj", "{A300C564-B7FB-443A-A4B7-620A40DAD338}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSwagGenerator", "src\NSwagGenerator\NSwagGenerator.csproj", "{FF934126-3B0B-412A-B044-D869EE8EE29F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{A300C564-B7FB-443A-A4B7-620A40DAD338}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A300C564-B7FB-443A-A4B7-620A40DAD338}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A300C564-B7FB-443A-A4B7-620A40DAD338}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF934126-3B0B-412A-B044-D869EE8EE29F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF934126-3B0B-412A-B044-D869EE8EE29F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF934126-3B0B-412A-B044-D869EE8EE29F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF934126-3B0B-412A-B044-D869EE8EE29F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{41F367B1-2907-4A57-BCE7-253D144AEC3B} = {A0CB57C1-6B09-4FFC-A90D-232DF7099DB6}

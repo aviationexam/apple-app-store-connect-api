@@ -1,3 +1,4 @@
+using Apple.AppStoreConnect.OpenApiDocument.Generator.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,8 +106,6 @@ public static class AnonymousEnumProcessor
         TransposeContext context
     )
     {
-        var innerJson = new StringBuilder();
-
         var path = new Stack<PathItem>();
         ReadOnlySpan<byte> lastProperty = default;
 
@@ -150,9 +149,6 @@ public static class AnonymousEnumProcessor
                     }
 
                     lastProperty = jsonReader.ValueSpan;
-                    var propertyName = Encoding.UTF8.GetString(jsonReader.ValueSpan.ToArray());
-
-                    innerJson.Append($"\"{propertyName}\":");
 
                     break;
 
