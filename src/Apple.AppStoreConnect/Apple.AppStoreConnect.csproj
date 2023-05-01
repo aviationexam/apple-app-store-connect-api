@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NSwagGenerator\NSwagGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <!--ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" /-->
+    <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
