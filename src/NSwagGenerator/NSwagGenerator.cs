@@ -98,6 +98,18 @@ public class NSwagGenerator : IIncrementalGenerator
             : await OpenApiYamlDocument.FromYamlAsync(json, cancellationToken).ConfigureAwait(false);
     }
 
+    private static string GetTemplateDirectory(string path, string templateDirectory)
+    {
+        if (string.IsNullOrEmpty(templateDirectory))
+        {
+            return templateDirectory;
+        }
+
+        var folder = Path.GetDirectoryName(path) ?? string.Empty;
+
+        return Path.Combine(folder, templateDirectory);
+    }
+
     public static async Task<string> GenerateAsync(
         string path,
         CancellationToken cancellationToken = default)
@@ -113,6 +125,8 @@ public class NSwagGenerator : IIncrementalGenerator
             document.DocumentGenerator.FromDocument,
             path,
             cancellationToken).ConfigureAwait(false);
+
+        var templateDirectory = GetTemplateDirectory(path, settings.TemplateDirectory);
 
         var generator = new CSharpClientGenerator(openApi, new CSharpClientGeneratorSettings
         {
@@ -170,7 +184,7 @@ public class NSwagGenerator : IIncrementalGenerator
                 TypeAccessModifier = settings.TypeAccessModifier,
                 PropertySetterAccessModifier = settings.PropertySetterAccessModifier,
                 TimeType = settings.TimeType,
-                TemplateDirectory = settings.TemplateDirectory,
+                TemplateDirectory = templateDirectory,
                 TimeSpanType = settings.TimeSpanType,
                 JsonConverters = settings.JsonConverters,
                 AnyType = settings.AnyType,
@@ -190,7 +204,7 @@ public class NSwagGenerator : IIncrementalGenerator
                 ExcludedTypeNames = settings.ExcludedTypeNames,
                 InlineNamedAny = settings.InlineNamedAny,
                 GenerateDefaultValues = settings.GenerateDefaultValues,
-                TemplateDirectory = settings.TemplateDirectory,
+                TemplateDirectory = templateDirectory,
             },
             UseBaseUrl = settings.UseBaseUrl,
             UseHttpClientCreationMethod = settings.UseHttpClientCreationMethod,
@@ -226,8 +240,8 @@ public class NSwagGenerator : IIncrementalGenerator
         });
 
         return "// " + Path.Combine(settings.TemplateDirectory, "File.Header" + ".liquid")
-        +"\n// " + Path.GetFullPath(Path.Combine(settings.TemplateDirectory, "File.Header" + ".liquid"))
-        +"\n\n" + File.ReadAllText(Path.Combine(settings.TemplateDirectory, "File.Header" + ".liquid"));
+        +"\n// " + Path.GetFullPath(Path.Combine(templateDirectory, "File.Header" + ".liquid"))
+        +"\n\n" + File.ReadAllText(Path.Combine(templateDirectory, "File.Header" + ".liquid"));
 
         //return generator.GenerateFile();
     }
