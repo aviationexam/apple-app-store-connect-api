@@ -33,6 +33,8 @@ public sealed class AppleAuthenticationOptions
     /// </summary>
     public JsonWebTokenHandler SecurityTokenHandler { get; set; } = default!;
 
+    public bool SetIssuedAt { get; set; } = true;
+
     [Required]
     public TimeSpan JwtExpiresAfter { get; set; }
 }
