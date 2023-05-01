@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using NJsonSchema.CodeGeneration.CSharp;
 
 #nullable disable
@@ -92,7 +92,7 @@ public class OpenApiToCSharpClient
 
     [JsonProperty("typeAccessModifier")]
     public string TypeAccessModifier { get; set; }
-    
+
     [JsonProperty("propertySetterAccessModifier")]
     public string PropertySetterAccessModifier { get; set; }
 

@@ -1,4 +1,4 @@
-﻿using H.Generators.Extensions;
+using H.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using NJsonSchema.CodeGeneration.CSharp;
