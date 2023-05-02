@@ -17,11 +17,15 @@ public static class TypeNameExtensions
         ].AsSpan();
 
         typePrefix.CopyTo(titleSpan);
-        lastPropertySpan.CopyTo(titleSpan[componentNameLength..]);
 
-        if (char.IsLower(titleSpan[componentNameLength]))
+        if (titleSpan.Length > typePrefix.Length)
         {
-            titleSpan[componentNameLength] = char.ToUpperInvariant(titleSpan[componentNameLength]);
+            lastPropertySpan.CopyTo(titleSpan[componentNameLength..]);
+
+            if (char.IsLower(titleSpan[componentNameLength]))
+            {
+                titleSpan[componentNameLength] = char.ToUpperInvariant(titleSpan[componentNameLength]);
+            }
         }
 
         return titleSpan;
