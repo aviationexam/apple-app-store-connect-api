@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator.Processors;
 
-public static class AnonymousEnumProcessor
+public static class AnonymousEnumParameterProcessor
 {
     public static bool TryProcessItem(
         IReadOnlyCollection<PathItem> path,
@@ -37,9 +37,8 @@ public static class AnonymousEnumProcessor
 
             if (
                 path.ElementAt(0).Properties.TryGetValue("name", out var name)
-                && path.ElementAt(2).Properties.TryGetValue("tags", out var tag)
                 && path.ElementAt(2).Properties.TryGetValue("operationId", out var operationId)
-                && TryReadInner(path, tag, name, operationId, ref jsonReaderClone, jsonWriter, context)
+                && TryReadInner(path, name, operationId, ref jsonReaderClone, jsonWriter, context)
             )
             {
                 var innerTokenStartIndex = jsonReaderClone.TokenStartIndex;
@@ -56,52 +55,9 @@ public static class AnonymousEnumProcessor
         return false;
     }
 
-    public static bool TryWriteAdditional(
-        PathItem? pathItem,
-        IReadOnlyCollection<PathItem> path,
-        Utf8JsonWriter jsonWriter,
-        TransposeContext context
-    )
-    {
-        if (
-            pathItem == new PathItem(JsonTokenType.StartObject, "schemas")
-            && path.SequenceEqual(new PathItem[]
-            {
-                new(JsonTokenType.StartObject, "components"),
-                new(JsonTokenType.StartObject, null),
-            })
-        )
-        {
-            foreach (var enumComponentValue in context.EnumComponentValues)
-            {
-                jsonWriter.WritePropertyName(enumComponentValue.Key);
-                jsonWriter.WriteStartObject();
-
-                jsonWriter.WritePropertyName("type"u8);
-                jsonWriter.WriteStringValue("string"u8);
-
-                jsonWriter.WritePropertyName("enum"u8);
-                jsonWriter.WriteStartArray();
-
-                foreach (var enumValue in enumComponentValue.Value)
-                {
-                    jsonWriter.WriteStringValue(enumValue);
-                }
-
-                jsonWriter.WriteEndArray();
-
-                jsonWriter.WriteEndObject();
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
     private static bool TryReadInner(
         IReadOnlyCollection<PathItem> parentPath,
-        string tag, string name, string operationId,
+        string name, string operationId,
         ref Utf8JsonReader jsonReader, Utf8JsonWriter jsonWriter,
         TransposeContext context
     )
@@ -232,10 +188,15 @@ public static class AnonymousEnumProcessor
             return false;
         }
 
-        var reference = context.GetEnumComponentReference(
+        var componentPrefix = GetComponentPrefix(
             parentPath,
-            tag, name.AsSpan(),
-            operationId.AsSpan(),
+            name.AsSpan(),
+            operationId.AsSpan()
+        );
+
+        var reference = context.GetEnumComponentReference(
+            componentPrefix,
+            ReadOnlySpan<char>.Empty,
             enumValues
         );
 
@@ -253,5 +214,132 @@ public static class AnonymousEnumProcessor
         jsonWriter.WriteEndObject();
 
         return true;
+    }
+
+    private static ReadOnlySpan<char> GetComponentPrefix(
+        IReadOnlyCollection<PathItem> parentPath,
+        ReadOnlySpan<char> parameterName,
+        ReadOnlySpan<char> operationId
+    )
+    {
+        var componentName = GetComponentName(parameterName);
+
+        var urlPath = parentPath.ElementAt(3).PropertyName!.ToArray().AsSpan();
+        if (urlPath[0] == '/')
+        {
+            urlPath = urlPath[1..];
+        }
+
+        var slashIndex = urlPath.IndexOf('/');
+        var urlVersion = urlPath[..slashIndex];
+
+        if (char.IsLower(urlVersion[0]))
+        {
+            urlVersion[0] = char.ToUpperInvariant(urlVersion[0]);
+        }
+
+        if (operationId.IndexOf('-') is var dashIndex and > 0)
+        {
+            var operationGroupName = operationId[..dashIndex];
+            dashIndex++;
+            operationId = operationId[dashIndex..];
+            dashIndex = operationId.IndexOf('-');
+
+            ReadOnlySpan<char> operationSuffix;
+            if (dashIndex > 0)
+            {
+                operationSuffix = operationId[(dashIndex + 1)..];
+                operationId = operationId[..dashIndex];
+            }
+            else
+            {
+                operationSuffix = operationId;
+                operationId = default;
+            }
+
+            if (
+                operationGroupName.Length > 0
+                && char.IsLower(operationGroupName[0])
+            )
+            {
+                var operationGroupNameSpan = operationGroupName.ToArray().AsSpan();
+                operationGroupNameSpan[0] = char.ToUpperInvariant(operationGroupNameSpan[0]);
+
+                operationGroupName = operationGroupNameSpan;
+            }
+
+            if (
+                operationId.Length > 0
+                && char.IsLower(operationId[0])
+            )
+            {
+                var operationIdSpan = operationId.ToArray().AsSpan();
+                operationIdSpan[0] = char.ToUpperInvariant(operationIdSpan[0]);
+
+                operationId = operationIdSpan;
+            }
+
+            var i = 0;
+            Span<char> operationName = new char[operationSuffix.Length];
+            while (operationSuffix.IndexOf('_') is var underscoreIndex and > 0)
+            {
+                var token = operationSuffix[..underscoreIndex];
+                token.CopyTo(operationName[i..]);
+
+                if (char.IsLower(operationName[i]))
+                {
+                    operationName[i] = char.ToUpperInvariant(operationName[i]);
+                }
+
+                i += token.Length;
+                operationSuffix = operationSuffix[(underscoreIndex + 1)..];
+            }
+
+            operationSuffix.CopyTo(operationName[i..]);
+            if (char.IsLower(operationName[i]))
+            {
+                operationName[i] = char.ToUpperInvariant(operationName[i]);
+            }
+
+            i += operationSuffix.Length;
+            operationName = operationName[..i];
+
+            return
+                $"{operationGroupName.ToString()}{urlVersion.ToString()}Operation{operationId.ToString()}{operationName.ToString()}{componentName}"
+                    .AsSpan();
+        }
+
+        return $"{urlVersion.ToString()}Operation{operationId.ToString()}{componentName}".AsSpan();
+    }
+
+    private static string GetComponentName(
+        ReadOnlySpan<char> parameterName
+    )
+    {
+        var openingBracket = parameterName.IndexOf('[');
+
+        if (openingBracket > 0)
+        {
+            openingBracket++;
+            parameterName = parameterName[openingBracket..];
+
+            var closingBracket = parameterName.IndexOf(']');
+
+            if (closingBracket > 0)
+            {
+                parameterName = parameterName[..closingBracket];
+            }
+        }
+
+        if (char.IsLower(parameterName[0]))
+        {
+            var upper = new char[parameterName.Length].AsSpan();
+
+            parameterName.CopyTo(upper);
+            upper[0] = char.ToUpperInvariant(parameterName[0]);
+            parameterName = upper;
+        }
+
+        return $"Parameter{parameterName.ToString()}";
     }
 }

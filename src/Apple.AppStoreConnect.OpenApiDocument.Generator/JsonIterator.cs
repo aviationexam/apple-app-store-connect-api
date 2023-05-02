@@ -15,7 +15,7 @@ public static class JsonIterator
     {
         var path = new Stack<PathItem>();
         ReadOnlySpan<byte> lastProperty = null;
-        var context = new TransposeContext();
+        using var context = new TransposeContext();
 
         while (jsonReader.Read())
         {
@@ -119,7 +119,7 @@ public static class JsonIterator
         path,
         lastProperty,
         ref jsonReader, jsonWriter
-    ) || AnonymousEnumProcessor.TryProcessItem(
+    ) || AnonymousEnumParameterProcessor.TryProcessItem(
         path,
         lastProperty,
         ref jsonReader, jsonWriter,
@@ -139,12 +139,7 @@ public static class JsonIterator
         TransposeContext context
     )
     {
-        var response = AnonymousEnumProcessor.TryWriteAdditional(
-            pathItem,
-            path,
-            jsonWriter,
-            context
-        );
+        var response = false;
 
         response = AnonymousComplexPropertyProcessor.TryWriteAdditional(
             pathItem,

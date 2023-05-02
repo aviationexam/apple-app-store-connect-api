@@ -201,7 +201,7 @@ public static class AnonymousComplexPropertyProcessor
             })
         )
         {
-            foreach (var renamedComponentValue in context.RenamedComponentValues)
+            foreach (var renamedComponentValue in context.NewComponents)
             {
                 jsonWriter.WritePropertyName(renamedComponentValue.Key);
                 renamedComponentValue.Value.WriteTo(jsonWriter);
