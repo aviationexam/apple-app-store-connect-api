@@ -19,5 +19,15 @@ public partial class TransposeContext : IDisposable
 
     private readonly Dictionary<string, JsonNode> _newComponents = new();
 
-    private string GetReferenceName(string componentSchema) => $"#/components/schemas/{componentSchema}";
+    private static string GetReferenceName(string componentSchema) => $"#/components/schemas/{componentSchema}";
+
+    private static ReadOnlySpan<char> GetComponentName(string reference)
+    {
+        var referenceSpan = reference.AsSpan();
+
+        var slashIndex = referenceSpan.LastIndexOf('/');
+        slashIndex++;
+
+        return referenceSpan[slashIndex..];
+    }
 }
