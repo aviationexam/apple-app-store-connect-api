@@ -1,4 +1,4 @@
-﻿using Apple.AppStoreConnect;
+using Apple.AppStoreConnect;
 using Apple.AppStoreConnect.Converters;
 using Microsoft.Extensions.Logging;
 using System;
