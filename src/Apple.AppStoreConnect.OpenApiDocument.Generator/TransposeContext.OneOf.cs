@@ -2,6 +2,7 @@ using Apple.AppStoreConnect.OpenApiDocument.Generator.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json.Nodes;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
@@ -16,12 +17,19 @@ public sealed partial class TransposeContext
         IReadOnlyCollection<string> references
     )
     {
-        var componentSchema = typePrefix.CreateTypeName(lastPropertySpan).ToString();
-
         if (!_newComponents.ContainsKey(OneOfParentComponent))
         {
             AddOneOfComponent();
         }
+
+        var componentSchemaSpan = typePrefix.CreateTypeName(lastPropertySpan);
+        var componentSchema = componentSchemaSpan.ToString();
+
+        var enumTypeReference = GetEnumComponentReference(
+            componentSchemaSpan,
+            "Enum".AsSpan(),
+            references.Select(x => GetComponentName(x).ToString()).ToList()
+        );
 
         using (var memoryStream = new MemoryStream())
         {
@@ -55,6 +63,17 @@ public sealed partial class TransposeContext
                 _jsonWriter.WritePropertyName("properties"u8);
                 {
                     _jsonWriter.WriteStartObject();
+
+                    _jsonWriter.WritePropertyName("OneOfType"u8);
+                    _jsonWriter.WriteStartObject();
+
+                    _jsonWriter.WritePropertyName("$ref"u8);
+                    _jsonWriter.WriteStringValue(enumTypeReference);
+
+                    _jsonWriter.WritePropertyName("nullable"u8);
+                    _jsonWriter.WriteBooleanValue(false);
+
+                    _jsonWriter.WriteEndObject();
 
                     foreach (var reference in references)
                     {
