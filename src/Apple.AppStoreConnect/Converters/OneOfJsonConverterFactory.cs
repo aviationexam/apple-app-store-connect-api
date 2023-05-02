@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
 using System.Text.Json;
@@ -7,9 +8,17 @@ namespace Apple.AppStoreConnect.Converters;
 
 public class OneOfJsonConverterFactory : JsonConverterFactory
 {
+    private readonly ILoggerFactory _loggerFactory;
     private readonly Type _oneOfType = typeof(OneOf);
 
-    public override bool CanConvert(Type typeToConvert) => _oneOfType.IsAssignableTo(typeToConvert);
+    public OneOfJsonConverterFactory(
+        ILoggerFactory loggerFactory
+    )
+    {
+        _loggerFactory = loggerFactory;
+    }
+
+    public override bool CanConvert(Type typeToConvert) => _oneOfType.IsAssignableFrom(typeToConvert);
 
     public override JsonConverter CreateConverter(
         Type typeToConvert, JsonSerializerOptions options
@@ -17,7 +26,7 @@ public class OneOfJsonConverterFactory : JsonConverterFactory
         typeof(OneOfJsonConverter<>).MakeGenericType(typeToConvert),
         BindingFlags.Instance | BindingFlags.Public,
         binder: null,
-        args: new object[] { options },
+        args: new[] { _loggerFactory.CreateLogger(typeToConvert) },
         culture: null
     )!;
 }
