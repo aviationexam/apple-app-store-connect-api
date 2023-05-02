@@ -1,6 +1,9 @@
+using Apple.AppStoreConnect.Converters;
 using Apple.AppStoreConnect.Interfaces;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,10 +12,15 @@ namespace Apple.AppStoreConnect;
 public sealed class DefaultHttpClientConfiguration : IHttpClientConfiguration
 {
     private readonly IJwtGenerator _jwtGenerator;
+    private readonly OneOfJsonConverterFactory _oneOfJsonConverterFactory;
 
-    public DefaultHttpClientConfiguration(IJwtGenerator jwtGenerator)
+    public DefaultHttpClientConfiguration(
+        IJwtGenerator jwtGenerator,
+        OneOfJsonConverterFactory oneOfJsonConverterFactory
+    )
     {
         _jwtGenerator = jwtGenerator;
+        _oneOfJsonConverterFactory = oneOfJsonConverterFactory;
     }
 
     public async Task ConfigureHttpRequestMessageAsync(
@@ -28,5 +36,10 @@ public sealed class DefaultHttpClientConfiguration : IHttpClientConfiguration
                 await _jwtGenerator.GenerateJwtTokenAsync(cancellationToken)
             );
         }
+    }
+
+    public IEnumerable<JsonConverter> GetJsonConverters()
+    {
+        yield return _oneOfJsonConverterFactory;
     }
 }

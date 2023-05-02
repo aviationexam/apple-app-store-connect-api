@@ -1,3 +1,4 @@
+using Apple.AppStoreConnect.Converters;
 using Apple.AppStoreConnect.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -38,6 +39,7 @@ public static partial class AppStoreConnectExtensions
         );
 
         serviceCollection.TryAddSingleton<IJwtGenerator, DefaultJwtGenerator>();
+        serviceCollection.AddSingleton<OneOfJsonConverterFactory>();
         serviceCollection.TryAddSingleton<IHttpClientConfiguration, DefaultHttpClientConfiguration>();
 
         serviceCollection.AddHttpClient();
