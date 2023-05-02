@@ -129,6 +129,11 @@ public static class JsonIterator
         lastProperty,
         ref jsonReader, jsonWriter,
         context
+    ) || OneOfProcessor.TryProcessItem(
+        path,
+        lastProperty,
+        ref jsonReader, jsonWriter,
+        context
     );
 
     [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Local")]

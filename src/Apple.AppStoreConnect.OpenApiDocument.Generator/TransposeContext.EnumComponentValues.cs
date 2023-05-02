@@ -70,7 +70,7 @@ public sealed partial class TransposeContext
             var jsonNode = JsonNode.Parse(memoryStream)!;
 
             _enumComponentValues.Add(componentSchema, enumValues.OrderBy(x => x).ToList());
-            _newComponents.Add(componentSchema, jsonNode);
+            AddComponent(componentSchema, jsonNode);
         }
 
         _jsonWriter.Reset(Stream.Null);
