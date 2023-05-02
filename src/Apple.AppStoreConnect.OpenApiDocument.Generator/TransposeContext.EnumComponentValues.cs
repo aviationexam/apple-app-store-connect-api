@@ -3,18 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
 
 public sealed partial class TransposeContext
 {
-    public IReadOnlyDictionary<string, IReadOnlyCollection<string>> EnumComponentValues => _enumComponentValues;
-
     private readonly Dictionary<string, IReadOnlyCollection<string>> _enumComponentValues = new();
-
-    public string GetReferenceName(string componentSchema) => $"#/components/schemas/{componentSchema}";
 
     public string GetEnumComponentReference(
         ReadOnlySpan<char> typePrefix,
@@ -23,6 +18,30 @@ public sealed partial class TransposeContext
     )
     {
         var componentSchema = typePrefix.CreateTypeName(lastPropertySpan).ToString();
+
+        if (_enumComponentValues.TryGetValue(componentSchema, out var previousEnums))
+        {
+            if (previousEnums.SequenceEqual(enumValues.OrderBy(x => x)))
+            {
+                return GetReferenceName(componentSchema);
+            }
+
+            var i = 2;
+            var componentSchemaCandidate = $"{componentSchema}{i}";
+
+            while (_enumComponentValues.TryGetValue(componentSchemaCandidate, out previousEnums))
+            {
+                if (previousEnums.SequenceEqual(enumValues.OrderBy(x => x)))
+                {
+                    return GetReferenceName(componentSchemaCandidate);
+                }
+
+                i++;
+                componentSchemaCandidate = $"{componentSchema}{i}";
+            }
+
+            componentSchema = componentSchemaCandidate;
+        }
 
         using (var memoryStream = new MemoryStream())
         {
@@ -45,11 +64,16 @@ public sealed partial class TransposeContext
 
             _jsonWriter.WriteEndObject();
 
+            _jsonWriter.Flush();
+
             memoryStream.Seek(0, SeekOrigin.Begin);
             var jsonNode = JsonNode.Parse(memoryStream)!;
 
+            _enumComponentValues.Add(componentSchema, enumValues.OrderBy(x => x).ToList());
             _newComponents.Add(componentSchema, jsonNode);
         }
+
+        _jsonWriter.Reset(Stream.Null);
 
         return GetReferenceName(componentSchema);
     }
