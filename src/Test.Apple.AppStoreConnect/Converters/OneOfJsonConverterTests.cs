@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Xunit;
 
 namespace Test.Apple.AppStoreConnect.Converters;
@@ -13,7 +12,7 @@ namespace Test.Apple.AppStoreConnect.Converters;
 public class OneOfJsonConverterTests
 {
     [Theory]
-    [MemberData(nameof(OneOfData))]
+    [MemberData(nameof(OneOfJsonData))]
     public void DeserializeOneOfWorks(string json)
     {
         using var loggerFactory = new LoggerFactory();
@@ -57,7 +56,60 @@ public class OneOfJsonConverterTests
         }
     }
 
-    public static IEnumerable<object[]> OneOfData()
+    [Theory]
+    [MemberData(nameof(OneOfObjectData))]
+    public void SerializeOneOfWorks(TestingAppAvailabilityResponseIncluded oneOf)
+    {
+        using var loggerFactory = new LoggerFactory();
+
+        var json = JsonSerializer.Serialize(
+            oneOf,
+            new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Converters =
+                {
+                    new JsonStringEnumConverterFactory(),
+                    new OneOfJsonConverterFactory(loggerFactory),
+                }
+            }
+        );
+
+        Assert.NotNull(json);
+
+        switch (oneOf.OneOfType)
+        {
+            case AppAvailabilityResponseIncludedEnum.App:
+                Assert.Equal("""
+                {
+                  "type": "apps",
+                  "id": "app-id",
+                  "links": {
+                    "self": "self-url"
+                  }
+                }
+                """, json);
+                break;
+            case AppAvailabilityResponseIncludedEnum.Territory:
+                Assert.Equal("""
+                {
+                  "type": "territories",
+                  "id": "territory-id",
+                  "links": {
+                    "self": "self-url"
+                  }
+                }
+                """, json);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(oneOf.OneOfType), oneOf.OneOfType,
+                    $"Unexpected {nameof(oneOf.OneOfType)} '{oneOf.OneOfType}'"
+                );
+        }
+    }
+
+    public static IEnumerable<object[]> OneOfJsonData()
     {
         yield return new object[]
         {
@@ -79,7 +131,43 @@ public class OneOfJsonConverterTests
         };
     }
 
-    private enum AppAvailabilityResponseIncludedEnum
+    public static IEnumerable<object[]> OneOfObjectData()
+    {
+        yield return new object[]
+        {
+            new TestingAppAvailabilityResponseIncluded
+            {
+                OneOfType = AppAvailabilityResponseIncludedEnum.App,
+                App = new App
+                {
+                    Type = AppType.Apps,
+                    Id = "app-id",
+                    Links = new ResourceLinks
+                    {
+                        Self = "self-url",
+                    },
+                }
+            },
+        };
+        yield return new object[]
+        {
+            new TestingAppAvailabilityResponseIncluded
+            {
+                OneOfType = AppAvailabilityResponseIncludedEnum.Territory,
+                Territory = new Territory
+                {
+                    Type = TerritoryType.Territories,
+                    Id = "territory-id",
+                    Links = new ResourceLinks
+                    {
+                        Self = "self-url",
+                    },
+                }
+            },
+        };
+    }
+
+    public enum AppAvailabilityResponseIncludedEnum
     {
         [EnumMember(Value = @"App")]
         App = 0,
@@ -88,19 +176,12 @@ public class OneOfJsonConverterTests
         Territory = 1,
     }
 
-    private record TestingAppAvailabilityResponseIncluded : OneOf
+    public record TestingAppAvailabilityResponseIncluded : OneOf
     {
-        [JsonPropertyName("OneOfType")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public AppAvailabilityResponseIncludedEnum? OneOfType { get; set; }
 
-        [JsonPropertyName("App")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public App? App { get; set; }
 
-        [JsonPropertyName("Territory")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public Territory? Territory { get; set; }
     }
 }

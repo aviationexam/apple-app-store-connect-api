@@ -1,23 +1,14 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Apple.AppStoreConnect.Converters;
 
-public abstract class TypedReader<TOneOf>
-{
-    public abstract void Read(
-        TOneOf oneOf,
-        PropertyInfo propertyInfo,
-        ref Utf8JsonReader reader, JsonSerializerOptions options
-    );
-}
-
-public sealed class TypedReader<TOneOf, TTargetType> : TypedReader<TOneOf>
+public readonly struct TypedReader<TOneOf, TTargetType> : ITypedReader<TOneOf>
     where TOneOf : OneOf
     where TTargetType : class
 {
-    public override void Read(
+    public void Read(
         TOneOf oneOf,
         PropertyInfo propertyInfo,
         ref Utf8JsonReader reader, JsonSerializerOptions options
