@@ -28,12 +28,17 @@ public class HttpClientNextGenerator : IIncrementalGenerator
                 )
             )
             .Select(static (x, _) => x.Item1)
+            .Combine(context.AnalyzerConfigOptionsProvider
+                .Select(static (x, _) =>
+                    x.GetRequiredGlobalOption("HttpClientNext_Namespace")
+                )
+            )
             .SelectAndReportExceptions(GetSourceCode, context, Id)
             .AddSource(context);
     }
 
     private static EquatableArray<FileWithName> GetSourceCode(
-        AdditionalText textFile,
+        (AdditionalText textFile, string targetNamespace) source,
         CancellationToken cancellationToken
     )
     {
@@ -47,14 +52,17 @@ public class HttpClientNextGenerator : IIncrementalGenerator
             CommentHandling = JsonCommentHandling.Skip,
         };
 
-        var jsonReadOnlySpan = File.ReadAllBytes(textFile.Path).AsSpan().TrimBom();
+        var jsonReadOnlySpan = File.ReadAllBytes(source.textFile.Path).AsSpan().TrimBom();
 
         var jsonReader = new Utf8JsonReader(jsonReadOnlySpan, documentOptions);
 
         ImmutableArray<FileWithName> files;
         try
         {
-            files = JsonIterator.ProcessJson(ref jsonReader)
+            files = JsonIterator.ProcessJson(
+                    ref jsonReader,
+                    source.targetNamespace.AsSpan()
+                )
                 .ToImmutableArray();
         }
         catch (Exception e)

@@ -12,7 +12,8 @@ namespace Apple.AppStoreConnect.Generator;
 public static class JsonIterator
 {
     public static IEnumerable<FileWithName> ProcessJson(
-        ref Utf8JsonReader jsonReader
+        ref Utf8JsonReader jsonReader,
+        ReadOnlySpan<char> targetNamespace
     )
     {
         var path = new Stack<PathItem>();
@@ -60,6 +61,7 @@ public static class JsonIterator
                     lastProperty = jsonReader.ValueSpan;
 
                     var fileWithNames = TryProcessItems(
+                        targetNamespace,
                         path, lastProperty,
                         ref jsonReader
                     );
@@ -105,12 +107,14 @@ public static class JsonIterator
     }
 
     private static IReadOnlyCollection<FileWithName> TryProcessItems(
+        ReadOnlySpan<char> targetNamespace,
         IReadOnlyCollection<PathItem> path,
         ReadOnlySpan<byte> lastProperty,
         ref Utf8JsonReader jsonReader
     )
     {
         var getNextFileWithName = GetNextProcessor.TryProcessItems(
+            targetNamespace,
             path, lastProperty,
             ref jsonReader
         );

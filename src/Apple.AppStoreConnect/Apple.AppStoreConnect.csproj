@@ -19,6 +19,10 @@
     <NSwagGenerator_UseCache>true</NSwagGenerator_UseCache>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <HttpClientNext_Namespace>Apple.AppStoreConnect</HttpClientNext_Namespace>  
+  </PropertyGroup>
+  
   <ItemGroup>
     <AdditionalFiles Include="app-store-connect-openapi-specification/openapi.json" HttpClientNext_OpenApi="Apple.AppStoreConnect" />
   </ItemGroup>
