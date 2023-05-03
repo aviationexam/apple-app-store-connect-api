@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
@@ -42,11 +41,6 @@ public class HttpClientNextGenerator : IIncrementalGenerator
         CancellationToken cancellationToken
     )
     {
-        if (!Debugger.IsAttached)
-        {
-            Debugger.Launch();
-        }
-
         var documentOptions = new JsonReaderOptions
         {
             CommentHandling = JsonCommentHandling.Skip,
