@@ -88,7 +88,7 @@ public class OneOfJsonConverterTests
                     "self": "self-url"
                   }
                 }
-                """, json);
+                """.Replace("\r\n", Environment.NewLine), json);
                 break;
             case AppAvailabilityResponseIncludedEnum.Territory:
                 Assert.Equal("""
@@ -99,7 +99,7 @@ public class OneOfJsonConverterTests
                     "self": "self-url"
                   }
                 }
-                """, json);
+                """.Replace("\r\n", Environment.NewLine), json);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(
