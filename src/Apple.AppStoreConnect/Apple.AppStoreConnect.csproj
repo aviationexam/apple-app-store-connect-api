@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Apple.AppStoreConnect.Generator\Apple.AppStoreConnect.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
     <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" />
   </ItemGroup>
 
