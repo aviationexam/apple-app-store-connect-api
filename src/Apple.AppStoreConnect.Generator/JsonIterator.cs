@@ -4,7 +4,6 @@ using Apple.AppStoreConnect.GeneratorCommon.Extensions;
 using H.Generators;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 
 namespace Apple.AppStoreConnect.Generator;
@@ -23,8 +22,6 @@ public static class JsonIterator
         while (jsonReader.Read())
         {
             var tokenType = jsonReader.TokenType;
-
-            var a = Encoding.UTF8.GetString(jsonReader.ValueSpan.ToArray());
 
             switch (tokenType)
             {
