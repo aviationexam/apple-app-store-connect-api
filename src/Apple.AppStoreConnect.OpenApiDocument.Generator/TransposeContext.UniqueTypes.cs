@@ -1,5 +1,5 @@
+using Apple.AppStoreConnect.GeneratorCommon.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Text.Json.Nodes;
 
 namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
@@ -17,6 +17,6 @@ public sealed partial class TransposeContext
             throw new Exception($"Type {typeNameSpan} already exists");
         }
 
-        return GetReferenceName(typeNameSpan);
+        return typeNameSpan.GetReferenceName();
     }
 }

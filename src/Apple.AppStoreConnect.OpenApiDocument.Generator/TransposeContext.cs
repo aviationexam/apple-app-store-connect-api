@@ -18,16 +18,4 @@ public partial class TransposeContext : IDisposable
     public IReadOnlyDictionary<string, JsonNode> NewComponents => _newComponents;
 
     private readonly Dictionary<string, JsonNode> _newComponents = new();
-
-    private static string GetReferenceName(string componentSchema) => $"#/components/schemas/{componentSchema}";
-
-    private static ReadOnlySpan<char> GetComponentName(string reference)
-    {
-        var referenceSpan = reference.AsSpan();
-
-        var slashIndex = referenceSpan.LastIndexOf('/');
-        slashIndex++;
-
-        return referenceSpan[slashIndex..];
-    }
 }

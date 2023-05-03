@@ -1,3 +1,4 @@
+using Apple.AppStoreConnect.GeneratorCommon.Extensions;
 using Apple.AppStoreConnect.OpenApiDocument.Generator.Extensions;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ public sealed partial class TransposeContext
         {
             if (previousEnums.SequenceEqual(enumValues.OrderBy(x => x)))
             {
-                return GetReferenceName(componentSchema);
+                return componentSchema.GetReferenceName();
             }
 
             var i = 2;
@@ -33,7 +34,7 @@ public sealed partial class TransposeContext
             {
                 if (previousEnums.SequenceEqual(enumValues.OrderBy(x => x)))
                 {
-                    return GetReferenceName(componentSchemaCandidate);
+                    return componentSchemaCandidate.GetReferenceName();
                 }
 
                 i++;
@@ -75,6 +76,6 @@ public sealed partial class TransposeContext
 
         _jsonWriter.Reset(Stream.Null);
 
-        return GetReferenceName(componentSchema);
+        return componentSchema.GetReferenceName();
     }
 }
