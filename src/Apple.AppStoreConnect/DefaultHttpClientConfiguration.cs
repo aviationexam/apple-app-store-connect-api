@@ -12,14 +12,17 @@ namespace Apple.AppStoreConnect;
 public sealed class DefaultHttpClientConfiguration : IHttpClientConfiguration
 {
     private readonly IJwtGenerator _jwtGenerator;
+    private readonly JsonStringEnumConverterFactory _jsonStringEnumConverterFactory;
     private readonly OneOfJsonConverterFactory _oneOfJsonConverterFactory;
 
     public DefaultHttpClientConfiguration(
         IJwtGenerator jwtGenerator,
+        JsonStringEnumConverterFactory jsonStringEnumConverterFactory,
         OneOfJsonConverterFactory oneOfJsonConverterFactory
     )
     {
         _jwtGenerator = jwtGenerator;
+        _jsonStringEnumConverterFactory = jsonStringEnumConverterFactory;
         _oneOfJsonConverterFactory = oneOfJsonConverterFactory;
     }
 
@@ -40,6 +43,7 @@ public sealed class DefaultHttpClientConfiguration : IHttpClientConfiguration
 
     public IEnumerable<JsonConverter> GetJsonConverters()
     {
+        yield return _jsonStringEnumConverterFactory;
         yield return _oneOfJsonConverterFactory;
     }
 }

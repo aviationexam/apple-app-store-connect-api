@@ -24,6 +24,7 @@ public class OneOfJsonConverterTests
             {
                 Converters =
                 {
+                    new JsonStringEnumConverterFactory(),
                     new OneOfJsonConverterFactory(loggerFactory),
                 }
             }
