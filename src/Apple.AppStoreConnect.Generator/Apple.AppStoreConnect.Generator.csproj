@@ -31,4 +31,21 @@
     <ProjectReference Include="..\Apple.AppStoreConnect.GeneratorCommon\Apple.AppStoreConnect.GeneratorCommon.csproj" PrivateAssets="all" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);AddGenerationTimeReferencesCustom</GetTargetPathDependsOn>
+  </PropertyGroup>
+
+  <Target Name="AddGenerationTimeReferencesCustom" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <ResolvedProjectReferencePaths Include="%(_ResolvedProjectReferencePaths.Identity)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="@(ResolvedProjectReferencePaths)" Pack="true" PackagePath="analyzers/dotnet/cs" />
+      <TargetPathWithTargetPlatformMoniker Include="@(ResolvedProjectReferencePaths)" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+
+    <Message Text="Added generation time reference: %(ResolvedProjectReferencePaths.Identity)" Importance="high" />
+  </Target>
+
 </Project>
