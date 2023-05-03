@@ -1,20 +1,20 @@
-using Apple.AppStoreConnect.GeneratorCommon;
 using Apple.AppStoreConnect.GeneratorCommon.Extensions;
 using H.Generators;
 using H.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System;
+using System.Collections.Immutable;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
 
-namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
+namespace Apple.AppStoreConnect.Generator;
 
 [Generator]
-public class OpenApiTransposeGenerator : IIncrementalGenerator
+public class HttpClientNextGenerator : IIncrementalGenerator
 {
-    public const string Id = "OATG";
+    public const string Id = "HCNG";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -23,51 +23,41 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
             .Combine(context.AnalyzerConfigOptionsProvider)
             .Where(static ((AdditionalText textFile, AnalyzerConfigOptionsProvider analyzerConfigOptionsProvider) x) =>
                 !string.IsNullOrEmpty(
-                    x.analyzerConfigOptionsProvider.GetOption(x.textFile, "OpenApi")
+                    x.analyzerConfigOptionsProvider.GetOption(x.textFile, "HttpClientNext_OpenApi")
                 )
             )
             .Select(static (x, _) => x.Item1)
             .Combine(context.AnalyzerConfigOptionsProvider
                 .Select(static (x, _) =>
-                    x.GetRequiredGlobalOption("ResultOpenApiDestination")
+                    x.GetRequiredGlobalOption("HttpClientNext_Namespace")
                 )
             )
             .SelectAndReportExceptions(GetSourceCode, context, Id)
             .AddSource(context);
     }
 
-    private static FileWithName GetSourceCode(
-        (AdditionalText textFile, string resultOpenApiDestination) source,
-        CancellationToken cancellationToken = default
+    private static EquatableArray<FileWithName> GetSourceCode(
+        (AdditionalText textFile, string targetNamespace) source,
+        CancellationToken cancellationToken
     )
     {
-        var writerOptions = new JsonWriterOptions
-        {
-            Indented = true,
-        };
-
         var documentOptions = new JsonReaderOptions
         {
             CommentHandling = JsonCommentHandling.Skip,
         };
 
-        Directory.CreateDirectory(source.resultOpenApiDestination);
-
-        // This is a hack until source-generator support embedded resources
-        using var destinationFileStream = new FileStream(
-            Path.Combine(source.resultOpenApiDestination, Path.GetFileName(source.textFile.Path)),
-            FileMode.Create, FileAccess.Write, FileShare.Write
-        );
-
-        using var jsonWriter = new Utf8JsonWriter(destinationFileStream, options: writerOptions);
-
         var jsonReadOnlySpan = File.ReadAllBytes(source.textFile.Path).AsSpan().TrimBom();
 
         var jsonReader = new Utf8JsonReader(jsonReadOnlySpan, documentOptions);
 
+        ImmutableArray<FileWithName> files;
         try
         {
-            JsonIterator.ProcessJson(ref jsonReader, jsonWriter);
+            files = JsonIterator.ProcessJson(
+                    ref jsonReader,
+                    source.targetNamespace.AsSpan()
+                )
+                .ToImmutableArray();
         }
         catch (Exception e)
         {
@@ -76,9 +66,6 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
             );
         }
 
-        jsonWriter.Flush();
-        destinationFileStream.Flush(flushToDisk: true);
-
-        return FileWithName.Empty;
+        return files;
     }
 }

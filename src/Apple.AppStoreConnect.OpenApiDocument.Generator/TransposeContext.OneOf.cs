@@ -1,3 +1,4 @@
+using Apple.AppStoreConnect.GeneratorCommon.Extensions;
 using Apple.AppStoreConnect.OpenApiDocument.Generator.Extensions;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ public sealed partial class TransposeContext
         var enumTypeReference = GetEnumComponentReference(
             componentSchemaSpan,
             "Enum".AsSpan(),
-            references.Select(x => GetComponentName(x).ToString()).ToList()
+            references.Select(x => x.GetComponentName().ToString()).ToList()
         );
 
         using (var memoryStream = new MemoryStream())
@@ -47,7 +48,7 @@ public sealed partial class TransposeContext
                 _jsonWriter.WriteStartObject();
 
                 _jsonWriter.WritePropertyName("$ref"u8);
-                _jsonWriter.WriteStringValue(GetReferenceName(OneOfParentComponent));
+                _jsonWriter.WriteStringValue(OneOfParentComponent.GetReferenceName());
 
                 _jsonWriter.WriteEndObject();
             }
@@ -77,7 +78,7 @@ public sealed partial class TransposeContext
 
                     foreach (var reference in references)
                     {
-                        _jsonWriter.WritePropertyName(GetComponentName(reference));
+                        _jsonWriter.WritePropertyName(reference.GetComponentName());
                         _jsonWriter.WriteStartObject();
 
                         _jsonWriter.WritePropertyName("$ref"u8);
@@ -108,7 +109,7 @@ public sealed partial class TransposeContext
 
         _jsonWriter.Reset(Stream.Null);
 
-        return GetReferenceName(componentSchema);
+        return componentSchema.GetReferenceName();
     }
 
     private void AddOneOfComponent()
