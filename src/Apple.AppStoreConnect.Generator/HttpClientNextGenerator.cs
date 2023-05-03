@@ -1,9 +1,13 @@
+using Apple.AppStoreConnect.GeneratorCommon.Extensions;
 using H.Generators;
 using H.Generators.Extensions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 
 namespace Apple.AppStoreConnect.Generator;
@@ -13,12 +17,17 @@ public class HttpClientNextGenerator : IIncrementalGenerator
 {
     public const string Id = "HCNG";
 
-    private static ReadOnlySpan<byte> Utf8Bom => new byte[] { 0xEF, 0xBB, 0xBF };
-
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.AdditionalTextsProvider
-            .Where(static text => text.Path.EndsWith(".nswag", StringComparison.InvariantCultureIgnoreCase))
+            .Where(static text => text.Path.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase))
+            .Combine(context.AnalyzerConfigOptionsProvider)
+            .Where(static ((AdditionalText textFile, AnalyzerConfigOptionsProvider analyzerConfigOptionsProvider) x) =>
+                !string.IsNullOrEmpty(
+                    x.analyzerConfigOptionsProvider.GetOption(x.textFile, "HttpClientNext_OpenApi")
+                )
+            )
+            .Select(static (x, _) => x.Item1)
             .SelectAndReportExceptions(GetSourceCode, context, Id)
             .AddSource(context);
     }
@@ -28,17 +37,24 @@ public class HttpClientNextGenerator : IIncrementalGenerator
         CancellationToken cancellationToken
     )
     {
-        ReadOnlySpan<byte> jsonReadOnlySpan = File.ReadAllBytes(textFile.Path);
-
-        if (jsonReadOnlySpan.StartsWith(Utf8Bom))
+        if (!Debugger.IsAttached)
         {
-            jsonReadOnlySpan = jsonReadOnlySpan[Utf8Bom.Length..];
+            Debugger.Launch();
         }
+
+        var documentOptions = new JsonReaderOptions
+        {
+            CommentHandling = JsonCommentHandling.Skip,
+        };
+
+        var jsonReadOnlySpan = File.ReadAllBytes(textFile.Path).AsSpan().TrimBom();
+
+        var jsonReader = new Utf8JsonReader(jsonReadOnlySpan, documentOptions);
 
         ImmutableArray<FileWithName> files;
         try
         {
-            files = JsonIterator.ProcessJson(jsonReadOnlySpan)
+            files = JsonIterator.ProcessJson(ref jsonReader)
                 .ToImmutableArray();
         }
         catch (Exception e)

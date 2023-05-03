@@ -1,8 +1,10 @@
+using Apple.AppStoreConnect.Generator.Processors;
 using Apple.AppStoreConnect.GeneratorCommon;
 using Apple.AppStoreConnect.GeneratorCommon.Extensions;
 using H.Generators;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 
 namespace Apple.AppStoreConnect.Generator;
@@ -10,22 +12,18 @@ namespace Apple.AppStoreConnect.Generator;
 public static class JsonIterator
 {
     public static IEnumerable<FileWithName> ProcessJson(
-        ReadOnlySpan<byte> jsonReadOnlySpan
+        ref Utf8JsonReader jsonReader
     )
     {
-        var documentOptions = new JsonReaderOptions
-        {
-            CommentHandling = JsonCommentHandling.Skip,
-        };
-
-        var jsonReader = new Utf8JsonReader(jsonReadOnlySpan, documentOptions);
-
         var path = new Stack<PathItem>();
         ReadOnlySpan<byte> lastProperty = null;
+        var resultFileNames = new List<FileWithName>();
 
         while (jsonReader.Read())
         {
             var tokenType = jsonReader.TokenType;
+
+            var a = Encoding.UTF8.GetString(jsonReader.ValueSpan.ToArray());
 
             switch (tokenType)
             {
@@ -34,10 +32,9 @@ public static class JsonIterator
 
                     break;
                 case JsonTokenType.EndObject:
-                    PathItem? pathItem = null;
                     if (path.Count > 0)
                     {
-                        pathItem = path.Pop();
+                        path.Pop();
                     }
 
                     lastProperty = default;
@@ -61,6 +58,19 @@ public static class JsonIterator
                     }
 
                     lastProperty = jsonReader.ValueSpan;
+
+                    var fileWithNames = TryProcessItems(
+                        path, lastProperty,
+                        ref jsonReader
+                    );
+
+                    foreach (var fileWithName in fileWithNames)
+                    {
+                        if (!fileWithName.IsEmpty)
+                        {
+                            resultFileNames.Add(fileWithName);
+                        }
+                    }
 
                     break;
 
@@ -91,6 +101,23 @@ public static class JsonIterator
             }
         }
 
-        yield break;
+        return resultFileNames;
+    }
+
+    private static IReadOnlyCollection<FileWithName> TryProcessItems(
+        IReadOnlyCollection<PathItem> path,
+        ReadOnlySpan<byte> lastProperty,
+        ref Utf8JsonReader jsonReader
+    )
+    {
+        var getNextFileWithName = GetNextProcessor.TryProcessItems(
+            path, lastProperty,
+            ref jsonReader
+        );
+
+        return new[]
+        {
+            getNextFileWithName,
+        };
     }
 }
