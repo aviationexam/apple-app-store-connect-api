@@ -14,39 +14,26 @@ namespace Apple.AppStoreConnect.Converters;
 public class OneOfJsonConverter<TOneOf> : JsonConverter<TOneOf>
     where TOneOf : OneOf, new()
 {
-    private readonly PropertyInfo? _oneOfDiscriminator;
+    private readonly PropertyInfo? _oneOfDiscriminator = typeof(TOneOf).GetProperty("OneOfType");
 
     private readonly ILogger _logger;
-    private readonly IDictionary<string, PropertyInfo> _jsonTypeMap = new Dictionary<string, PropertyInfo>();
+    private readonly IDictionary<string, PropertyInfo> _jsonTypeMap;
     private readonly IDictionary<string, Enum> _oneOfDiscriminators = new Dictionary<string, Enum>();
+    private readonly IDictionary<Enum, string> _reversedOneOfDiscriminators = new Dictionary<Enum, string>();
 
     public OneOfJsonConverter(
         ILogger logger
     )
     {
         _logger = logger;
-        _oneOfDiscriminator = typeof(TOneOf).GetProperty("OneOfType");
 
-        BuildJsonTypeMap();
+        _jsonTypeMap = BuildJsonTypeMap();
+        BuildOneOfDiscriminatorsMap(_jsonTypeMap);
     }
 
-    private void BuildJsonTypeMap()
+    private IDictionary<string, PropertyInfo> BuildJsonTypeMap()
     {
-        if (_oneOfDiscriminator is null)
-        {
-            _logger.LogError("The {OneOfType} does not contain 'OneOfType' property", typeof(TOneOf));
-            return;
-        }
-
-        var oneOfDiscriminatorType = _oneOfDiscriminator.PropertyType.GetNotNullableType();
-
-        foreach (Enum enumValue in oneOfDiscriminatorType.GetEnumValues())
-        {
-            _oneOfDiscriminators.Add(
-                Enum.GetName(oneOfDiscriminatorType, enumValue)!,
-                enumValue
-            );
-        }
+        var jsonTypeMap = new Dictionary<string, PropertyInfo>();
 
         foreach (var propertyInfo in typeof(TOneOf).GetProperties())
         {
@@ -92,8 +79,52 @@ public class OneOfJsonConverter<TOneOf> : JsonConverter<TOneOf>
                 continue;
             }
 
-            _jsonTypeMap.Add(fieldTypeValues.ElementAt(0), propertyInfo);
+            jsonTypeMap.Add(fieldTypeValues.ElementAt(0), propertyInfo);
         }
+
+        return jsonTypeMap;
+    }
+
+    private void BuildOneOfDiscriminatorsMap(IDictionary<string, PropertyInfo> jsonTypeMap)
+    {
+        if (_oneOfDiscriminator is null)
+        {
+            _logger.LogError("The {OneOfType} does not contain 'OneOfType' property", typeof(TOneOf));
+            return;
+        }
+
+        var oneOfDiscriminatorType = _oneOfDiscriminator.PropertyType.GetNotNullableType();
+
+        foreach (Enum enumValue in oneOfDiscriminatorType.GetEnumValues())
+        {
+            var enumName = Enum.GetName(oneOfDiscriminatorType, enumValue)!;
+
+            _oneOfDiscriminators.Add(enumName, enumValue);
+        }
+
+        foreach (var (typeName, propertyInfo) in jsonTypeMap)
+        {
+            _reversedOneOfDiscriminators.Add(_oneOfDiscriminators[propertyInfo.Name], typeName);
+        }
+    }
+
+
+    private static ITypedReader<TOneOf> CreateTypedReader(PropertyInfo propertyInfo)
+    {
+        var typedReaderType = typeof(TypedReader<,>).MakeGenericType(
+            typeof(TOneOf), propertyInfo.PropertyType
+        );
+
+        return (ITypedReader<TOneOf>) Activator.CreateInstance(typedReaderType)!;
+    }
+
+    private static ITypedWriter<TOneOf> CreateTypedWriter(PropertyInfo propertyInfo)
+    {
+        var typedWriterType = typeof(TypedWriter<,>).MakeGenericType(
+            typeof(TOneOf), propertyInfo.PropertyType
+        );
+
+        return (ITypedWriter<TOneOf>) Activator.CreateInstance(typedWriterType)!;
     }
 
     public override TOneOf? Read(
@@ -137,12 +168,7 @@ public class OneOfJsonConverter<TOneOf> : JsonConverter<TOneOf>
                         {
                             var oneOfEnvelope = new TOneOf();
 
-                            var typedReaderType = typeof(TypedReader<,>).MakeGenericType(
-                                typeof(TOneOf), propertyInfo.PropertyType
-                            );
-                            var typedReader = (TypedReader<TOneOf>) Activator.CreateInstance(typedReaderType)!;
-
-                            typedReader.Read(
+                            CreateTypedReader(propertyInfo).Read(
                                 oneOfEnvelope,
                                 propertyInfo,
                                 ref reader, options
@@ -180,6 +206,30 @@ public class OneOfJsonConverter<TOneOf> : JsonConverter<TOneOf>
 
     public override void Write(Utf8JsonWriter writer, TOneOf value, JsonSerializerOptions options)
     {
-        throw new NotImplementedException();
+        if (_oneOfDiscriminator is null)
+        {
+            _logger.LogError("The {OneOfType} does not contain 'OneOfType' property", typeof(TOneOf));
+            return;
+        }
+
+        var oneOfTypeValue = (Enum?) _oneOfDiscriminator.GetValue(value);
+
+        if (oneOfTypeValue is null)
+        {
+            _logger.LogError("The 'OneOfType' property in the {OneOfType} bust be set", typeof(TOneOf));
+            return;
+        }
+
+        if (
+            _reversedOneOfDiscriminators.TryGetValue(oneOfTypeValue, out var typeName)
+            && _jsonTypeMap.TryGetValue(typeName, out var propertyInfo)
+        )
+        {
+            CreateTypedWriter(propertyInfo).Write(
+                value,
+                propertyInfo,
+                writer, options
+            );
+        }
     }
 }
