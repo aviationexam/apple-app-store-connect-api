@@ -1,3 +1,5 @@
+using Apple.AppStoreConnect.GeneratorCommon;
+using Apple.AppStoreConnect.GeneratorCommon.Extensions;
 using H.Generators;
 using H.Generators.Extensions;
 using Microsoft.CodeAnalysis;
@@ -13,8 +15,6 @@ namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
 public class OpenApiTransposeGenerator : IIncrementalGenerator
 {
     public const string Id = "OATG";
-
-    private static ReadOnlySpan<byte> Utf8Bom => new byte[] { 0xEF, 0xBB, 0xBF };
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -61,12 +61,7 @@ public class OpenApiTransposeGenerator : IIncrementalGenerator
 
         using var jsonWriter = new Utf8JsonWriter(destinationFileStream, options: writerOptions);
 
-        ReadOnlySpan<byte> jsonReadOnlySpan = File.ReadAllBytes(source.textFile.Path);
-
-        if (jsonReadOnlySpan.StartsWith(Utf8Bom))
-        {
-            jsonReadOnlySpan = jsonReadOnlySpan[Utf8Bom.Length..];
-        }
+        var jsonReadOnlySpan = File.ReadAllBytes(source.textFile.Path).AsSpan().TrimBom();
 
         var jsonReader = new Utf8JsonReader(jsonReadOnlySpan, documentOptions);
 
