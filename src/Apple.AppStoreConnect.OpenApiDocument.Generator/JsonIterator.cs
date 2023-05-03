@@ -1,4 +1,5 @@
-using Apple.AppStoreConnect.OpenApiDocument.Generator.Extensions;
+using Apple.AppStoreConnect.GeneratorCommon;
+using Apple.AppStoreConnect.GeneratorCommon.Extensions;
 using Apple.AppStoreConnect.OpenApiDocument.Generator.Processors;
 using System;
 using System.Collections.Generic;

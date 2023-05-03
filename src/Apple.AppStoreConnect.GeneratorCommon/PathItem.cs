@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
-namespace Apple.AppStoreConnect.OpenApiDocument.Generator;
+namespace Apple.AppStoreConnect.GeneratorCommon;
 
 public record PathItem(JsonTokenType TokenType, string? PropertyName, PathItem? ParentPathItem = null)
 {
