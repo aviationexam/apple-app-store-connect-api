@@ -39,6 +39,7 @@ public static partial class AppStoreConnectExtensions
         );
 
         serviceCollection.TryAddSingleton<IJwtGenerator, DefaultJwtGenerator>();
+        serviceCollection.AddSingleton<JsonStringEnumConverterFactory>();
         serviceCollection.AddSingleton<OneOfJsonConverterFactory>();
         serviceCollection.TryAddSingleton<IHttpClientConfiguration, DefaultHttpClientConfiguration>();
 
