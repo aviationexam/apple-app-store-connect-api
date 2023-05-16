@@ -16,25 +16,24 @@ public class HttpClientNextGenerator : IIncrementalGenerator
 {
     public const string Id = "HCNG";
 
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        context.AdditionalTextsProvider
-            .Where(static text => text.Path.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase))
-            .Combine(context.AnalyzerConfigOptionsProvider)
-            .Where(static ((AdditionalText textFile, AnalyzerConfigOptionsProvider analyzerConfigOptionsProvider) x) =>
-                !string.IsNullOrEmpty(
-                    x.analyzerConfigOptionsProvider.GetOption(x.textFile, "HttpClientNext_OpenApi")
-                )
+    public void Initialize(
+        IncrementalGeneratorInitializationContext context
+    ) => context.AdditionalTextsProvider
+        .Where(static text => text.Path.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase))
+        .Combine(context.AnalyzerConfigOptionsProvider)
+        .Where(static ((AdditionalText textFile, AnalyzerConfigOptionsProvider analyzerConfigOptionsProvider) x) =>
+            !string.IsNullOrEmpty(
+                x.analyzerConfigOptionsProvider.GetOption(x.textFile, "HttpClientNext_OpenApi")
             )
-            .Select(static (x, _) => x.Item1)
-            .Combine(context.AnalyzerConfigOptionsProvider
-                .Select(static (x, _) =>
-                    x.GetRequiredGlobalOption("HttpClientNext_Namespace")
-                )
+        )
+        .Select(static (x, _) => x.Item1)
+        .Combine(context.AnalyzerConfigOptionsProvider
+            .Select(static (x, _) =>
+                x.GetRequiredGlobalOption("HttpClientNext_Namespace")
             )
-            .SelectAndReportExceptions(GetSourceCode, context, Id)
-            .AddSource(context);
-    }
+        )
+        .SelectAndReportExceptions(GetSourceCode, context, Id)
+        .AddSource(context);
 
     private static EquatableArray<FileWithName> GetSourceCode(
         (AdditionalText textFile, string targetNamespace) source,
