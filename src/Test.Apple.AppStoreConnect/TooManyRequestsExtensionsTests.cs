@@ -1,4 +1,4 @@
-﻿using Apple.AppStoreConnect.Exceptions;
+using Apple.AppStoreConnect.Exceptions;
 using Apple.AppStoreConnect.Extensions;
 using Apple.AppStoreConnect.Models;
 using System.Collections.Generic;
