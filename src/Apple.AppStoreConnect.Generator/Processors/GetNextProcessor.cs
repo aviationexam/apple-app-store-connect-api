@@ -123,6 +123,7 @@ public static class GetNextProcessor
                         Name: $"{routeTag}.{lastPathSegment}.g.cs",
                         Text: $$"""
 #pragma warning disable 612 // Disable "CS0612 '...' is obsolete"
+#nullable enable
 
 namespace {{targetNamespace.ToString()}};
 

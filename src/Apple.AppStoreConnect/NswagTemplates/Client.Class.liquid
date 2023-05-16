@@ -319,6 +319,10 @@
 {% endif %}
 
                     var status_ = (int)response_.StatusCode;
+                    if (status_ == 429) {
+                        throw new Apple.AppStoreConnect.Exceptions.TooManyRequestsException(headers_);
+                    }
+                    else
 {%     for response in operation.Responses -%}
                     if (status_ == {{ response.StatusCode }}{% if response.CheckChunkedStatusCode %} || status_ == 206{% endif %})
                     {
