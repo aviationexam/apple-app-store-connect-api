@@ -1,6 +1,7 @@
 using Apple.AppStoreConnect.Exceptions;
 using Apple.AppStoreConnect.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Apple.AppStoreConnect.Extensions;
@@ -13,11 +14,16 @@ public static class TooManyRequestsExtensions
     public static ETooManyRequestParseLimit TryParseLimits(
         this TooManyRequestsException exception,
         out AppleRateLimitResponse rateLimitResponse
+    ) => exception.Headers.TryParseLimits(out rateLimitResponse);
+
+    public static ETooManyRequestParseLimit TryParseLimits(
+        this IReadOnlyDictionary<string, IEnumerable<string>> headers,
+        out AppleRateLimitResponse rateLimitResponse
     )
     {
         rateLimitResponse = new AppleRateLimitResponse();
 
-        if (!exception.Headers.TryGetValue(TooManyRequestsException.RateLimitHeader, out var rateLimitEnumerable))
+        if (!headers.TryGetValue(TooManyRequestsException.RateLimitHeader, out var rateLimitEnumerable))
         {
             return ETooManyRequestParseLimit.MissingHeader;
         }
