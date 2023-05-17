@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <PackageLicense>MIT</PackageLicense>
     <ProjectName>AppStoreConnect.DependencyInjection.Generator</ProjectName>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
