@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using System;
 using System.Collections.Immutable;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 
@@ -45,7 +46,12 @@ public class HttpClientNextGenerator : IIncrementalGenerator
             CommentHandling = JsonCommentHandling.Skip,
         };
 
-        var jsonReadOnlySpan = File.ReadAllBytes(source.textFile.Path).AsSpan().TrimBom();
+        if (source.textFile.GetText() is var fileContent && fileContent is null)
+        {
+            return ImmutableArray<FileWithName>.Empty;
+        }
+
+        var jsonReadOnlySpan = Encoding.UTF8.GetBytes(fileContent.ToString()).AsSpan().TrimBom();
 
         var jsonReader = new Utf8JsonReader(jsonReadOnlySpan, documentOptions);
 
