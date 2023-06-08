@@ -120,6 +120,10 @@ public static class JsonIterator
         path,
         lastProperty,
         ref jsonReader, jsonWriter
+    ) || AddApiVersionProcessor.TryProcessItem(
+        path,
+        lastProperty,
+        ref jsonReader, jsonWriter
     ) || AnonymousEnumParameterProcessor.TryProcessItem(
         path,
         lastProperty,
