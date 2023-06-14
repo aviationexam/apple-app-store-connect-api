@@ -17,7 +17,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="7.0.5" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="7.0.7" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
