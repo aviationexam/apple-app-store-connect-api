@@ -1,6 +1,7 @@
 [![Build Status](https://github.com/aviationexam/apple-app-store-connect-api/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/aviationexam/apple-app-store-connect-api/actions/workflows/build.yml)
 [![NuGet](https://img.shields.io/nuget/v/Aviationexam.Apple.AppStoreConnect.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/Aviationexam.Apple.AppStoreConnect/)
 [![MyGet](https://img.shields.io/myget/apple-app-store-connect/vpre/Aviationexam.Apple.AppStoreConnect?label=MyGet)](https://www.myget.org/feed/apple-app-store-connect/package/nuget/Aviationexam.Apple.AppStoreConnect)
+[![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https%3A%2F%2Ff.feedz.io%2Faviationexam%2Fapple-app-store-connect-api%2Fshield%2FAviationexam.Apple.AppStoreConnect%2Flatest&label=Aviationexam.Apple.AppStoreConnect)](https://f.feedz.io/aviationexam/apple-app-store-connect-api/packages/Aviationexam.Apple.AppStoreConnect/latest/download)
 
 # Apple AppStoreConnect
 
