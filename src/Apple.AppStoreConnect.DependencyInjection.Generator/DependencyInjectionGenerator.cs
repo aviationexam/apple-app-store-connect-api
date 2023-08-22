@@ -67,7 +67,7 @@ public class DependencyInjectionGenerator : IIncrementalGenerator
                 SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System")),
                 SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Collections.Generic"))
             }))
-            .WithMembers(SyntaxFactory.SingletonList<SyntaxNode>(
+            .WithMembers(SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
                 SyntaxFactory.FileScopedNamespaceDeclaration(
                         SyntaxFactory.IdentifierName(GetNamespaceFrom(extensionClassDeclarationSyntax))
                     )
