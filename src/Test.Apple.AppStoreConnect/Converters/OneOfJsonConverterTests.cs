@@ -94,10 +94,7 @@ public class OneOfJsonConverterTests
                 Assert.Equal("""
                 {
                   "type": "territories",
-                  "id": "territory-id",
-                  "links": {
-                    "self": "self-url"
-                  }
+                  "id": "territory-id"
                 }
                 """.Replace("\r\n", Environment.NewLine), json);
                 break;
@@ -158,10 +155,6 @@ public class OneOfJsonConverterTests
                 {
                     Type = TerritoryType.Territories,
                     Id = "territory-id",
-                    Links = new ResourceLinks
-                    {
-                        Self = "self-url",
-                    },
                 }
             },
         };
@@ -169,10 +162,10 @@ public class OneOfJsonConverterTests
 
     public enum AppAvailabilityResponseIncludedEnum
     {
-        [EnumMember(Value = @"App")]
+        [EnumMember(Value = "App")]
         App = 0,
 
-        [EnumMember(Value = @"Territory")]
+        [EnumMember(Value = "Territory")]
         Territory = 1,
     }
 
