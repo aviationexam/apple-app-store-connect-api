@@ -25,7 +25,7 @@
   <Import Project="..\Apple.AppStoreConnect.OpenApiDocument.Generator\Apple.AppStoreConnect.OpenApiDocument.Generator.props" />
 
   <ItemGroup>
-    <AdditionalFiles Include="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/openapi.json" OpenApi="Apple.AppStoreConnect" />
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/*.json" OpenApi="Apple.AppStoreConnect" />
   </ItemGroup>
 
   <ItemGroup>
