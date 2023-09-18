@@ -8,8 +8,8 @@
 ## Install
 ```xml
 <ItemGroup>
-    <PackageReference Include="Apple.AppStoreConnect" Version="" />
-    <PackageReference Include="Apple.AppStoreConnect.DependencyInjection" Version="" />
+    <PackageReference Include="Aviationexam.Apple.AppStoreConnect" Version="" />
+    <PackageReference Include="Aviationexam.Apple.AppStoreConnect.DependencyInjection" Version="" />
 </ItemGroup>
 ```
 
@@ -18,7 +18,7 @@
 Add library to the dependency container
 
 ```cs
-using Apple.AppStoreConnect.DependencyInjection;
+using Aviationexam.Apple.AppStoreConnect.DependencyInjection;
 
 IServiceCollection serviceCollection;
 
