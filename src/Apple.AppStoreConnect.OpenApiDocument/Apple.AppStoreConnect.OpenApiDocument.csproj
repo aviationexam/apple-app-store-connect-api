@@ -14,6 +14,7 @@
     <AppStoreConnectOpenApiSpecificationUrl>https://developer.apple.com/sample-code/app-store-connect/app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationUrl>
     <AppStoreConnectOpenApiSpecificationFile>app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationFile>
     <AppStoreConnectOpenApiSpecificationExtracted>app-store-connect-openapi-specification</AppStoreConnectOpenApiSpecificationExtracted>
+    <AppStoreConnectOpenApiSpecificationJson>openapi.json</AppStoreConnectOpenApiSpecificationJson>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -25,21 +26,31 @@
   <Import Project="..\Apple.AppStoreConnect.OpenApiDocument.Generator\Apple.AppStoreConnect.OpenApiDocument.Generator.props" />
 
   <ItemGroup>
-    <AdditionalFiles Include="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/openapi.json" OpenApi="Apple.AppStoreConnect" />
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)" OpenApi="Apple.AppStoreConnect" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument.Generator\Apple.AppStoreConnect.OpenApiDocument.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
 
-  <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" Condition="!Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)')">
+  <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" Condition="!Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)')">
     <Message Importance="High" Text="Downloading $(AppStoreConnectOpenApiSpecificationUrl) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
 
     <Exec WorkingDirectory="$(ProjectDir)" Command="curl -sS $(AppStoreConnectOpenApiSpecificationUrl) --output $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
+  </Target>
 
+  <Target Name="ExtractAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="DownloadAppStoreConnectOpenApiSpecification" Condition="!Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)')">
     <Message Importance="High" Text="Extracting $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" />
 
     <Unzip SourceFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" DestinationFolder="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" OverwriteReadOnlyFiles="true" />
+
+    <ItemGroup>
+      <OriginalOpenApiJsonFile Include="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/*.json" />
+    </ItemGroup>
+
+    <Message Importance="High" Text="Renamed File: @(OriginalOpenApiJsonFile) to $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)" />
+
+    <Move SourceFiles="@(OriginalOpenApiJsonFile)" DestinationFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)" />
   </Target>
 
 </Project>
