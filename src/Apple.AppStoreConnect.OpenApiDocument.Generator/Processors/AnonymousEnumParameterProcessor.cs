@@ -242,6 +242,12 @@ public static class AnonymousEnumParameterProcessor
         if (operationId.IndexOf('-') is var dashIndex and > 0)
         {
             var operationGroupName = operationId[..dashIndex];
+
+            if (operationGroupName.EndsWith(urlVersion))
+            {
+                urlVersion = Span<char>.Empty;
+            }
+
             dashIndex++;
             operationId = operationId[dashIndex..];
             dashIndex = operationId.IndexOf('-');
