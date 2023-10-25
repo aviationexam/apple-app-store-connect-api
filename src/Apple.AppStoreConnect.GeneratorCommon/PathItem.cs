@@ -7,9 +7,9 @@ namespace Apple.AppStoreConnect.GeneratorCommon;
 
 public record PathItem(JsonTokenType TokenType, string? PropertyName, PathItem? ParentPathItem = null)
 {
-    public IReadOnlyDictionary<string, string> Properties => _properties;
+    public IReadOnlyCollection<KeyValuePair<string, string>> Properties => _properties;
 
-    private Dictionary<string, string> _properties = new();
+    private readonly List<KeyValuePair<string, string>> _properties = new();
 
     public void AddUsefulProperty(ReadOnlySpan<byte> property, ReadOnlySpan<byte> value)
     {
@@ -21,13 +21,13 @@ public record PathItem(JsonTokenType TokenType, string? PropertyName, PathItem? 
             var propertyString = Encoding.UTF8.GetString(property.ToArray());
             var propertyValue = Encoding.UTF8.GetString(value.ToArray());
 
-            _properties.Add(propertyString, propertyValue);
+            _properties.Add(new KeyValuePair<string, string>(propertyString, propertyValue));
         }
         else if (ParentPathItem != null && PropertyName == "tags")
         {
             var propertyValue = Encoding.UTF8.GetString(value.ToArray());
 
-            ParentPathItem._properties.Add(PropertyName, propertyValue);
+            ParentPathItem._properties.Add(new KeyValuePair<string, string>(PropertyName, propertyValue));
         }
     }
 
