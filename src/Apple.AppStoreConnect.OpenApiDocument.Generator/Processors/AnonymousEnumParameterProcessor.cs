@@ -37,8 +37,8 @@ public static class AnonymousEnumParameterProcessor
             var jsonReaderClone = jsonReader;
 
             if (
-                path.ElementAt(0).Properties.TryGetValue("name", out var name)
-                && path.ElementAt(2).Properties.TryGetValue("operationId", out var operationId)
+                path.ElementAt(0).Properties.Where(x => x.Key == "name").Select(x => x.Value).SingleOrDefault() is { } name
+                && path.ElementAt(2).Properties.Where(x => x.Key == "operationId").Select(x => x.Value).SingleOrDefault() is { } operationId
                 && TryReadInner(path, name, operationId, ref jsonReaderClone, jsonWriter, context)
             )
             {
