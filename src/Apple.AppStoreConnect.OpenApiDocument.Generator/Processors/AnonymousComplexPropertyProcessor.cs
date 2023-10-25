@@ -2,6 +2,7 @@ using Apple.AppStoreConnect.GeneratorCommon;
 using Apple.AppStoreConnect.OpenApiDocument.Generator.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -126,6 +127,32 @@ public static class AnonymousComplexPropertyProcessor
         TransposeContext context
     )
     {
+        if (
+            TryProcessItemInternal(
+                typePrefix,
+                lastPropertySpan,
+                jsonNode,
+                context,
+                out var reference
+            )
+        )
+        {
+            return reference;
+        }
+
+        throw new Exception(
+            $"Unable to process item {typePrefix.ToString()}.{lastPropertySpan.ToString()}"
+        );
+    }
+
+    private static bool TryProcessItemInternal(
+        ReadOnlySpan<char> typePrefix,
+        ReadOnlySpan<char> lastPropertySpan,
+        JsonNode jsonNode,
+        TransposeContext context,
+        [NotNullWhen(true)] out string? reference
+    )
+    {
         var titleSpan = typePrefix.CreateTypeName(lastPropertySpan);
 
         if (jsonNode["properties"] is { } innerProperties)
@@ -152,12 +179,18 @@ public static class AnonymousComplexPropertyProcessor
                         && itemsJsonNode["$ref"] is null
                     )
                     {
-                        subProperty["items"] = ProcessItemInternal(
-                            titleSpan,
-                            innerProperty.Key.AsSpan(),
-                            itemsJsonNode,
-                            context
-                        ).GetReferenceJsonNode();
+                        if (
+                            TryProcessItemInternal(
+                                titleSpan,
+                                innerProperty.Key.AsSpan(),
+                                itemsJsonNode,
+                                context,
+                                out var innerReference
+                            )
+                        )
+                        {
+                            subProperty["items"] = innerReference.GetReferenceJsonNode();
+                        }
                     }
                     else if (
                         subProperty["type"]?.GetValue<string>() == "string"
@@ -179,11 +212,29 @@ public static class AnonymousComplexPropertyProcessor
                 }
             }
         }
+        else if (
+            jsonNode["type"]?.GetValue<string>() == "array"
+            && jsonNode["items"] is { } itemsJsonNode
+            && itemsJsonNode["$ref"] is null
+        )
+        {
+            jsonNode["items"] = ProcessItemInternal(
+                titleSpan,
+                ReadOnlySpan<char>.Empty,
+                itemsJsonNode,
+                context
+            ).GetReferenceJsonNode();
 
-        return context.AddComponent(
+            reference = null;
+            return false;
+        }
+
+        reference = context.AddComponent(
             titleSpan.ToString(),
             jsonNode
         );
+
+        return true;
     }
 
     public static bool TryWriteAdditional(

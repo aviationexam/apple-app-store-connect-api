@@ -47,7 +47,7 @@ public class HttpClientNextGenerator : IIncrementalGenerator
 
         if (source.textFile.GetText() is var fileContent && fileContent is null)
         {
-            return ImmutableArray<FileWithName>.Empty;
+            return ImmutableArray<FileWithName>.Empty.AsEquatableArray();
         }
 
         var jsonReadOnlySpan = Encoding.UTF8.GetBytes(fileContent.ToString()).AsSpan().TrimBom();
@@ -70,6 +70,6 @@ public class HttpClientNextGenerator : IIncrementalGenerator
             );
         }
 
-        return files;
+        return files.AsEquatableArray();
     }
 }
