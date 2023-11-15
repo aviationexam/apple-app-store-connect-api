@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <LangVersion>11.0</LangVersion>
+    <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+    <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
     <PackageLicense>MIT</PackageLicense>
     <RepositoryUrl>https://github.com/aviationexam/apple-app-store-connect-api</RepositoryUrl>
@@ -19,6 +19,10 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
