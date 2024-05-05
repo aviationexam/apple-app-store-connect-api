@@ -51,8 +51,9 @@ public static class AnonymousComplexPropertyProcessor
 
             var isObject = jsonReaderClone.ValueSpan.SequenceEqual("object"u8);
             var isArray = jsonReaderClone.ValueSpan.SequenceEqual("array"u8);
+            var isString = jsonReaderClone.ValueSpan.SequenceEqual("string"u8);
 
-            if (!isObject && !isArray)
+            if (!isObject && !isArray && !isString)
             {
                 // verify there is object and not a reference
                 return false;
@@ -108,6 +109,25 @@ public static class AnonymousComplexPropertyProcessor
                     jsonNode["items"]!,
                     context
                 ).GetReferenceJsonNode();
+
+                jsonNode.WriteTo(jsonWriter);
+            }
+            else if (isString)
+            {
+                if (jsonNode["enum"] is { } jsonNodeEnum)
+                {
+                    var enumValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var enumValue in jsonNodeEnum.AsArray())
+                    {
+                        enumValues.Add(enumValue!.GetValue<string>());
+                    }
+
+                    jsonNode = context.GetEnumComponentReference(
+                        component.PropertyName!.AsSpan(),
+                        lastPropertySpan,
+                        enumValues
+                    ).GetReferenceJsonNode();
+                }
 
                 jsonNode.WriteTo(jsonWriter);
             }
