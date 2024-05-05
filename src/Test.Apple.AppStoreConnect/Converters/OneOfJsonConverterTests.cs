@@ -84,6 +84,8 @@ public class OneOfJsonConverterTests
                 {
                   "type": "apps",
                   "id": "app-id",
+                  "attributes": null,
+                  "relationships": null,
                   "links": {
                     "self": "self-url"
                   }
@@ -94,7 +96,9 @@ public class OneOfJsonConverterTests
                 Assert.Equal("""
                 {
                   "type": "territories",
-                  "id": "territory-id"
+                  "id": "territory-id",
+                  "attributes": null,
+                  "links": null
                 }
                 """.Replace("\r\n", Environment.NewLine), json);
                 break;
