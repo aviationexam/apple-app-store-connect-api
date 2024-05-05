@@ -112,30 +112,30 @@ public class OneOfJsonConverterTests
 
     public static IEnumerable<object[]> OneOfJsonData()
     {
-        yield return new object[]
-        {
+        yield return
+        [
             """
             {
                 "type": "apps",
                 "id": "app-id"
             }
-            """,
-        };
-        yield return new object[]
-        {
+            """
+        ];
+        yield return
+        [
             """
             {
                 "type": "territories",
                 "id": "territory-id"
             }
-            """,
-        };
+            """
+        ];
     }
 
     public static IEnumerable<object[]> OneOfObjectData()
     {
-        yield return new object[]
-        {
+        yield return
+        [
             new TestingAppAvailabilityResponseIncluded
             {
                 OneOfType = AppAvailabilityResponseIncludedEnum.App,
@@ -148,10 +148,10 @@ public class OneOfJsonConverterTests
                         Self = "self-url",
                     },
                 }
-            },
-        };
-        yield return new object[]
-        {
+            }
+        ];
+        yield return
+        [
             new TestingAppAvailabilityResponseIncluded
             {
                 OneOfType = AppAvailabilityResponseIncludedEnum.Territory,
@@ -160,8 +160,8 @@ public class OneOfJsonConverterTests
                     Type = TerritoryType.Territories,
                     Id = "territory-id",
                 }
-            },
-        };
+            }
+        ];
     }
 
     public enum AppAvailabilityResponseIncludedEnum
