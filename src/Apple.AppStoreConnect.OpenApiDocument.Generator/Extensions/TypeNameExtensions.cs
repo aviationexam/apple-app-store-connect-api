@@ -28,6 +28,20 @@ public static class TypeNameExtensions
             }
         }
 
+        var i = titleSpan.IndexOf('.');
+        while (i > -1)
+        {
+            titleSpan[(i + 1)..].CopyTo(titleSpan[i..]);
+            titleSpan = titleSpan[..^1];
+
+            if (char.IsLower(titleSpan[i]))
+            {
+                titleSpan[i] = char.ToUpperInvariant(titleSpan[i]);
+            }
+
+            i = titleSpan.IndexOf('.');
+        }
+
         return titleSpan;
     }
 }
