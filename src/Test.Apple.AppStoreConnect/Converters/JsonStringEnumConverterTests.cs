@@ -52,16 +52,16 @@ public class JsonStringEnumConverterTests
 
     public static IEnumerable<object[]> Data()
     {
-        yield return new object[]
-        {
+        yield return
+        [
             MyEnum.App,
-            "\"app\"",
-        };
-        yield return new object[]
-        {
+            "\"app\""
+        ];
+        yield return
+        [
             MyEnum.Territory,
             "\"territory\""
-        };
+        ];
     }
 
     public enum MyEnum

@@ -84,6 +84,8 @@ public class OneOfJsonConverterTests
                 {
                   "type": "apps",
                   "id": "app-id",
+                  "attributes": null,
+                  "relationships": null,
                   "links": {
                     "self": "self-url"
                   }
@@ -94,7 +96,9 @@ public class OneOfJsonConverterTests
                 Assert.Equal("""
                 {
                   "type": "territories",
-                  "id": "territory-id"
+                  "id": "territory-id",
+                  "attributes": null,
+                  "links": null
                 }
                 """.Replace("\r\n", Environment.NewLine), json);
                 break;
@@ -108,30 +112,30 @@ public class OneOfJsonConverterTests
 
     public static IEnumerable<object[]> OneOfJsonData()
     {
-        yield return new object[]
-        {
+        yield return
+        [
             """
             {
                 "type": "apps",
                 "id": "app-id"
             }
-            """,
-        };
-        yield return new object[]
-        {
+            """
+        ];
+        yield return
+        [
             """
             {
                 "type": "territories",
                 "id": "territory-id"
             }
-            """,
-        };
+            """
+        ];
     }
 
     public static IEnumerable<object[]> OneOfObjectData()
     {
-        yield return new object[]
-        {
+        yield return
+        [
             new TestingAppAvailabilityResponseIncluded
             {
                 OneOfType = AppAvailabilityResponseIncludedEnum.App,
@@ -144,10 +148,10 @@ public class OneOfJsonConverterTests
                         Self = "self-url",
                     },
                 }
-            },
-        };
-        yield return new object[]
-        {
+            }
+        ];
+        yield return
+        [
             new TestingAppAvailabilityResponseIncluded
             {
                 OneOfType = AppAvailabilityResponseIncludedEnum.Territory,
@@ -156,8 +160,8 @@ public class OneOfJsonConverterTests
                     Type = TerritoryType.Territories,
                     Id = "territory-id",
                 }
-            },
-        };
+            }
+        ];
     }
 
     public enum AppAvailabilityResponseIncludedEnum

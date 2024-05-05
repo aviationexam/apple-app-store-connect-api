@@ -9,7 +9,7 @@ public record PathItem(JsonTokenType TokenType, string? PropertyName, PathItem? 
 {
     public IReadOnlyCollection<KeyValuePair<string, string>> Properties => _properties;
 
-    private readonly List<KeyValuePair<string, string>> _properties = new();
+    private readonly List<KeyValuePair<string, string>> _properties = [];
 
     public void AddUsefulProperty(ReadOnlySpan<byte> property, ReadOnlySpan<byte> value)
     {

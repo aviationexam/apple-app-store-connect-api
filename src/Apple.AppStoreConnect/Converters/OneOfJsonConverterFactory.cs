@@ -26,7 +26,7 @@ public class OneOfJsonConverterFactory : JsonConverterFactory
         typeof(OneOfJsonConverter<>).MakeGenericType(typeToConvert),
         BindingFlags.Instance | BindingFlags.Public,
         binder: null,
-        args: new object?[] { _loggerFactory.CreateLogger(typeToConvert) },
+        args: [_loggerFactory.CreateLogger(typeToConvert)],
         culture: null
     )!;
 }
