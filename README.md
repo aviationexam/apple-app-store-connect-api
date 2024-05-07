@@ -24,8 +24,8 @@ IServiceCollection serviceCollection;
 
 // you may need to add these dependencies
 serviceCollection.AddMemoryCache();
-using Microsoft.Extensions.Internal;
-serviceCollection.TryAddSingleton<ISystemClock, SystemClock>();
+using System;
+serviceCollection.TryAddSingleton<TimeProvider>(TimeProvider.System);
 
 // configure AppStoreConnect services
 serviceCollection.AddAppleAppStoreConnect(optionsBuilder => optionsBuilder

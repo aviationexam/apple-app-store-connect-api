@@ -1,6 +1,5 @@
 using Apple.AppStoreConnect.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -14,19 +13,19 @@ namespace Apple.AppStoreConnect;
 public partial class DefaultJwtGenerator : IJwtGenerator
 {
     private readonly IMemoryCache _cache;
-    private readonly ISystemClock _clock;
+    private readonly TimeProvider _timeProvider;
     private readonly IOptions<AppleAuthenticationOptions> _appleAuthenticationOptions;
     private readonly ILogger _logger;
 
     public DefaultJwtGenerator(
         IMemoryCache cache,
-        ISystemClock clock,
+        TimeProvider timeProvider,
         IOptions<AppleAuthenticationOptions> appleAuthenticationOptions,
         ILogger<DefaultJwtGenerator> logger
     )
     {
         _cache = cache;
-        _clock = clock;
+        _timeProvider = timeProvider;
         _appleAuthenticationOptions = appleAuthenticationOptions;
         _logger = logger;
     }
@@ -78,7 +77,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
         AppleAuthenticationOptions appleAuthenticationOptions, CancellationToken cancellationToken
     )
     {
-        var now = _clock.UtcNow;
+        var now = _timeProvider.GetUtcNow();
         var expiresAt = now.Add(appleAuthenticationOptions.JwtExpiresAfter);
 
         Log.GeneratingNewJwtToken(_logger, appleAuthenticationOptions.KeyId, expiresAt);
