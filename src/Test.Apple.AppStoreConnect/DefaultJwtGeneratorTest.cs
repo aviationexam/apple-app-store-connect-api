@@ -3,9 +3,9 @@ using Apple.AppStoreConnect.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Time.Testing;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -43,7 +43,7 @@ public class DefaultJwtGeneratorTest
                 .AddConsole()
                 .AddDebug()
             )
-            .AddSingleton<ISystemClock, SystemClock>();
+            .AddSingleton<TimeProvider, FakeTimeProvider>();
 
         serviceCollection.TryAddEnumerable(ServiceDescriptor
             .Singleton<IPostConfigureOptions<AppleAuthenticationOptions>, AppleAuthenticationPostConfigure>()
@@ -90,7 +90,8 @@ public class DefaultJwtGeneratorTest
                 .AddConsole()
                 .AddDebug()
             )
-            .AddSingleton<ISystemClock, SystemClock>();
+            .AddSingleton<FakeTimeProvider>()
+            .AddSingleton<TimeProvider>(s => s.GetRequiredService<FakeTimeProvider>());
 
         serviceCollection.TryAddEnumerable(ServiceDescriptor
             .Singleton<IPostConfigureOptions<AppleAuthenticationOptions>, AppleAuthenticationPostConfigure>()
