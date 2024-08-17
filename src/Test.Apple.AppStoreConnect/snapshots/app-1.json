@@ -1,0 +1,64 @@
+{
+  "data" : [ {
+    "type" : "apps",
+    "id" : "123",
+    "attributes" : {
+      "name" : "App 002",
+      "bundleId" : "com.company.app002",
+      "sku" : "002",
+      "primaryLocale" : "en-US",
+      "isOrEverWasMadeForKids" : false,
+      "subscriptionStatusUrl" : "https://domain.com/api/apple-notifications",
+      "subscriptionStatusUrlVersion" : "V1",
+      "subscriptionStatusUrlForSandbox" : "https://domain.com/api/apple-notifications",
+      "subscriptionStatusUrlVersionForSandbox" : "V1",
+      "contentRightsDeclaration" : "USES_THIRD_PARTY_CONTENT"
+    },
+    "relationships" : {
+      "ciProduct" : {
+        "links" : {
+          "self" : "https://api.appstoreconnect.apple.com/v1/apps/123/relationships/ciProduct",
+          "related" : "https://api.appstoreconnect.apple.com/v1/apps/123/ciProduct"
+        }
+      }
+    },
+    "links" : {
+      "self" : "https://api.appstoreconnect.apple.com/v1/apps/123"
+    }
+  }, {
+    "type" : "apps",
+    "id" : "124",
+    "attributes" : {
+      "name" : "App 001",
+      "bundleId" : "com.company.app001",
+      "sku" : "001",
+      "primaryLocale" : "en-US",
+      "isOrEverWasMadeForKids" : false,
+      "subscriptionStatusUrl" : "https://domain.com/api/apple-notifications",
+      "subscriptionStatusUrlVersion" : "V1",
+      "subscriptionStatusUrlForSandbox" : "https://domain.com/api/apple-notifications",
+      "subscriptionStatusUrlVersionForSandbox" : "V1",
+      "contentRightsDeclaration" : "USES_THIRD_PARTY_CONTENT"
+    },
+    "relationships" : {
+      "ciProduct" : {
+        "links" : {
+          "self" : "https://api.appstoreconnect.apple.com/v1/apps/124/relationships/ciProduct",
+          "related" : "https://api.appstoreconnect.apple.com/v1/apps/124/ciProduct"
+        }
+      }
+    },
+    "links" : {
+      "self" : "https://api.appstoreconnect.apple.com/v1/apps/124"
+    }
+  }],
+  "links" : {
+    "self" : "https://api.appstoreconnect.apple.com/v1/apps"
+  },
+  "meta" : {
+    "paging" : {
+      "total" : 2,
+      "limit" : 50
+    }
+  }
+}
