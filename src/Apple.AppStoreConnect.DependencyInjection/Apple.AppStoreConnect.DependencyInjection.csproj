@@ -11,6 +11,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <ProjectName>AppStoreConnect.DependencyInjection</ProjectName>
     <PackageId>Aviationexam.Apple.AppStoreConnect.DependencyInjection</PackageId>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>..\..\GeneratedFiles\DependencyInjection</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>

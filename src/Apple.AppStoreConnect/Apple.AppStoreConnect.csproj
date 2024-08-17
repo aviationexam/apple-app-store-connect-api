@@ -11,6 +11,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <ProjectName>AppStoreConnect</ProjectName>
     <PackageId>Aviationexam.Apple.AppStoreConnect</PackageId>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>..\..\GeneratedFiles\AppStoreConnect</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
