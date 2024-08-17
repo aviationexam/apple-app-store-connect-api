@@ -22,6 +22,7 @@
 
   <PropertyGroup>
     <HttpClientNext_Namespace>Apple.AppStoreConnect</HttpClientNext_Namespace>
+    <GeneratedCodeTarget>Client</GeneratedCodeTarget>
   </PropertyGroup>
 
   <ItemGroup>
@@ -64,5 +65,18 @@
     <ProjectReference Include="..\Apple.AppStoreConnect.Generator\Apple.AppStoreConnect.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
     <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" />
   </ItemGroup>
+
+  <Target Name="GenerateClient" BeforeTargets="Restore;_GenerateRestoreProjectSpec" Condition="!Exists('$(MSBuildProjectDirectory)/$(GeneratedCodeTarget)')">
+    <Message Importance="High" Text="Generating client to the $(MSBuildProjectDirectory)/$(GeneratedCodeTarget)" />
+
+    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet kiota generate ^
+      --openapi ../Apple.AppStoreConnect.OpenApiDocument/app-store-connect-openapi-specification/openapi.json ^
+      --language csharp ^
+      --exclude-backward-compatible ^
+      --output $(MSBuildProjectDirectory)/$(GeneratedCodeTarget) ^
+      --class-name AppStoreConnectApiClient ^
+      --namespace-name Apple.AppStoreConnect.$(GeneratedCodeTarget)"
+    />
+  </Target>
 
 </Project>
