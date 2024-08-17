@@ -1,4 +1,4 @@
-﻿using Apple.AppStoreConnect;
+using Apple.AppStoreConnect;
 using Apple.AppStoreConnect.Converters;
 using Apple.AppStoreConnect.Interfaces;
 using H;
