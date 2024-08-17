@@ -6,17 +6,11 @@ using System.Text.Json.Serialization;
 
 namespace Apple.AppStoreConnect.Converters;
 
-public class OneOfJsonConverterFactory : JsonConverterFactory
+public class OneOfJsonConverterFactory(
+    ILoggerFactory loggerFactory
+) : JsonConverterFactory
 {
-    private readonly ILoggerFactory _loggerFactory;
     private readonly Type _oneOfType = typeof(OneOf);
-
-    public OneOfJsonConverterFactory(
-        ILoggerFactory loggerFactory
-    )
-    {
-        _loggerFactory = loggerFactory;
-    }
 
     public override bool CanConvert(Type typeToConvert) => _oneOfType.IsAssignableFrom(typeToConvert);
 
@@ -26,7 +20,7 @@ public class OneOfJsonConverterFactory : JsonConverterFactory
         typeof(OneOfJsonConverter<>).MakeGenericType(typeToConvert),
         BindingFlags.Instance | BindingFlags.Public,
         binder: null,
-        args: [_loggerFactory.CreateLogger(typeToConvert)],
+        args: [loggerFactory.CreateLogger(typeToConvert)],
         culture: null
     )!;
 }

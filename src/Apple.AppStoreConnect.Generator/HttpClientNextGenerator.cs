@@ -1,5 +1,4 @@
 using Apple.AppStoreConnect.GeneratorCommon.Extensions;
-using H.Generators;
 using H.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
