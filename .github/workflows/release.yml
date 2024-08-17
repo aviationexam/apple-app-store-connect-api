@@ -32,7 +32,9 @@ jobs:
       - run: |
           echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
           echo "NuGetPreReleaseTagV2 (not used): ${{ steps.gitversion.outputs.CommitsSinceVersionSourcePadded }}"
-      - name: Restore with .Net
+      - name: Tool restore
+        run: dotnet tool restore
+      - name: Restore
         run: dotnet restore --nologo
       - name: Build with .Net
         run: dotnet build --configuration Release --no-restore --nologo "-p:Version=${{ steps.gitversion.outputs.MajorMinorPatch }}"

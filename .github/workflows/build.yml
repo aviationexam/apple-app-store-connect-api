@@ -21,7 +21,9 @@ jobs:
             7.0.x
             8.0.x
       - uses: actions/checkout@v4
-      - name: Retore
+      - name: Tool restore
+        run: dotnet tool restore
+      - name: Restore
         run: dotnet restore --nologo
       - name: Build
         run: dotnet build --no-restore --nologo --configuration Release
@@ -38,7 +40,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - name: Retore
+      - name: Restore
         run: dotnet restore --nologo
       - name: .Net Format
         run: dotnet format --no-restore --verify-no-changes -v diag
