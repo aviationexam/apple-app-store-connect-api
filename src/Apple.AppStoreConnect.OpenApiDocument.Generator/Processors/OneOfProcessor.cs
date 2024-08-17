@@ -94,6 +94,15 @@ public static class OneOfProcessor
                 case JsonTokenType.String:
                     if (lastProperty.SequenceEqual("$ref"u8))
                     {
+                        if (
+                            jsonReader.ValueTextEquals("#/components/schemas/InAppPurchase"u8)
+                            && parentPath.ElementAt(2).PropertyName == "AppsResponse"
+                        )
+                        {
+                            lastProperty = null;
+                            break;
+                        }
+
                         references.Add(Encoding.UTF8.GetString(jsonReader.ValueSpan.ToArray()));
                         lastProperty = null;
                     }
