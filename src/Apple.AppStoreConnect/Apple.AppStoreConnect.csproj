@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
     <PackageLicense>MIT</PackageLicense>
@@ -30,16 +30,6 @@
 
   <Import Project="..\WarningConfiguration.targets" />
   <Import Project="..\Apple.AppStoreConnect.Generator\Apple.AppStoreConnect.Generator.props" />
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="H.NSwag.Generator" Version="14.0.7.76" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
-    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.6.3" />
-    <PackageReference Include="System.Text.Json" Version="7.0.4" />
-  </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
     <PackageReference Include="H.NSwag.Generator" Version="14.0.7.76" PrivateAssets="All" />
