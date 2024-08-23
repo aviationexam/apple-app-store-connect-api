@@ -58,11 +58,6 @@
     <PackageReference Include="System.Text.Json" Version="8.0.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Apple.AppStoreConnect.Generator\Apple.AppStoreConnect.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
-    <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" />
-  </ItemGroup>
-
   <Target Name="GenerateClient" BeforeTargets="Restore;_GenerateRestoreProjectSpec" Condition="!Exists('$(MSBuildProjectDirectory)/$(GeneratedCodeTarget)')">
     <Message Importance="High" Text="Generating client to the $(MSBuildProjectDirectory)/$(GeneratedCodeTarget)" />
 
