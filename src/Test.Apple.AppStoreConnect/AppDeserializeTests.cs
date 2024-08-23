@@ -1,11 +1,9 @@
-using Apple.AppStoreConnect;
-using Apple.AppStoreConnect.Converters;
-using Apple.AppStoreConnect.Interfaces;
+using Apple.AppStoreConnect.Client.Models;
 using H;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Time.Testing;
-using System;
-using System.Text.Json;
+using Microsoft.Kiota.Abstractions;
+using Microsoft.Kiota.Abstractions.Serialization;
+using Microsoft.Kiota.Serialization.Json;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Test.Apple.AppStoreConnect;
@@ -13,37 +11,17 @@ namespace Test.Apple.AppStoreConnect;
 public class AppDeserializeTests
 {
     [Fact]
-    public void DeserializeAppsResponseWorks()
+    public async Task DeserializeAppsResponseWorks()
     {
-        var appsResponse = JsonSerializer.Deserialize<AppsResponse>(
-            Resources.app1_json.AsStream(),
-            CreateSerializerSettings()
+        var jsonParseNodeFactory = new JsonParseNodeFactory();
+        ApiClientBuilder.RegisterDefaultDeserializer<JsonParseNodeFactory>();
+
+        var appsResponse = await KiotaSerializer.DeserializeAsync<AppsResponse>(
+            jsonParseNodeFactory.ValidContentType,
+            Resources.app1_json.AsStream()
         );
 
         Assert.NotNull(appsResponse);
-    }
-
-    private static JsonSerializerOptions CreateSerializerSettings()
-    {
-        var serviceCollection = new ServiceCollection()
-            .AddLogging()
-            .AddMemoryCache()
-            .AddSingleton<TimeProvider, FakeTimeProvider>()
-            .AddSingleton<IJwtGenerator, DefaultJwtGenerator>()
-            .AddSingleton<JsonStringEnumConverterFactory>()
-            .AddSingleton<OneOfJsonConverterFactory>()
-            .AddSingleton<IHttpClientConfiguration, DefaultHttpClientConfiguration>();
-
-        var serviceProvider = serviceCollection.BuildServiceProvider();
-
-        var jsonSerializerOptions = new JsonSerializerOptions();
-
-        var httpClientConfiguration = serviceProvider.GetRequiredService<IHttpClientConfiguration>();
-        foreach (var jsonConverter in httpClientConfiguration.GetJsonConverters())
-        {
-            jsonSerializerOptions.Converters.Add(jsonConverter);
-        }
-
-        return jsonSerializerOptions;
+        Assert.Equal(2, appsResponse.Data!.Count);
     }
 }
