@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionFiles", "_Solution
 		README.md = README.md
 		src\WarningConfiguration.targets = src\WarningConfiguration.targets
 		.github\dependabot.yml = .github\dependabot.yml
+		.config\dotnet-tools.json = .config\dotnet-tools.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{41F367B1-2907-4A57-BCE7-253D144AEC3B}"
