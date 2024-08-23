@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +11,4 @@ public interface IHttpClientConfiguration
         HttpRequestMessage httpRequestMessage,
         CancellationToken cancellationToken
     );
-
-    IEnumerable<JsonConverter> GetJsonConverters();
 }
