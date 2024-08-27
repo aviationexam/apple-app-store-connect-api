@@ -1,5 +1,6 @@
 using Microsoft.IdentityModel.JsonWebTokens;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,4 +38,7 @@ public sealed class AppleAuthenticationOptions
 
     [Required]
     public TimeSpan JwtExpiresAfter { get; set; }
+
+    [Required]
+    public IReadOnlyCollection<string> AllowedHosts { get; set; } = null!;
 }

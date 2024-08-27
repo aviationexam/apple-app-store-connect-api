@@ -10,35 +10,22 @@ using System.Threading.Tasks;
 
 namespace Apple.AppStoreConnect;
 
-public partial class DefaultJwtGenerator : IJwtGenerator
+public partial class DefaultJwtGenerator(
+    IMemoryCache cache,
+    TimeProvider timeProvider,
+    IOptions<AppleAuthenticationOptions> authenticationOptions,
+    ILogger<DefaultJwtGenerator> logger
+) : IJwtGenerator
 {
-    private readonly IMemoryCache _cache;
-    private readonly TimeProvider _timeProvider;
-    private readonly IOptions<AppleAuthenticationOptions> _appleAuthenticationOptions;
-    private readonly ILogger _logger;
-
-    public DefaultJwtGenerator(
-        IMemoryCache cache,
-        TimeProvider timeProvider,
-        IOptions<AppleAuthenticationOptions> appleAuthenticationOptions,
-        ILogger<DefaultJwtGenerator> logger
-    )
-    {
-        _cache = cache;
-        _timeProvider = timeProvider;
-        _appleAuthenticationOptions = appleAuthenticationOptions;
-        _logger = logger;
-    }
-
     /// <inheritdoc />
     public async Task<string> GenerateJwtTokenAsync(
         CancellationToken cancellationToken
     )
     {
-        var appleAuthenticationOptions = _appleAuthenticationOptions.Value;
+        var appleAuthenticationOptions = authenticationOptions.Value;
         var key = CreateCacheKey(appleAuthenticationOptions);
 
-        var clientSecret = await _cache.GetOrCreateAsync(key, async entry =>
+        var clientSecret = await cache.GetOrCreateAsync(key, async entry =>
         {
             try
             {
@@ -51,7 +38,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
             }
             catch (Exception ex)
             {
-                Log.JwtTokenGenerationFailed(_logger, ex, appleAuthenticationOptions.KeyId);
+                Log.JwtTokenGenerationFailed(logger, ex, appleAuthenticationOptions.KeyId);
                 throw;
             }
         });
@@ -77,10 +64,10 @@ public partial class DefaultJwtGenerator : IJwtGenerator
         AppleAuthenticationOptions appleAuthenticationOptions, CancellationToken cancellationToken
     )
     {
-        var now = _timeProvider.GetUtcNow();
+        var now = timeProvider.GetUtcNow();
         var expiresAt = now.Add(appleAuthenticationOptions.JwtExpiresAfter);
 
-        Log.GeneratingNewJwtToken(_logger, appleAuthenticationOptions.KeyId, expiresAt);
+        Log.GeneratingNewJwtToken(logger, appleAuthenticationOptions.KeyId, expiresAt);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -103,7 +90,7 @@ public partial class DefaultJwtGenerator : IJwtGenerator
             jwtToken = appleAuthenticationOptions.SecurityTokenHandler.CreateToken(tokenDescriptor);
         }
 
-        Log.GeneratedNewJwtToken(_logger, jwtToken);
+        Log.GeneratedNewJwtToken(logger, jwtToken);
 
         return (jwtToken, expiresAt);
     }

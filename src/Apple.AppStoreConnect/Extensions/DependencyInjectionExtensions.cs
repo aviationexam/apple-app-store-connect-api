@@ -45,6 +45,7 @@ public static class DependencyInjectionExtensions
 
         serviceCollection.TryAddKeyedTransient<IRequestAdapter, DefaultHttpClientRequestAdapter>(AppStoreConnectServiceKey);
         serviceCollection.TryAddKeyedSingleton<IAuthenticationProvider, DefaultAuthenticationProvider>(AppStoreConnectServiceKey);
+        serviceCollection.TryAddKeyedSingleton<IAccessTokenProvider, DefaultAccessTokenProvider>(AppStoreConnectServiceKey);
 
         serviceCollection.AddTransient<AppStoreConnectApiClient>(serviceProvider => new AppStoreConnectApiClient(
                 serviceProvider.GetRequiredKeyedService<IRequestAdapter>(AppStoreConnectServiceKey)
