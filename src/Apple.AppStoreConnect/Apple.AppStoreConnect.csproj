@@ -68,6 +68,14 @@
   <PropertyGroup>
     <KiotaCommand>$(KIOTA_BIN)</KiotaCommand>
     <KiotaCommand Condition=" '$(KiotaCommand)' == '' ">dotnet kiota</KiotaCommand>
+
+    <KiotaExec>$(KiotaCommand) generate</KiotaExec>
+    <KiotaExec>$(KiotaExec) --openapi $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)</KiotaExec>
+    <KiotaExec>$(KiotaExec) --language csharp</KiotaExec>
+    <KiotaExec>$(KiotaExec) --exclude-backward-compatible</KiotaExec>
+    <KiotaExec>$(KiotaExec) --output $(MSBuildProjectDirectory)/$(GeneratedCodeTarget)</KiotaExec>
+    <KiotaExec>$(KiotaExec) --class-name AppStoreConnectApiClient</KiotaExec>
+    <KiotaExec>$(KiotaExec) --namespace-name Apple.AppStoreConnect.$(GeneratedCodeTarget)</KiotaExec>
   </PropertyGroup>
 
   <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" Condition="!Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)')">
@@ -93,14 +101,7 @@
   <Target Name="GenerateClient" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="ExtractAppStoreConnectOpenApiSpecification" Condition="!Exists('$(MSBuildProjectDirectory)/$(GeneratedCodeTarget)')">
     <Message Importance="High" Text="Generating client to the $(MSBuildProjectDirectory)/$(GeneratedCodeTarget) using $(KiotaCommand)" />
 
-    <Exec WorkingDirectory="$(ProjectDir)" Command="$(KiotaCommand) generate ^
-      --openapi $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson) ^
-      --language csharp ^
-      --exclude-backward-compatible ^
-      --output $(MSBuildProjectDirectory)/$(GeneratedCodeTarget) ^
-      --class-name AppStoreConnectApiClient ^
-      --namespace-name Apple.AppStoreConnect.$(GeneratedCodeTarget)"
-    />
+    <Exec WorkingDirectory="$(ProjectDir)" Command="$(KiotaExec)" />
   </Target>
 
 </Project>
