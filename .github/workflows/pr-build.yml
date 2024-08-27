@@ -23,6 +23,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Tool restore
         run: dotnet tool restore
+      - uses: ./.github/actions/build-kiota
       - name: Restore
         run: dotnet restore --nologo
       - name: Build
@@ -40,6 +41,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+      - uses: ./.github/actions/build-kiota
       - name: Restore
         run: dotnet restore --nologo
       - name: .Net Format
