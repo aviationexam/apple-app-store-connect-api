@@ -6,7 +6,7 @@ using Microsoft.Kiota.Serialization.Json;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Test.Apple.AppStoreConnect;
+namespace Apple.AppStoreConnect.Tests;
 
 public class AppDeserializeTests
 {

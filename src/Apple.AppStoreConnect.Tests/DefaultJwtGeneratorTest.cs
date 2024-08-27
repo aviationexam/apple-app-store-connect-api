@@ -1,4 +1,3 @@
-using Apple.AppStoreConnect;
 using Apple.AppStoreConnect.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -11,7 +10,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Test.Apple.AppStoreConnect;
+namespace Apple.AppStoreConnect.Tests;
 
 public class DefaultJwtGeneratorTest
 {

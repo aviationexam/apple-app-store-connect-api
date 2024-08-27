@@ -4,7 +4,7 @@ using Apple.AppStoreConnect.Models;
 using System.Collections.Generic;
 using Xunit;
 
-namespace Test.Apple.AppStoreConnect;
+namespace Apple.AppStoreConnect.Tests;
 
 public class TooManyRequestsExtensionsTests
 {
