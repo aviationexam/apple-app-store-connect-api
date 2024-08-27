@@ -54,4 +54,4 @@ jobs:
         env:
           KIOTA_BIN: ${{ steps.kiota.outputs.command }}
       - name: .Net Format
-        run: dotnet format --no-restore --verify-no-changes -v diag
+        run: dotnet format --no-restore --verify-no-changes -v diag --exclude Client
