@@ -7,11 +7,8 @@ runs:
         repository: microsoft/kiota
         ref: main
         path: kiota
-    - name: Restore
-      run: dotnet restore --nologo kiota/src/kiota/kiota.csproj
-      shell: bash
     - name: Build
-      run: dotnet publish --no-restore --nologo kiota/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r net8.0 --output bin
+      run: dotnet publish --nologo kiota/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r linux-x64 --output bin
       shell: bash
     - name: Build
       run: ls -la bin
