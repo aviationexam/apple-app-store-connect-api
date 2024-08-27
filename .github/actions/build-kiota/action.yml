@@ -7,6 +7,14 @@ runs:
         repository: microsoft/kiota
         ref: main
         path: kiota
+    - uses: Suppress CA2000
+      run: |
+        cat << EOF
+        [src/kiota/Handlers/*.cs]
+        dotnet_diagnostic.CA2000.severity = none
+        EOF | tee -a kiota/.editorconfig
+        cat kiota/.editorconfig
+      shell: bash
     - name: Build
       run: dotnet publish --nologo kiota/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r linux-x64 --output bin
       shell: bash
