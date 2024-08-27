@@ -26,11 +26,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.Depen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.DependencyInjection.Generator", "src\Apple.AppStoreConnect.DependencyInjection.Generator\Apple.AppStoreConnect.DependencyInjection.Generator.csproj", "{28C1B7E9-6C2A-439B-B101-C67C9C0C1923}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Apple.AppStoreConnect", "src\Test.Apple.AppStoreConnect\Test.Apple.AppStoreConnect.csproj", "{A300C564-B7FB-443A-A4B7-620A40DAD338}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.Tests", "src\Apple.AppStoreConnect.Tests\Apple.AppStoreConnect.Tests.csproj", "{A300C564-B7FB-443A-A4B7-620A40DAD338}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.Generator", "src\Apple.AppStoreConnect.Generator\Apple.AppStoreConnect.Generator.csproj", "{E433055E-6D95-45FD-83F5-F8BCE3E432CE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.GeneratorCommon", "src\Apple.AppStoreConnect.GeneratorCommon\Apple.AppStoreConnect.GeneratorCommon.csproj", "{1F32BDF4-EF4D-4815-8E75-2223D254B569}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6DC80BC8-A821-4B35-B462-EBE28736F838}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,5 +67,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{41F367B1-2907-4A57-BCE7-253D144AEC3B} = {A0CB57C1-6B09-4FFC-A90D-232DF7099DB6}
+		{A300C564-B7FB-443A-A4B7-620A40DAD338} = {6DC80BC8-A821-4B35-B462-EBE28736F838}
 	EndGlobalSection
 EndGlobal
