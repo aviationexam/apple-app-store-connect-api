@@ -24,6 +24,7 @@ jobs:
       - name: Tool restore
         run: dotnet tool restore
       - uses: ./.github/actions/build-kiota
+        id: kiota
       - name: Restore
         run: dotnet restore --nologo
         env:
@@ -44,6 +45,7 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - uses: ./.github/actions/build-kiota
+        id: kiota
       - name: Restore
         run: dotnet restore --nologo
         env:
