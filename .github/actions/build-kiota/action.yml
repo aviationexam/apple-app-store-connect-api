@@ -14,8 +14,11 @@ runs:
         echo 'dotnet_diagnostic.CA2000.severity = none' | tee -a kiota/.editorconfig
         cat kiota/.editorconfig
       shell: bash
-    - name: Build
-      run: dotnet publish --nologo kiota/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r linux-x64 --output bin
+    - name: Kiota restore
+      run: dotnet restore --nologo kiota/src/kiota/kiota.csproj -r linux-x64
+      shell: bash
+    - name: Kiota publish
+      run: dotnet publish --no-restore --nologo kiota/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r linux-x64 --output bin
       shell: bash
     - name: Build
       run: |
