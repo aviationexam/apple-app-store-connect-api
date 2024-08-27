@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
     <PackageLicense>MIT</PackageLicense>
@@ -24,35 +24,72 @@
     <HttpClientNext_Namespace>Apple.AppStoreConnect</HttpClientNext_Namespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <AdditionalFiles Include="app-store-connect-openapi-specification/openapi.json" HttpClientNext_OpenApi="Apple.AppStoreConnect" />
-  </ItemGroup>
+  <PropertyGroup>
+    <GeneratedCodeTarget>Client</GeneratedCodeTarget>
+    <AppStoreConnectOpenApiSpecificationUrl>https://developer.apple.com/sample-code/app-store-connect/app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationUrl>
+    <AppStoreConnectOpenApiSpecificationFile>app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationFile>
+    <AppStoreConnectOpenApiSpecificationExtracted>app-store-connect-openapi-specification</AppStoreConnectOpenApiSpecificationExtracted>
+    <AppStoreConnectOpenApiSpecificationJson>openapi.json</AppStoreConnectOpenApiSpecificationJson>
+  </PropertyGroup>
 
   <Import Project="..\WarningConfiguration.targets" />
-  <Import Project="..\Apple.AppStoreConnect.Generator\Apple.AppStoreConnect.Generator.props" />
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="H.NSwag.Generator" Version="14.0.7.76" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
-    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.6.3" />
-    <PackageReference Include="System.Text.Json" Version="7.0.4" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.12.2" />
+    <PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.12.2" />
+    <PackageReference Include="Microsoft.Kiota.Serialization.Form" Version="1.12.2" />
+    <PackageReference Include="Microsoft.Kiota.Serialization.Json" Version="1.12.2" />
+    <PackageReference Include="Microsoft.Kiota.Serialization.Multipart" Version="1.12.2" />
+    <PackageReference Include="Microsoft.Kiota.Serialization.Text" Version="1.12.2" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-    <PackageReference Include="H.NSwag.Generator" Version="14.0.7.76" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
-    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.0.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.0.2" />
     <PackageReference Include="System.Text.Json" Version="8.0.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Apple.AppStoreConnect.Generator\Apple.AppStoreConnect.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
-    <ProjectReference Include="..\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj" PrivateAssets="All" />
-  </ItemGroup>
+  <PropertyGroup>
+    <KiotaCommand>$(KIOTA_BIN)</KiotaCommand>
+    <KiotaCommand Condition=" '$(KiotaCommand)' == '' ">dotnet kiota</KiotaCommand>
+
+    <KiotaExec>$(KiotaCommand) generate</KiotaExec>
+    <KiotaExec>$(KiotaExec) --openapi $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)</KiotaExec>
+    <KiotaExec>$(KiotaExec) --language csharp</KiotaExec>
+    <KiotaExec>$(KiotaExec) --exclude-backward-compatible</KiotaExec>
+    <KiotaExec>$(KiotaExec) --disable-validation-rules KnownAndNotSupportedFormats</KiotaExec>
+    <KiotaExec>$(KiotaExec) --output $(MSBuildProjectDirectory)/$(GeneratedCodeTarget)</KiotaExec>
+    <KiotaExec>$(KiotaExec) --class-name AppStoreConnectApiClient</KiotaExec>
+    <KiotaExec>$(KiotaExec) --namespace-name Apple.AppStoreConnect.$(GeneratedCodeTarget)</KiotaExec>
+  </PropertyGroup>
+
+  <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" Condition="!Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)')">
+    <Message Importance="High" Text="Downloading $(AppStoreConnectOpenApiSpecificationUrl) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
+
+    <Exec WorkingDirectory="$(ProjectDir)" Command="curl -sS $(AppStoreConnectOpenApiSpecificationUrl) --output $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
+  </Target>
+
+  <Target Name="ExtractAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="DownloadAppStoreConnectOpenApiSpecification" Condition="!Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)')">
+    <Message Importance="High" Text="Extracting $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" />
+
+    <Unzip SourceFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" DestinationFolder="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" OverwriteReadOnlyFiles="true" />
+
+    <ItemGroup>
+      <OriginalOpenApiJsonFile Include="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/*.json" />
+    </ItemGroup>
+
+    <Message Importance="High" Text="Renamed File: @(OriginalOpenApiJsonFile) to $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)" />
+
+    <Move SourceFiles="@(OriginalOpenApiJsonFile)" DestinationFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)" />
+  </Target>
+
+  <Target Name="GenerateClient" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="ExtractAppStoreConnectOpenApiSpecification" Condition="!Exists('$(MSBuildProjectDirectory)/$(GeneratedCodeTarget)')">
+    <Message Importance="High" Text="Generating client to the $(MSBuildProjectDirectory)/$(GeneratedCodeTarget) using $(KiotaCommand)" />
+
+    <Exec WorkingDirectory="$(ProjectDir)" Command="$(KiotaExec)" />
+  </Target>
 
 </Project>

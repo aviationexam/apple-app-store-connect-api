@@ -28,5 +28,14 @@ public sealed class AppleAuthenticationPostConfigure : IPostConfigureOptions<App
         {
             options.JwtExpiresAfter = TimeSpan.FromMinutes(20);
         }
+
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (options.AllowedHosts is null)
+        {
+            options.AllowedHosts =
+            [
+                "api.appstoreconnect.apple.com"
+            ];
+        }
     }
 }

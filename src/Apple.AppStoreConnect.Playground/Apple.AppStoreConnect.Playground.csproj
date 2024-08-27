@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12.0</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <PackageLicense>MIT</PackageLicense>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Apple.AppStoreConnect\Apple.AppStoreConnect.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json5" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="appsettings.Debug.json5" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

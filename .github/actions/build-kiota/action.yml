@@ -1,0 +1,39 @@
+﻿name: "Build Kiota"
+description: "Build Kiota"
+outputs:
+  command:
+    description: "Kiota command"
+    value: ${{ steps.kiota.outputs.command }}
+runs:
+  using: "composite" # <-- this is the important part
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: microsoft/kiota
+        ref: main
+        path: kiota
+    - name: Suppress CA2000
+      run: |
+        echo '' | tee -a kiota/.editorconfig
+        echo '[src/kiota/Handlers/*.cs]' | tee -a kiota/.editorconfig
+        echo 'dotnet_diagnostic.CA2000.severity = none' | tee -a kiota/.editorconfig
+      shell: bash
+    - name: Kiota restore
+      run: dotnet restore --nologo kiota/src/kiota/kiota.csproj -r linux-x64
+      shell: bash
+    - name: Kiota publish
+      run: dotnet publish --no-restore --nologo kiota/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r linux-x64 --output bin
+      shell: bash
+    - name: Build
+      run: |
+        echo "command=${PWD}/bin/kiota" >> "$GITHUB_OUTPUT"
+      shell: bash
+      id: kiota
+    - name: Kiota binary
+      run: |
+        echo "The string is: ${{ steps.kiota.outputs.command }}"
+      shell: bash
+    - name: Kiota help
+      run: |
+        ${{ steps.kiota.outputs.command }} --help
+      shell: bash

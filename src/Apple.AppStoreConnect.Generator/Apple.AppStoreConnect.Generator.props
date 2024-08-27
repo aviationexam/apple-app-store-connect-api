@@ -1,8 +1,0 @@
-<Project>
-
-    <ItemGroup>
-        <CompilerVisibleProperty Include="HttpClientNext_Namespace" />
-        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="HttpClientNext_OpenApi" />
-    </ItemGroup>
-
-</Project>
