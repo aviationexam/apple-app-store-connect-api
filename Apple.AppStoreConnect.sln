@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.Gener
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6DC80BC8-A821-4B35-B462-EBE28736F838}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.Playground", "src\Apple.AppStoreConnect.Playground\Apple.AppStoreConnect.Playground.csproj", "{684A4BB4-CF2A-45F8-9179-67EBF2848F18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,9 +66,14 @@ Global
 		{1F32BDF4-EF4D-4815-8E75-2223D254B569}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F32BDF4-EF4D-4815-8E75-2223D254B569}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F32BDF4-EF4D-4815-8E75-2223D254B569}.Release|Any CPU.Build.0 = Release|Any CPU
+		{684A4BB4-CF2A-45F8-9179-67EBF2848F18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{684A4BB4-CF2A-45F8-9179-67EBF2848F18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{684A4BB4-CF2A-45F8-9179-67EBF2848F18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{684A4BB4-CF2A-45F8-9179-67EBF2848F18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{41F367B1-2907-4A57-BCE7-253D144AEC3B} = {A0CB57C1-6B09-4FFC-A90D-232DF7099DB6}
 		{A300C564-B7FB-443A-A4B7-620A40DAD338} = {6DC80BC8-A821-4B35-B462-EBE28736F838}
+		{684A4BB4-CF2A-45F8-9179-67EBF2848F18} = {6DC80BC8-A821-4B35-B462-EBE28736F838}
 	EndGlobalSection
 EndGlobal
