@@ -73,6 +73,7 @@
     <KiotaExec>$(KiotaExec) --openapi $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)</KiotaExec>
     <KiotaExec>$(KiotaExec) --language csharp</KiotaExec>
     <KiotaExec>$(KiotaExec) --exclude-backward-compatible</KiotaExec>
+    <KiotaExec>$(KiotaExec) --disable-validation-rules KnownAndNotSupportedFormats</KiotaExec>
     <KiotaExec>$(KiotaExec) --output $(MSBuildProjectDirectory)/$(GeneratedCodeTarget)</KiotaExec>
     <KiotaExec>$(KiotaExec) --class-name AppStoreConnectApiClient</KiotaExec>
     <KiotaExec>$(KiotaExec) --namespace-name Apple.AppStoreConnect.$(GeneratedCodeTarget)</KiotaExec>
