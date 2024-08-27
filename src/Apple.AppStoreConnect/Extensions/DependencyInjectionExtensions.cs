@@ -18,8 +18,6 @@ public static class DependencyInjectionExtensions
     {
         serviceCollection.AddHttpClient(AppStoreConnectHttpClient).AttachKiotaHandlers();
 
-        serviceCollection.AddKiotaHandlers();
-
         serviceCollection.AddKeyedTransient<HttpClient>(
                 AppStoreConnectServiceKey,
                 (serviceProvider, _) => serviceProvider

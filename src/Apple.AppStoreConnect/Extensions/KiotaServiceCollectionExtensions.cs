@@ -12,14 +12,19 @@ public static class KiotaServiceCollectionExtensions
     /// <param name="services"><see cref="IServiceCollection"/> to add the services to</param>
     /// <returns><see cref="AttachKiotaHandlers"/> as per convention</returns>
     /// <remarks>The handlers are added to the http client by the <see cref="IHttpClientBuilder"/> call, which requires them to be pre-registered in DI</remarks>
-    public static IServiceCollection AddKiotaHandlers(this IServiceCollection services)
+    private static IServiceCollection AddKiotaHandlers(this IServiceCollection services)
     {
         // Dynamically load the Kiota handlers from the Client Factory
         var kiotaHandlers = KiotaClientFactory.GetDefaultHandlerTypes();
         // And register them in the DI container
-        foreach(var handler in kiotaHandlers)
+        foreach (var handlerType in kiotaHandlers)
         {
-            services.AddTransient(handler);
+            services.Add(new ServiceDescriptor(
+                serviceType: handlerType,
+                serviceKey: DependencyInjectionExtensions.AppStoreConnectServiceKey,
+                implementationType: handlerType,
+                lifetime: ServiceLifetime.Transient
+            ));
         }
 
         return services;
@@ -36,12 +41,17 @@ public static class KiotaServiceCollectionExtensions
     /// </remarks>
     public static IHttpClientBuilder AttachKiotaHandlers(this IHttpClientBuilder builder)
     {
+        builder.Services.AddKiotaHandlers();
+
         // Dynamically load the Kiota handlers from the Client Factory
         var kiotaHandlers = KiotaClientFactory.GetDefaultHandlerTypes();
         // And attach them to the http client builder
-        foreach(var handler in kiotaHandlers)
+        foreach (var handler in kiotaHandlers)
         {
-            builder.AddHttpMessageHandler(sp => (DelegatingHandler)sp.GetRequiredService(handler));
+            builder.AddHttpMessageHandler(sp => (DelegatingHandler) sp.GetRequiredKeyedService(
+                handler,
+                serviceKey: DependencyInjectionExtensions.AppStoreConnectServiceKey
+            ));
         }
 
         return builder;
