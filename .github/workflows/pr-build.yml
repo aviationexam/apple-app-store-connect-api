@@ -26,6 +26,8 @@ jobs:
       - uses: ./.github/actions/build-kiota
       - name: Restore
         run: dotnet restore --nologo
+        env:
+          KIOTA: ${{ steps.kiota.outputs.command }}
       - name: Build
         run: dotnet build --no-restore --nologo --configuration Release
       - name: Test
@@ -44,5 +46,7 @@ jobs:
       - uses: ./.github/actions/build-kiota
       - name: Restore
         run: dotnet restore --nologo
+        env:
+          KIOTA: ${{ steps.kiota.outputs.command }}
       - name: .Net Format
         run: dotnet format --no-restore --verify-no-changes -v diag
