@@ -9,10 +9,8 @@ runs:
         path: kiota
     - name: Suppress CA2000
       run: |
-        cat << EOF
-        [src/kiota/Handlers/*.cs]
-        dotnet_diagnostic.CA2000.severity = none
-        EOF | tee -a kiota/.editorconfig
+        echo '[src/kiota/Handlers/*.cs]' | tee -a kiota/.editorconfig
+        echo 'dotnet_diagnostic.CA2000.severity = none' | tee -a kiota/.editorconfig
         cat kiota/.editorconfig
       shell: bash
     - name: Build
