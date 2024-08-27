@@ -32,12 +32,7 @@
     <AppStoreConnectOpenApiSpecificationJson>openapi.json</AppStoreConnectOpenApiSpecificationJson>
   </PropertyGroup>
 
-  <ItemGroup>
-    <AdditionalFiles Include="app-store-connect-openapi-specification/openapi.json" HttpClientNext_OpenApi="Apple.AppStoreConnect" />
-  </ItemGroup>
-
   <Import Project="..\WarningConfiguration.targets" />
-  <Import Project="..\Apple.AppStoreConnect.Generator\Apple.AppStoreConnect.Generator.props" />
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.12.1" />
