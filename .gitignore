@@ -366,6 +366,7 @@ ASALocalRun/
 **/*.appsettings.json5
 /src/Apple.AppStoreConnect.OpenApiDocument/app-store-connect-openapi-specification.zip
 /src/Apple.AppStoreConnect.OpenApiDocument/app-store-connect-openapi-specification/
+/src/Apple.AppStoreConnect/app-store-connect-openapi-specification.zip
 /src/Apple.AppStoreConnect/app-store-connect-openapi-specification/
 /src/Apple.AppStoreConnect/Client
 /src/Apple.AppStoreConnect/.kiota.log

@@ -22,7 +22,14 @@
 
   <PropertyGroup>
     <HttpClientNext_Namespace>Apple.AppStoreConnect</HttpClientNext_Namespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <GeneratedCodeTarget>Client</GeneratedCodeTarget>
+    <AppStoreConnectOpenApiSpecificationUrl>https://developer.apple.com/sample-code/app-store-connect/app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationUrl>
+    <AppStoreConnectOpenApiSpecificationFile>app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationFile>
+    <AppStoreConnectOpenApiSpecificationExtracted>app-store-connect-openapi-specification</AppStoreConnectOpenApiSpecificationExtracted>
+    <AppStoreConnectOpenApiSpecificationJson>openapi.json</AppStoreConnectOpenApiSpecificationJson>
   </PropertyGroup>
 
   <ItemGroup>
@@ -58,11 +65,36 @@
     <PackageReference Include="System.Text.Json" Version="8.0.4" />
   </ItemGroup>
 
-  <Target Name="GenerateClient" BeforeTargets="Restore;_GenerateRestoreProjectSpec" Condition="!Exists('$(MSBuildProjectDirectory)/$(GeneratedCodeTarget)')">
-    <Message Importance="High" Text="Generating client to the $(MSBuildProjectDirectory)/$(GeneratedCodeTarget)" />
+  <PropertyGroup>
+    <KiotaCommand>$(KIOTA_BIN)</KiotaCommand>
+    <KiotaCommand Condition=" '$(KiotaCommand)' == '' ">dotnet kiota</KiotaCommand>
+  </PropertyGroup>
 
-    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet kiota generate ^
-      --openapi ../Apple.AppStoreConnect.OpenApiDocument/app-store-connect-openapi-specification/openapi.json ^
+  <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" Condition="!Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)')">
+    <Message Importance="High" Text="Downloading $(AppStoreConnectOpenApiSpecificationUrl) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
+
+    <Exec WorkingDirectory="$(ProjectDir)" Command="curl -sS $(AppStoreConnectOpenApiSpecificationUrl) --output $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
+  </Target>
+
+  <Target Name="ExtractAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="DownloadAppStoreConnectOpenApiSpecification" Condition="!Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)')">
+    <Message Importance="High" Text="Extracting $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" />
+
+    <Unzip SourceFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" DestinationFolder="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" OverwriteReadOnlyFiles="true" />
+
+    <ItemGroup>
+      <OriginalOpenApiJsonFile Include="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/*.json" />
+    </ItemGroup>
+
+    <Message Importance="High" Text="Renamed File: @(OriginalOpenApiJsonFile) to $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)" />
+
+    <Move SourceFiles="@(OriginalOpenApiJsonFile)" DestinationFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)" />
+  </Target>
+
+  <Target Name="GenerateClient" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="ExtractAppStoreConnectOpenApiSpecification" Condition="!Exists('$(MSBuildProjectDirectory)/$(GeneratedCodeTarget)')">
+    <Message Importance="High" Text="Generating client to the $(MSBuildProjectDirectory)/$(GeneratedCodeTarget) using $(KiotaCommand)" />
+
+    <Exec WorkingDirectory="$(ProjectDir)" Command="$(KiotaCommand) generate ^
+      --openapi $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson) ^
       --language csharp ^
       --exclude-backward-compatible ^
       --output $(MSBuildProjectDirectory)/$(GeneratedCodeTarget) ^
