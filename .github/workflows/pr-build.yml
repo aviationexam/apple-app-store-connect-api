@@ -8,6 +8,9 @@ on:
       - reopened
   merge_group:
 
+env:
+  KIOTA_TUTORIAL_ENABLED: false
+
 jobs:
   unit-test:
     runs-on: ubuntu-latest

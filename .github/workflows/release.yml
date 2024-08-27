@@ -4,6 +4,9 @@ on:
   release:
     types: [created]
 
+env:
+  KIOTA_TUTORIAL_ENABLED: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -34,8 +37,12 @@ jobs:
           echo "NuGetPreReleaseTagV2 (not used): ${{ steps.gitversion.outputs.CommitsSinceVersionSourcePadded }}"
       - name: Tool restore
         run: dotnet tool restore
+      - uses: ./.github/actions/build-kiota
+        id: kiota
       - name: Restore
         run: dotnet restore --nologo
+        env:
+          KIOTA_BIN: ${{ steps.kiota.outputs.command }}
       - name: Build with .Net
         run: dotnet build --configuration Release --no-restore --nologo "-p:Version=${{ steps.gitversion.outputs.MajorMinorPatch }}"
       - name: Pack with .Net
