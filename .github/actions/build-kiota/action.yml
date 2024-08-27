@@ -18,5 +18,11 @@ runs:
       run: dotnet publish --nologo kiota/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r linux-x64 --output bin
       shell: bash
     - name: Build
-      run: ls -la bin
+      run: |
+        echo "command=${PWD}/bin/kiota" >> "$GITHUB_OUTPUT"
+      shell: bash
+      id: kiota
+    - name: Kiota binary
+      run: |
+        echo "The string is: ${{ steps.kiota.outputs.command }}"
       shell: bash
