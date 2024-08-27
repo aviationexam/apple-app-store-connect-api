@@ -1,4 +1,4 @@
-﻿using Apple.AppStoreConnect.Extensions;
+using Apple.AppStoreConnect.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Abstractions.Serialization;

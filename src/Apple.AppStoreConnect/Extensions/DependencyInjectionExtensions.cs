@@ -1,4 +1,4 @@
-﻿using Apple.AppStoreConnect.Client;
+using Apple.AppStoreConnect.Client;
 using Apple.AppStoreConnect.Interfaces;
 using Apple.AppStoreConnect.KiotaServices;
 using Microsoft.Extensions.DependencyInjection;

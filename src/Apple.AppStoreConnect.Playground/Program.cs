@@ -1,4 +1,4 @@
-﻿using Apple.AppStoreConnect.Client;
+using Apple.AppStoreConnect.Client;
 using Apple.AppStoreConnect.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

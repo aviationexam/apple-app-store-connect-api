@@ -1,4 +1,4 @@
-﻿using Apple.AppStoreConnect.Interfaces;
+using Apple.AppStoreConnect.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.Kiota.Abstractions.Authentication;
 using System;
