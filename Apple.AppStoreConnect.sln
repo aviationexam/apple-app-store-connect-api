@@ -22,10 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.OpenApiDocument", "src\Apple.AppStoreConnect.OpenApiDocument\Apple.AppStoreConnect.OpenApiDocument.csproj", "{8B762CC3-5E4F-434A-B234-195A197F80C1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.OpenApiDocument.Generator", "src\Apple.AppStoreConnect.OpenApiDocument.Generator\Apple.AppStoreConnect.OpenApiDocument.Generator.csproj", "{AACBF52E-C970-4B1C-8510-7AD957CFF36E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.DependencyInjection", "src\Apple.AppStoreConnect.DependencyInjection\Apple.AppStoreConnect.DependencyInjection.csproj", "{F6F69E08-219D-4D94-9979-BFED994DF3BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apple.AppStoreConnect.DependencyInjection.Generator", "src\Apple.AppStoreConnect.DependencyInjection.Generator\Apple.AppStoreConnect.DependencyInjection.Generator.csproj", "{28C1B7E9-6C2A-439B-B101-C67C9C0C1923}"
@@ -46,14 +42,6 @@ Global
 		{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C1DE36B-D30D-4595-AC7F-C87A91BEBABA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8B762CC3-5E4F-434A-B234-195A197F80C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B762CC3-5E4F-434A-B234-195A197F80C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B762CC3-5E4F-434A-B234-195A197F80C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8B762CC3-5E4F-434A-B234-195A197F80C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AACBF52E-C970-4B1C-8510-7AD957CFF36E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AACBF52E-C970-4B1C-8510-7AD957CFF36E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AACBF52E-C970-4B1C-8510-7AD957CFF36E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AACBF52E-C970-4B1C-8510-7AD957CFF36E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F6F69E08-219D-4D94-9979-BFED994DF3BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F6F69E08-219D-4D94-9979-BFED994DF3BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6F69E08-219D-4D94-9979-BFED994DF3BA}.Release|Any CPU.ActiveCfg = Release|Any CPU

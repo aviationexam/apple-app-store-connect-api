@@ -1,8 +1,0 @@
-<Project>
-
-    <ItemGroup>
-        <CompilerVisibleProperty Include="ResultOpenApiDestination" />
-        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="OpenApi" />
-    </ItemGroup>
-
-</Project>
