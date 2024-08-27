@@ -29,3 +29,7 @@ runs:
       run: |
         echo "The string is: ${{ steps.kiota.outputs.command }}"
       shell: bash
+    - name: Kiota help
+      run: |
+        ${{ steps.kiota.outputs.command }} --help
+      shell: bash
