@@ -1,3 +1,11 @@
 {
-
+  "AppStoreConnect": {
+    "KeyId": "",
+    "IssuerId": "",
+    "SetIssuedAt": false,
+    "JwtExpiresAfter": "",
+    "PrivateKey": {
+      "<KeyId>": "<PrivateKey>"
+    }
+  }
 }
