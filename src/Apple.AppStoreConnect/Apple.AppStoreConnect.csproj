@@ -57,7 +57,7 @@
     <KiotaCommand>$(KIOTA_BIN)</KiotaCommand>
     <KiotaCommand Condition=" '$(KiotaCommand)' == '' ">dotnet kiota</KiotaCommand>
 
-    <KiotaExec>$(KiotaCommand) generate</KiotaExec>
+    <KiotaExec>KIOTA_TUTORIAL_ENABLED=false $(KiotaCommand) generate</KiotaExec>
     <KiotaExec>$(KiotaExec) --openapi $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)</KiotaExec>
     <KiotaExec>$(KiotaExec) --language csharp</KiotaExec>
     <KiotaExec>$(KiotaExec) --exclude-backward-compatible</KiotaExec>

@@ -8,9 +8,6 @@ on:
   schedule:
     - cron: "0 8 * * 1" # At 08:00 on Monday
 
-env:
-  KIOTA_TUTORIAL_ENABLED: false
-
 jobs:
   unit-test:
     runs-on: ubuntu-latest

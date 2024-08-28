@@ -4,9 +4,6 @@ on:
   release:
     types: [created]
 
-env:
-  KIOTA_TUTORIAL_ENABLED: false
-
 jobs:
   publish:
     runs-on: ubuntu-latest
