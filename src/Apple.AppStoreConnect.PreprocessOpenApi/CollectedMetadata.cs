@@ -4,9 +4,15 @@ namespace Apple.AppStoreConnect.PreprocessOpenApi;
 
 public sealed class CollectedMetadata
 {
+    private Version? _targetApiVersion = null;
     private readonly Dictionary<string, ICollection<string>> _discriminatorData = new();
     private readonly Dictionary<string, string?> _components = new();
     private readonly HashSet<string> _deprecatedComponents = [];
+
+    public void AddVersion(ReadOnlySpan<byte> target)
+    {
+        _targetApiVersion = Version.Parse(Encoding.UTF8.GetString(target));
+    }
 
     public void AddOneOf(
         Stack<TreeItem> currentPath, ReadOnlySpan<byte> target
@@ -38,6 +44,15 @@ public sealed class CollectedMetadata
             _components[$"#/components/schemas/{componentName}"] = typeString;
         }
     }
+
+    public void AddDeprecatedType(Stack<TreeItem> currentPath)
+    {
+        var path = currentPath.Reverse().Collect();
+
+        _deprecatedComponents.Add(path);
+    }
+
+    public Version? GetVersion() => _targetApiVersion;
 
     public bool HasKnownOneOfMapping(Stack<TreeItem> currentPath)
     {
@@ -88,12 +103,5 @@ public sealed class CollectedMetadata
                 yield return KeyValuePair.Create(target.discriminator, target.reference);
             }
         }
-    }
-
-    public void AddDeprecatedType(Stack<TreeItem> currentPath)
-    {
-        var path = currentPath.Reverse().Collect();
-
-        _deprecatedComponents.Add(path);
     }
 }

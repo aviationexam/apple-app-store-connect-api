@@ -1,7 +1,7 @@
 ﻿<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="PreprocessOpenApi" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/src/Apple.AppStoreConnect.PreprocessOpenApi/bin/Debug/net8.0/Apple.AppStoreConnect.PreprocessOpenApi.exe" />
-    <option name="PROGRAM_PARAMETERS" value="app-store-connect-openapi-specification/openapi.original.json app-store-connect-openapi-specification/openapi.json" />
+    <option name="PROGRAM_PARAMETERS" value="app-store-connect-openapi-specification/openapi.original.json app-store-connect-openapi-specification/openapi.json api-version.txt" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/Apple.AppStoreConnect" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="0" />

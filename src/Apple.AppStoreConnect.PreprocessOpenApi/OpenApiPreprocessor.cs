@@ -5,11 +5,14 @@ namespace Apple.AppStoreConnect.PreprocessOpenApi;
 
 public sealed class OpenApiPreprocessor(
     string source,
-    string target
+    string target,
+    string versionFile
 )
 {
     private static ReadOnlySpan<byte> Utf8Bom => [0xEF, 0xBB, 0xBF];
 
+    private const string Info = "info";
+    private static ReadOnlySpan<byte> Version => "version"u8;
     private const string OneOf = "oneOf";
     private static ReadOnlySpan<byte> Ref => "$ref"u8;
     private const string Properties = "properties";
@@ -46,6 +49,11 @@ public sealed class OpenApiPreprocessor(
         using var writer = new Utf8JsonWriter(targetStream, writerOptions);
 
         var collectedMetadata = Collect(reader);
+
+        if (collectedMetadata.GetVersion() is { } version)
+        {
+            File.WriteAllText(versionFile, version.ToString());
+        }
 
         Preprocess(ref reader, collectedMetadata, writer);
     }
@@ -104,6 +112,18 @@ public sealed class OpenApiPreprocessor(
                     )
                     {
                         collectedMetadata.AddComponentType(currentPath, reader.ValueSpan);
+                    }
+                    else if (
+                        lastProperty.SequenceEqual(Version)
+                        && currentPath.Count == 2
+                        && currentPath.ToArray() is
+                        [
+                        { JsonTokenType: JsonTokenType.StartObject, PropertyName: Info },
+                        { JsonTokenType: JsonTokenType.StartObject, PropertyName: null },
+                        ]
+                    )
+                    {
+                        collectedMetadata.AddVersion(reader.ValueSpan);
                     }
 
                     break;

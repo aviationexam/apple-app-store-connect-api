@@ -1,8 +1,10 @@
 using Apple.AppStoreConnect.PreprocessOpenApi;
 
-if (args is [{ } source, { } target])
+if (args is [{ } source, { } target, { } versionFile])
 {
-    new OpenApiPreprocessor(source, target).Preprocess();
+    new OpenApiPreprocessor(
+        source, target, versionFile
+    ).Preprocess();
 }
 else
 {
