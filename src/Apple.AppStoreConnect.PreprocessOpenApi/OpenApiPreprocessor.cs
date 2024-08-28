@@ -52,7 +52,16 @@ public sealed class OpenApiPreprocessor(
 
         if (collectedMetadata.GetVersion() is { } version)
         {
-            File.WriteAllText(versionFile, version.ToString());
+            var apiMajor = version.Major;
+            var apiMinor = version.Minor;
+            var apiBuild = version.Build;
+
+            if (apiBuild == -1)
+            {
+                apiBuild = 0;
+            }
+
+            File.WriteAllText(versionFile, $"{version}\n{apiMajor:00}{apiMinor:00}{apiBuild:00}");
         }
 
         Preprocess(ref reader, collectedMetadata, writer);
