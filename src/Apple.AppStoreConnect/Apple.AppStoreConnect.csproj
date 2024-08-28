@@ -16,20 +16,14 @@
     <CompilerGeneratedFilesOutputPath>..\..\GeneratedFiles\AppStoreConnect</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <NSwagGenerator_UseCache>true</NSwagGenerator_UseCache>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <HttpClientNext_Namespace>Apple.AppStoreConnect</HttpClientNext_Namespace>
-  </PropertyGroup>
-
   <PropertyGroup>
     <GeneratedCodeTarget>Client</GeneratedCodeTarget>
     <AppStoreConnectOpenApiSpecificationUrl>https://developer.apple.com/sample-code/app-store-connect/app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationUrl>
     <AppStoreConnectOpenApiSpecificationFile>app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationFile>
     <AppStoreConnectOpenApiSpecificationExtracted>app-store-connect-openapi-specification</AppStoreConnectOpenApiSpecificationExtracted>
+    <AppStoreConnectOpenApiSpecificationOriginalJson>openapi.original.json</AppStoreConnectOpenApiSpecificationOriginalJson>
     <AppStoreConnectOpenApiSpecificationJson>openapi.json</AppStoreConnectOpenApiSpecificationJson>
+    <AppStoreConnectVersion>api-version.txt</AppStoreConnectVersion>
   </PropertyGroup>
 
   <Import Project="..\WarningConfiguration.targets" />
@@ -48,15 +42,16 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
-    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.0.2" />
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.2" />
   </ItemGroup>
 
   <PropertyGroup>
+    <GenerateClient>$(RESTORE_WITH_CLIENT_GENERATION)</GenerateClient>
+    <GenerateClient Condition=" '$(GenerateClient)' == '' ">true</GenerateClient>
     <KiotaCommand>$(KIOTA_BIN)</KiotaCommand>
     <KiotaCommand Condition=" '$(KiotaCommand)' == '' ">dotnet kiota</KiotaCommand>
 
-    <KiotaExec>$(KiotaCommand) generate</KiotaExec>
+    <KiotaExec>KIOTA_TUTORIAL_ENABLED=false $(KiotaCommand) generate</KiotaExec>
     <KiotaExec>$(KiotaExec) --openapi $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)</KiotaExec>
     <KiotaExec>$(KiotaExec) --language csharp</KiotaExec>
     <KiotaExec>$(KiotaExec) --exclude-backward-compatible</KiotaExec>
@@ -66,13 +61,13 @@
     <KiotaExec>$(KiotaExec) --namespace-name Apple.AppStoreConnect.$(GeneratedCodeTarget)</KiotaExec>
   </PropertyGroup>
 
-  <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" Condition="!Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)')">
+  <Target Name="DownloadAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" Condition=" $(GenerateClient) == 'true' And !Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)')">
     <Message Importance="High" Text="Downloading $(AppStoreConnectOpenApiSpecificationUrl) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
 
     <Exec WorkingDirectory="$(ProjectDir)" Command="curl -sS $(AppStoreConnectOpenApiSpecificationUrl) --output $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" />
   </Target>
 
-  <Target Name="ExtractAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="DownloadAppStoreConnectOpenApiSpecification" Condition="!Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)')">
+  <Target Name="ExtractAppStoreConnectOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="DownloadAppStoreConnectOpenApiSpecification" Condition=" $(GenerateClient) == 'true' And !Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)')">
     <Message Importance="High" Text="Extracting $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile) to the $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" />
 
     <Unzip SourceFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationFile)" DestinationFolder="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)" OverwriteReadOnlyFiles="true" />
@@ -81,12 +76,19 @@
       <OriginalOpenApiJsonFile Include="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/*.json" />
     </ItemGroup>
 
-    <Message Importance="High" Text="Renamed File: @(OriginalOpenApiJsonFile) to $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)" />
+    <Message Importance="High" Text="Renamed File: @(OriginalOpenApiJsonFile) to $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationOriginalJson)" />
 
-    <Move SourceFiles="@(OriginalOpenApiJsonFile)" DestinationFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)" />
+    <Move SourceFiles="@(OriginalOpenApiJsonFile)" DestinationFiles="$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationOriginalJson)" />
   </Target>
 
-  <Target Name="GenerateClient" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="ExtractAppStoreConnectOpenApiSpecification" Condition="!Exists('$(MSBuildProjectDirectory)/$(GeneratedCodeTarget)')">
+  <Target Name="PreprocessOpenApiSpecification" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="ExtractAppStoreConnectOpenApiSpecification" Condition=" $(GenerateClient) == 'true' And !Exists('$(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)')">
+    <Message Importance="High" Text="Preprocess $(AppStoreConnectOpenApiSpecificationOriginalJson) to the $(AppStoreConnectOpenApiSpecificationJson)" />
+    <Message Importance="High" Text="dotnet run --project $(ProjectDir)\..\Apple.AppStoreConnect.PreprocessOpenApi\Apple.AppStoreConnect.PreprocessOpenApi.csproj -c Release $(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationOriginalJson) $(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)" />
+
+    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet run --project $(ProjectDir)..\Apple.AppStoreConnect.PreprocessOpenApi\Apple.AppStoreConnect.PreprocessOpenApi.csproj -c Release $(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationOriginalJson) $(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson) $(AppStoreConnectVersion)" />
+  </Target>
+
+  <Target Name="GenerateClient" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="PreprocessOpenApiSpecification" Condition=" $(GenerateClient) == 'true' And !Exists('$(MSBuildProjectDirectory)/$(GeneratedCodeTarget)')">
     <Message Importance="High" Text="Generating client to the $(MSBuildProjectDirectory)/$(GeneratedCodeTarget) using $(KiotaCommand)" />
 
     <Exec WorkingDirectory="$(ProjectDir)" Command="$(KiotaExec)" />
