@@ -2,7 +2,7 @@
 
 if (args is [{ } source, { } target])
 {
-    File.Copy(source, target);
+    new OpenApiPreprocessor(source, target).Preprocess();
 }
 else
 {
