@@ -4,7 +4,7 @@ namespace Apple.AppStoreConnect.PreprocessOpenApi;
 
 public sealed class CollectedMetadata
 {
-    private Version? _targetApiVersion = null;
+    private Version? _targetApiVersion;
     private readonly Dictionary<string, ICollection<string>> _discriminatorData = new();
     private readonly Dictionary<string, string?> _components = new();
     private readonly HashSet<string> _deprecatedComponents = [];
