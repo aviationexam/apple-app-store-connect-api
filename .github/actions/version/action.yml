@@ -7,6 +7,18 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v3.0.0
+      with:
+        versionSpec: '5.x'
+    - name: Use GitVersion
+      id: gitversion # step id used as reference for output values
+      uses: gittools/actions/gitversion/execute@v3.0.0
+    - run: |
+        echo "MajorMinorPatch: ${{ steps.gitversion.outputs.MajorMinorPatch }}"
+        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
+        echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.CommitsSinceVersionSourcePadded }}"
+      shell: bash
     - name: Create version
       run: |
         ENHANCED_VERSION="${{ steps.gitversion.outputs.Major }}.${{ steps.gitversion.outputs.Minor }}"
