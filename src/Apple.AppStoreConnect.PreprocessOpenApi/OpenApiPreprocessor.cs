@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.Json;
 
 namespace Apple.AppStoreConnect.PreprocessOpenApi;
@@ -83,8 +83,8 @@ public sealed class OpenApiPreprocessor(
                         lastProperty.SequenceEqual(Ref)
                         && currentPath.ToArray() is
                         [
-                            { JsonTokenType: JsonTokenType.StartObject, PropertyName: null },
-                            { JsonTokenType: JsonTokenType.StartArray, PropertyName: OneOf },
+                        { JsonTokenType: JsonTokenType.StartObject, PropertyName: null },
+                        { JsonTokenType: JsonTokenType.StartArray, PropertyName: OneOf },
                             ..
                         ]
                     )
@@ -96,9 +96,9 @@ public sealed class OpenApiPreprocessor(
                         && currentPath.Count == 7
                         && currentPath.ToArray() is
                         [
-                            { JsonTokenType: JsonTokenType.StartArray, PropertyName: Enum },
-                            { JsonTokenType: JsonTokenType.StartObject, PropertyName: Type },
-                            { JsonTokenType: JsonTokenType.StartObject, PropertyName: Properties },
+                        { JsonTokenType: JsonTokenType.StartArray, PropertyName: Enum },
+                        { JsonTokenType: JsonTokenType.StartObject, PropertyName: Type },
+                        { JsonTokenType: JsonTokenType.StartObject, PropertyName: Properties },
                             ..
                         ]
                     )
@@ -117,9 +117,9 @@ public sealed class OpenApiPreprocessor(
                         && currentPath.ToArray() is
                         [
                             not null,
-                            { JsonTokenType: JsonTokenType.StartObject, PropertyName: Schemas },
-                            { JsonTokenType: JsonTokenType.StartObject, PropertyName: Components },
-                            { JsonTokenType: JsonTokenType.StartObject, PropertyName: null }
+                        { JsonTokenType: JsonTokenType.StartObject, PropertyName: Schemas },
+                        { JsonTokenType: JsonTokenType.StartObject, PropertyName: Components },
+                        { JsonTokenType: JsonTokenType.StartObject, PropertyName: null }
                         ]
                     )
                     {

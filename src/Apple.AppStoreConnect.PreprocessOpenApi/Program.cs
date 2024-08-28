@@ -1,4 +1,4 @@
-﻿using Apple.AppStoreConnect.PreprocessOpenApi;
+using Apple.AppStoreConnect.PreprocessOpenApi;
 
 if (args is [{ } source, { } target])
 {

@@ -1,4 +1,4 @@
-﻿namespace Apple.AppStoreConnect.PreprocessOpenApi;
+namespace Apple.AppStoreConnect.PreprocessOpenApi;
 
 public static class Extensions
 {
