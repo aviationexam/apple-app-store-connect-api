@@ -38,13 +38,7 @@ jobs:
         run: dotnet restore --nologo
         env:
           KIOTA_BIN: ${{ steps.kiota.outputs.command }}
-      - name: Create version
-        run: |
-          ENHANCED_VERSION="${{ steps.gitversion.outputs.Major }}.${{ steps.gitversion.outputs.Minor }}"
-          if [[ "${{ steps.gitversion.outputs.Patch }}" -ne '' ]]; then ENHANCED_VERSION="${ENHANCED_VERSION}.${{ steps.gitversion.outputs.Patch }}" fi
-          if [[ -f "src/Apple.AppStoreConnect/api-version.txt" ]]; then ENHANCED_VERSION="${ENHANCED_VERSION}.$(sed '2q;d' src/Apple.AppStoreConnect/api-version.txt)" fi
-          if [[ "${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}" -ne '' ]]; ENHANCED_VERSION="${ENHANCED_VERSION}-${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}" fi
-          echo "enhancedVersion=${ENHANCED_VERSION}" >> "$GITHUB_OUTPUT"
+      - uses: ./.github/actions/version
         id: version
       - name: Build with .Net
         run: dotnet build --configuration Release --no-restore --nologo "-p:Version=${{ steps.version.outputs.enhancedVersion }}"
