@@ -38,14 +38,22 @@ jobs:
         run: dotnet restore --nologo
         env:
           KIOTA_BIN: ${{ steps.kiota.outputs.command }}
+      - name: Create version
+        run: |
+          ENHANCED_VERSION="${{ steps.gitversion.outputs.Major }}.${{ steps.gitversion.outputs.Minor }}"
+          if [[ "${{ steps.gitversion.outputs.Patch }}" -ne '' ]]; then ENHANCED_VERSION="${ENHANCED_VERSION}.${{ steps.gitversion.outputs.Patch }}" fi
+          if [[ -f "src/Apple.AppStoreConnect/api-version.txt" ]]; then ENHANCED_VERSION="${ENHANCED_VERSION}.$(sed '2q;d' src/Apple.AppStoreConnect/api-version.txt)" fi
+          if [[ "${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}" -ne '' ]]; ENHANCED_VERSION="${ENHANCED_VERSION}-${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}" fi
+          echo "enhancedVersion=${ENHANCED_VERSION}" >> "$GITHUB_OUTPUT"
+        id: version
       - name: Build with .Net
-        run: dotnet build --configuration Release --no-restore --nologo "-p:Version=${{ steps.gitversion.outputs.NuGetVersionV2 }}"
+        run: dotnet build --configuration Release --no-restore --nologo "-p:Version=${{ steps.version.outputs.enhancedVersion }}"
       - name: Pack with .Net
         run: |
-          dotnet pack --nologo --no-build --configuration Release --output nuget-packages -p:PackageVersion=${{ steps.gitversion.outputs.NuGetVersionV2 }} src/Apple.AppStoreConnect/Apple.AppStoreConnect.csproj
+          dotnet pack --nologo --no-build --configuration Release --output nuget-packages -p:PackageVersion=${{ steps.version.outputs.enhancedVersion }} src/Apple.AppStoreConnect/Apple.AppStoreConnect.csproj
       - uses: actions/upload-artifact@v4
         with:
-          name: Nuget-packages-${{ steps.gitversion.outputs.NuGetVersionV2 }}
+          name: Nuget-packages-${{ steps.version.outputs.enhancedVersion }}
           path: nuget-packages
       - name: Push package to Myget
         if: ${{ vars.USE_MYGET == 'true' }}
