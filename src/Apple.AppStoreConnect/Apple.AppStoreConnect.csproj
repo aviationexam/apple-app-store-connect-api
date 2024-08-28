@@ -16,14 +16,6 @@
     <CompilerGeneratedFilesOutputPath>..\..\GeneratedFiles\AppStoreConnect</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <NSwagGenerator_UseCache>true</NSwagGenerator_UseCache>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <HttpClientNext_Namespace>Apple.AppStoreConnect</HttpClientNext_Namespace>
-  </PropertyGroup>
-
   <PropertyGroup>
     <GeneratedCodeTarget>Client</GeneratedCodeTarget>
     <AppStoreConnectOpenApiSpecificationUrl>https://developer.apple.com/sample-code/app-store-connect/app-store-connect-openapi-specification.zip</AppStoreConnectOpenApiSpecificationUrl>
