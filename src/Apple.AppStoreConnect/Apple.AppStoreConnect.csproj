@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <GenerateClient>$(RESTORE_WITHOUT_KIOTA)</GenerateClient>
+    <GenerateClient>$(RESTORE_WITH_CLIENT_GENERATION)</GenerateClient>
     <GenerateClient Condition=" '$(GenerateClient)' == '' ">true</GenerateClient>
     <KiotaCommand>$(KIOTA_BIN)</KiotaCommand>
     <KiotaCommand Condition=" '$(KiotaCommand)' == '' ">dotnet kiota</KiotaCommand>

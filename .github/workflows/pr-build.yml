@@ -46,6 +46,6 @@ jobs:
       - name: Restore
         run: dotnet restore --nologo
         env:
-          RESTORE_WITHOUT_KIOTA: true
+          RESTORE_WITH_CLIENT_GENERATION: false
       - name: .Net Format
         run: dotnet format --no-restore --verify-no-changes -v diag --exclude Client
