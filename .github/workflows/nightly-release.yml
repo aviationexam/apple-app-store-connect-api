@@ -19,17 +19,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Fetch all history for all tags and branches
         run: git fetch --prune --unshallow
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v3.0.0
-        with:
-          versionSpec: '5.x'
-      - name: Use GitVersion
-        id: gitversion # step id used as reference for output values
-        uses: gittools/actions/gitversion/execute@v3.0.0
-      - run: |
-          echo "MajorMinorPatch: ${{ steps.gitversion.outputs.MajorMinorPatch }}"
-          echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
-          echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.CommitsSinceVersionSourcePadded }}"
       - name: Tool restore
         run: dotnet tool restore
       - uses: ./.github/actions/build-kiota
