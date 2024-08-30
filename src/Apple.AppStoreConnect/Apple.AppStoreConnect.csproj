@@ -51,7 +51,7 @@
     <KiotaCommand>$(KIOTA_BIN)</KiotaCommand>
     <KiotaCommand Condition=" '$(KiotaCommand)' == '' ">dotnet kiota</KiotaCommand>
 
-    <KiotaExec>KIOTA_TUTORIAL_ENABLED=false $(KiotaCommand) generate</KiotaExec>
+    <KiotaExec>$(KiotaCommand) generate</KiotaExec>
     <KiotaExec>$(KiotaExec) --openapi $(MSBuildProjectDirectory)/$(AppStoreConnectOpenApiSpecificationExtracted)/$(AppStoreConnectOpenApiSpecificationJson)</KiotaExec>
     <KiotaExec>$(KiotaExec) --language csharp</KiotaExec>
     <KiotaExec>$(KiotaExec) --exclude-backward-compatible</KiotaExec>
@@ -91,7 +91,7 @@
   <Target Name="GenerateClient" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="PreprocessOpenApiSpecification" Condition=" $(GenerateClient) == 'true' And !Exists('$(MSBuildProjectDirectory)/$(GeneratedCodeTarget)')">
     <Message Importance="High" Text="Generating client to the $(MSBuildProjectDirectory)/$(GeneratedCodeTarget) using $(KiotaCommand)" />
 
-    <Exec WorkingDirectory="$(ProjectDir)" Command="$(KiotaExec)" />
+    <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="KIOTA_TUTORIAL_ENABLED=false" Command="$(KiotaExec)" />
   </Target>
 
 </Project>
