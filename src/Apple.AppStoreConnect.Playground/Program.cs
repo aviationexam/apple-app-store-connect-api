@@ -22,7 +22,7 @@ var host = Host.CreateDefaultBuilder(args)
                     x.SetIssuedAt = section.GetValue<bool>("SetIssuedAt");
                     x.JwtExpiresAfter = section.GetValue<TimeSpan>("JwtExpiresAfter");
 
-                    x.PrivateKey = (keyId, _) => Task.FromResult(section.GetSection("PrivateKey").GetValue<string>(keyId).AsMemory());
+                    x.PrivateKey = (string keyId, CancellationToken _) => Task.FromResult(section.GetSection("PrivateKey").GetValue<string>(keyId).AsMemory());
                 }
             )
             .ValidateOnStart()
