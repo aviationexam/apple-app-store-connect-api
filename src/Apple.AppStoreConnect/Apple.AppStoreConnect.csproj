@@ -35,6 +35,7 @@
     <PackageReference Include="Microsoft.Kiota.Serialization.Json" Version="1.15.2" />
     <PackageReference Include="Microsoft.Kiota.Serialization.Multipart" Version="1.15.2" />
     <PackageReference Include="Microsoft.Kiota.Serialization.Text" Version="1.15.2" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.3.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
@@ -42,7 +43,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
-    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.2.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
@@ -50,7 +50,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
-    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.2.1" />
   </ItemGroup>
 
   <PropertyGroup>
