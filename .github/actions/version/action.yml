@@ -8,23 +8,22 @@ runs:
   using: "composite"
   steps:
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v3.0.0
+      uses: gittools/actions/gitversion/setup@v3.1.1
       with:
-        versionSpec: '5.x'
+        versionSpec: '6.0.5'
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
-      uses: gittools/actions/gitversion/execute@v3.0.0
+      uses: gittools/actions/gitversion/execute@v3.1.1
     - run: |
         echo "MajorMinorPatch: ${{ steps.gitversion.outputs.MajorMinorPatch }}"
-        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
-        echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.CommitsSinceVersionSourcePadded }}"
+        echo "FullSemVer: ${{ steps.gitversion.outputs.FullSemVer }}"
+        echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
       shell: bash
     - name: Create version
       run: |
-        ENHANCED_VERSION="${{ steps.gitversion.outputs.Major }}.${{ steps.gitversion.outputs.Minor }}"
-        if [[ "${{ steps.gitversion.outputs.Patch }}" != '' ]]; then ENHANCED_VERSION="${ENHANCED_VERSION}.${{ steps.gitversion.outputs.Patch }}"; fi
+        ENHANCED_VERSION="${{ steps.gitversion.outputs.MajorMinorPatch }}"
         if [[ -f "src/Apple.AppStoreConnect/api-version.txt" ]]; then ENHANCED_VERSION="${ENHANCED_VERSION}.$(sed '2q;d' src/Apple.AppStoreConnect/api-version.txt)"; fi
-        if [[ "${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}" != '' ]]; then ENHANCED_VERSION="${ENHANCED_VERSION}-${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"; fi
+        if [[ "${{ steps.gitversion.outputs.PreReleaseTag }}" != '' ]]; then ENHANCED_VERSION="${ENHANCED_VERSION}-${{ steps.gitversion.outputs.PreReleaseTag }}"; fi
         echo "enhancedVersion=${ENHANCED_VERSION}" >> "$GITHUB_OUTPUT"
       id: version
       shell: bash
