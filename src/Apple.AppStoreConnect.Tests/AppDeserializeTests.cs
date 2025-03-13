@@ -18,7 +18,8 @@ public class AppDeserializeTests
 
         var appsResponse = await KiotaSerializer.DeserializeAsync<AppsResponse>(
             jsonParseNodeFactory.ValidContentType,
-            Resources.app_1_json.AsStream()
+            Resources.app_1_json.AsStream(),
+            TestContext.Current.CancellationToken
         );
 
         Assert.NotNull(appsResponse);

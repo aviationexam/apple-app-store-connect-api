@@ -55,7 +55,7 @@ public class DefaultJwtGeneratorTest
 
         var jwtGenerator = serviceProvider.GetRequiredService<IJwtGenerator>();
 
-        var jwtToken = await jwtGenerator.GenerateJwtTokenAsync();
+        var jwtToken = await jwtGenerator.GenerateJwtTokenAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(jwtToken);
     }
@@ -103,13 +103,13 @@ public class DefaultJwtGeneratorTest
 
         var jwtGenerator = serviceProvider.GetRequiredService<IJwtGenerator>();
 
-        var jwtToken = await jwtGenerator.GenerateJwtTokenAsync();
+        var jwtToken = await jwtGenerator.GenerateJwtTokenAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(jwtToken);
 
-        await Task.Delay(TimeSpan.FromSeconds(delay + 2));
+        await Task.Delay(TimeSpan.FromSeconds(delay + 2), TestContext.Current.CancellationToken);
 
-        var secondJwtToken = await jwtGenerator.GenerateJwtTokenAsync();
+        var secondJwtToken = await jwtGenerator.GenerateJwtTokenAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(secondJwtToken);
     }
