@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "microsoft.openapi.kiota": {
-      "version": "1.24.3",
+      "version": "1.25.1",
       "commands": [
         "kiota"
       ],
