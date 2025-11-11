@@ -93,8 +93,8 @@ public sealed class OpenApiPreprocessor(
                         && currentPath.Count == 2
                         && currentPath.ToArray() is
                         [
-                            { JsonTokenType: JsonTokenType.StartObject, PropertyName: Info },
-                            { JsonTokenType: JsonTokenType.StartObject, PropertyName: null },
+                        { JsonTokenType: JsonTokenType.StartObject, PropertyName: Info },
+                        { JsonTokenType: JsonTokenType.StartObject, PropertyName: null },
                         ]
                     )
                     {
@@ -139,11 +139,11 @@ public sealed class OpenApiPreprocessor(
 
                     break;
                 case JsonTokenType.StartObject:
-                     writer.WriteStartObject();
+                    writer.WriteStartObject();
 
                     break;
                 case JsonTokenType.EndArray:
-                   writer.WriteEndArray();
+                    writer.WriteEndArray();
 
                     break;
                 case JsonTokenType.EndObject:
