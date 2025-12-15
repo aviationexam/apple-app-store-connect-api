@@ -32,7 +32,7 @@ jobs:
       - name: Pack with .Net
         run: |
           dotnet pack --nologo --no-build --configuration Release --output nuget-packages -p:PackageVersion=${{ steps.version.outputs.enhancedVersion }} src/Apple.AppStoreConnect/Apple.AppStoreConnect.csproj
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: Nuget-packages-${{ steps.version.outputs.enhancedVersion }}
           path: nuget-packages
