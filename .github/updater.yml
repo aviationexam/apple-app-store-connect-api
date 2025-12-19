@@ -12,6 +12,14 @@ updates:
     target-branch: "main"
     targetFramework: net10.0
     execute-restore: true
+    registries:
+      - nuget
+    labels:
+      - "dependencies"
+      - "nuget"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
     groups:
       microsoft:
         patterns:
