@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <!-- Enable NuGet package lock files -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- Fail restore if lock file changes are detected -->
+    <RestoreLockedMode Condition="'$(CI)' == 'true'">true</RestoreLockedMode>
+  </PropertyGroup>
+</Project>
