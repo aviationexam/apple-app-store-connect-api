@@ -273,25 +273,25 @@
       },
       "Microsoft.IdentityModel.Abstractions": {
         "type": "Transitive",
-        "resolved": "8.19.2",
-        "contentHash": "HJbo/lnSfNHUfphPRT910poQc4T2/9+8svFLvzuaYHGAOJ2Tu+oEDqpX0BVP3BJ4OuUM1kylEKyaiX2fCAK3Cw=="
+        "resolved": "8.20.0",
+        "contentHash": "2YrBraNn8E5lLXamv0ccIM6PtGrv4GA46lNNIzw3d3M3CJ177iHiSXKEjUjy+s9aKsodjFTi4i8h5gGG12wiAA=="
       },
       "Microsoft.IdentityModel.Logging": {
         "type": "Transitive",
-        "resolved": "8.19.2",
-        "contentHash": "r5YLDIxGOnkVJHrqXv/iD1FM1CgGrQOdriXuvuWvTPmKbnGANhEysq9XKmN6IHjf2a+9bAGEpnoRBsAQlvJU5w==",
+        "resolved": "8.20.0",
+        "contentHash": "lSFZ7xwtaZtBvsXHJacUdWteZLrmRw6KCAfN0mWCqQ29DRzewIWIbt54lQOtooa1VQZevnw6ooy64FfWOUliIQ==",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "8.19.2"
+          "Microsoft.IdentityModel.Abstractions": "8.20.0"
         }
       },
       "Microsoft.IdentityModel.Tokens": {
         "type": "Transitive",
-        "resolved": "8.19.2",
-        "contentHash": "GtPC1S02uH1gOO4fQ+zRysIicKmEXaYFP8PIkdJYXqMyruYhopre4ozVHp0XiDSA0+GJvOZH9prxCPvgBMg4Ww==",
+        "resolved": "8.20.0",
+        "contentHash": "wjnhcOJNRX7mGEhTfKNsmEB0q3eHOadLP4vsoyj4e5GH0uVBRbulTvUsGGQYi6nMAOj+o6AF36naEpGpnP5EWw==",
         "dependencies": {
           "Microsoft.Bcl.Cryptography": "10.0.2",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
-          "Microsoft.IdentityModel.Logging": "8.19.2"
+          "Microsoft.IdentityModel.Logging": "8.20.0"
         }
       },
       "Microsoft.IO.RecyclableMemoryStream": {
@@ -408,7 +408,7 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.10, )",
           "Microsoft.Extensions.Http": "[10.0.10, )",
           "Microsoft.Extensions.Options": "[10.0.10, )",
-          "Microsoft.IdentityModel.JsonWebTokens": "[8.19.2, )",
+          "Microsoft.IdentityModel.JsonWebTokens": "[8.20.0, )",
           "Microsoft.Kiota.Abstractions": "[1.22.2, )",
           "Microsoft.Kiota.Http.HttpClientLibrary": "[1.22.2, )",
           "Microsoft.Kiota.Serialization.Form": "[1.22.2, )",
@@ -448,11 +448,11 @@
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
         "type": "CentralTransitive",
-        "requested": "[8.19.2, )",
-        "resolved": "8.19.2",
-        "contentHash": "ui3fuBT4fs8kdKfBthI4NzLYIBIneEVS8UrL1JVBzAn80UiKmngBBi0BEByE7n/9c+EElcfFlCMFFTqpkBSLNA==",
+        "requested": "[8.20.0, )",
+        "resolved": "8.20.0",
+        "contentHash": "CZn9vwacbFkFEsYQ09zD0UQo4Ti14xmLbYzak34KODqvd3vFx5d7Suh+SdnWWQZ0hkoWaHk/XYdJrRWBKn2I3g==",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "8.19.2"
+          "Microsoft.IdentityModel.Tokens": "8.20.0"
         }
       },
       "Microsoft.Kiota.Abstractions": {
@@ -796,25 +796,25 @@
       },
       "Microsoft.IdentityModel.Abstractions": {
         "type": "Transitive",
-        "resolved": "8.19.2",
-        "contentHash": "HJbo/lnSfNHUfphPRT910poQc4T2/9+8svFLvzuaYHGAOJ2Tu+oEDqpX0BVP3BJ4OuUM1kylEKyaiX2fCAK3Cw=="
+        "resolved": "8.20.0",
+        "contentHash": "2YrBraNn8E5lLXamv0ccIM6PtGrv4GA46lNNIzw3d3M3CJ177iHiSXKEjUjy+s9aKsodjFTi4i8h5gGG12wiAA=="
       },
       "Microsoft.IdentityModel.Logging": {
         "type": "Transitive",
-        "resolved": "8.19.2",
-        "contentHash": "r5YLDIxGOnkVJHrqXv/iD1FM1CgGrQOdriXuvuWvTPmKbnGANhEysq9XKmN6IHjf2a+9bAGEpnoRBsAQlvJU5w==",
+        "resolved": "8.20.0",
+        "contentHash": "lSFZ7xwtaZtBvsXHJacUdWteZLrmRw6KCAfN0mWCqQ29DRzewIWIbt54lQOtooa1VQZevnw6ooy64FfWOUliIQ==",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "8.19.2"
+          "Microsoft.IdentityModel.Abstractions": "8.20.0"
         }
       },
       "Microsoft.IdentityModel.Tokens": {
         "type": "Transitive",
-        "resolved": "8.19.2",
-        "contentHash": "GtPC1S02uH1gOO4fQ+zRysIicKmEXaYFP8PIkdJYXqMyruYhopre4ozVHp0XiDSA0+GJvOZH9prxCPvgBMg4Ww==",
+        "resolved": "8.20.0",
+        "contentHash": "wjnhcOJNRX7mGEhTfKNsmEB0q3eHOadLP4vsoyj4e5GH0uVBRbulTvUsGGQYi6nMAOj+o6AF36naEpGpnP5EWw==",
         "dependencies": {
           "Microsoft.Bcl.Cryptography": "10.0.2",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
-          "Microsoft.IdentityModel.Logging": "8.19.2"
+          "Microsoft.IdentityModel.Logging": "8.20.0"
         }
       },
       "Microsoft.IO.RecyclableMemoryStream": {
@@ -955,7 +955,7 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.2, )",
           "Microsoft.Extensions.Http": "[8.0.1, )",
           "Microsoft.Extensions.Options": "[8.0.2, )",
-          "Microsoft.IdentityModel.JsonWebTokens": "[8.19.2, )",
+          "Microsoft.IdentityModel.JsonWebTokens": "[8.20.0, )",
           "Microsoft.Kiota.Abstractions": "[1.22.2, )",
           "Microsoft.Kiota.Http.HttpClientLibrary": "[1.22.2, )",
           "Microsoft.Kiota.Serialization.Form": "[1.22.2, )",
@@ -995,11 +995,11 @@
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
         "type": "CentralTransitive",
-        "requested": "[8.19.2, )",
-        "resolved": "8.19.2",
-        "contentHash": "ui3fuBT4fs8kdKfBthI4NzLYIBIneEVS8UrL1JVBzAn80UiKmngBBi0BEByE7n/9c+EElcfFlCMFFTqpkBSLNA==",
+        "requested": "[8.20.0, )",
+        "resolved": "8.20.0",
+        "contentHash": "CZn9vwacbFkFEsYQ09zD0UQo4Ti14xmLbYzak34KODqvd3vFx5d7Suh+SdnWWQZ0hkoWaHk/XYdJrRWBKn2I3g==",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "8.19.2"
+          "Microsoft.IdentityModel.Tokens": "8.20.0"
         }
       },
       "Microsoft.Kiota.Abstractions": {
@@ -1340,25 +1340,25 @@
       },
       "Microsoft.IdentityModel.Abstractions": {
         "type": "Transitive",
-        "resolved": "8.19.2",
-        "contentHash": "HJbo/lnSfNHUfphPRT910poQc4T2/9+8svFLvzuaYHGAOJ2Tu+oEDqpX0BVP3BJ4OuUM1kylEKyaiX2fCAK3Cw=="
+        "resolved": "8.20.0",
+        "contentHash": "2YrBraNn8E5lLXamv0ccIM6PtGrv4GA46lNNIzw3d3M3CJ177iHiSXKEjUjy+s9aKsodjFTi4i8h5gGG12wiAA=="
       },
       "Microsoft.IdentityModel.Logging": {
         "type": "Transitive",
-        "resolved": "8.19.2",
-        "contentHash": "r5YLDIxGOnkVJHrqXv/iD1FM1CgGrQOdriXuvuWvTPmKbnGANhEysq9XKmN6IHjf2a+9bAGEpnoRBsAQlvJU5w==",
+        "resolved": "8.20.0",
+        "contentHash": "lSFZ7xwtaZtBvsXHJacUdWteZLrmRw6KCAfN0mWCqQ29DRzewIWIbt54lQOtooa1VQZevnw6ooy64FfWOUliIQ==",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "8.19.2"
+          "Microsoft.IdentityModel.Abstractions": "8.20.0"
         }
       },
       "Microsoft.IdentityModel.Tokens": {
         "type": "Transitive",
-        "resolved": "8.19.2",
-        "contentHash": "GtPC1S02uH1gOO4fQ+zRysIicKmEXaYFP8PIkdJYXqMyruYhopre4ozVHp0XiDSA0+GJvOZH9prxCPvgBMg4Ww==",
+        "resolved": "8.20.0",
+        "contentHash": "wjnhcOJNRX7mGEhTfKNsmEB0q3eHOadLP4vsoyj4e5GH0uVBRbulTvUsGGQYi6nMAOj+o6AF36naEpGpnP5EWw==",
         "dependencies": {
           "Microsoft.Bcl.Cryptography": "10.0.2",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
-          "Microsoft.IdentityModel.Logging": "8.19.2"
+          "Microsoft.IdentityModel.Logging": "8.20.0"
         }
       },
       "Microsoft.IO.RecyclableMemoryStream": {
@@ -1494,7 +1494,7 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[9.0.18, )",
           "Microsoft.Extensions.Http": "[9.0.18, )",
           "Microsoft.Extensions.Options": "[9.0.18, )",
-          "Microsoft.IdentityModel.JsonWebTokens": "[8.19.2, )",
+          "Microsoft.IdentityModel.JsonWebTokens": "[8.20.0, )",
           "Microsoft.Kiota.Abstractions": "[1.22.2, )",
           "Microsoft.Kiota.Http.HttpClientLibrary": "[1.22.2, )",
           "Microsoft.Kiota.Serialization.Form": "[1.22.2, )",
@@ -1534,11 +1534,11 @@
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
         "type": "CentralTransitive",
-        "requested": "[8.19.2, )",
-        "resolved": "8.19.2",
-        "contentHash": "ui3fuBT4fs8kdKfBthI4NzLYIBIneEVS8UrL1JVBzAn80UiKmngBBi0BEByE7n/9c+EElcfFlCMFFTqpkBSLNA==",
+        "requested": "[8.20.0, )",
+        "resolved": "8.20.0",
+        "contentHash": "CZn9vwacbFkFEsYQ09zD0UQo4Ti14xmLbYzak34KODqvd3vFx5d7Suh+SdnWWQZ0hkoWaHk/XYdJrRWBKn2I3g==",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "8.19.2"
+          "Microsoft.IdentityModel.Tokens": "8.20.0"
         }
       },
       "Microsoft.Kiota.Abstractions": {
