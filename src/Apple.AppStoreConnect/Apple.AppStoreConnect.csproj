@@ -91,7 +91,22 @@
   <Target Name="GenerateClient" BeforeTargets="Restore;_GenerateRestoreProjectSpec" AfterTargets="PreprocessOpenApiSpecification" Condition=" '$(DependencyUpdaterMinimalRestore)' != 'true' And $(GenerateClient) == 'true' And !Exists('$(MSBuildProjectDirectory)/$(GeneratedCodeTarget)')">
     <Message Importance="High" Text="Generating client to the $(MSBuildProjectDirectory)/$(GeneratedCodeTarget) using $(KiotaCommand)" />
 
-    <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="KIOTA_TUTORIAL_ENABLED=false" Command="$(KiotaExec)" />
+    <!--
+      Apple's spec declares an unsatisfiable discriminator on AppAssetLibraryPlacement.properties.relationships:
+      propertyName is "mediaType", but mediaType is defined on the sibling "attributes" object rather than on
+      either oneOf branch, so no payload can ever satisfy it. Microsoft.OpenApi (3.10.2, pinned by Kiota 1.35.0)
+      reports this through its built-in ValidateSchemaDiscriminator rule. Kiota cannot disable that rule
+      individually: the disable-validation-rules option accepts only Kiota's own rule names, and the single
+      value that clears it, "All", would also drop every other rule.
+
+      Kiota itself still generates the client and exits 0. The build broke only because MSBuild's Exec task
+      parses the canonical-format "OpenAPI error :" line out of stdout and overrides the exit code with -1
+      (MSB3077). Matching that one diagnostic below demotes it to a warning so it stays visible in the log.
+      Every other OpenAPI error, and any non-zero Kiota exit code, still fails the build. If Apple corrects the
+      spec the pattern simply stops matching and this can be deleted.
+    -->
+    <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="KIOTA_TUTORIAL_ENABLED=false" Command="$(KiotaExec)"
+          CustomWarningRegularExpression="^\s*OpenAPI error\s*:\s*#/components/schemas/AppAssetLibraryPlacement/properties/relationships/discriminator - Schema\s+must contain property specified in the discriminator mediaType in the required field list\." />
   </Target>
 
 </Project>
