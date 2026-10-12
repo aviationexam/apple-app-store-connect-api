@@ -12,4 +12,8 @@ public sealed class CollectedMetadata
     }
 
     public Version? GetVersion() => _targetApiVersion;
+
+    public bool FixAppAssetLibraryPlacementRelationships { get; private set; }
+
+    public void RequireAppAssetLibraryPlacementRelationshipsFix() => FixAppAssetLibraryPlacementRelationships = true;
 }
