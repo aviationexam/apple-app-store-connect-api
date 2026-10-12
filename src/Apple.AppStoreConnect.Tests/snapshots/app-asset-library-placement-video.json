@@ -1,0 +1,32 @@
+{
+  "data": {
+    "type": "appAssetLibraryPlacements",
+    "id": "placement-video-1",
+    "relationships": {
+      "appStoreVersionLocalization": {
+        "data": {
+          "type": "appStoreVersionLocalizations",
+          "id": "localization-1"
+        }
+      },
+      "video": {
+        "data": {
+          "type": "appAssetLibraryVideos",
+          "id": "video-1"
+        }
+      }
+    },
+    "attributes": {
+      "mediaType": "VIDEO",
+      "placementType": "APP_PREVIEW",
+      "placementGroup": "group-1",
+      "state": "ASSET_PROCESSING"
+    },
+    "links": {
+      "self": "https://api.appstoreconnect.apple.com/v1/appAssetLibraryPlacements/placement-video-1"
+    }
+  },
+  "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/appAssetLibraryPlacements/placement-video-1"
+  }
+}

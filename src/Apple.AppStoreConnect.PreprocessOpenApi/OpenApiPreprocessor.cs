@@ -14,6 +14,24 @@ public sealed class OpenApiPreprocessor(
     private const string Info = "info";
     private static ReadOnlySpan<byte> Version => "version"u8;
 
+    // Apple's spec puts a discriminator on AppAssetLibraryPlacement.properties.relationships whose propertyName
+    // (mediaType) is defined on the sibling "attributes" object, not on either oneOf branch, so it can never match.
+    // Microsoft.OpenApi rejects it (ValidateSchemaDiscriminator), and the generated factory never selects a branch,
+    // which silently drops all relationship data. Neither branch forbids additional properties, so every payload
+    // matches both of them; anyOf without a discriminator describes that correctly. Kiota then generates an
+    // intersection wrapper that populates both branches. Applied only while the spec still has this exact shape.
+    private static readonly string?[] AppAssetLibraryPlacementRelationshipsPath =
+        [null, "components", "schemas", "AppAssetLibraryPlacement", "properties", "relationships"];
+
+    private static readonly string?[] AppAssetLibraryPlacementRelationshipsDiscriminatorPath =
+        [.. AppAssetLibraryPlacementRelationshipsPath, "discriminator"];
+
+    private static ReadOnlySpan<byte> Discriminator => "discriminator"u8;
+    private static ReadOnlySpan<byte> PropertyName => "propertyName"u8;
+    private static ReadOnlySpan<byte> MediaType => "mediaType"u8;
+    private static ReadOnlySpan<byte> OneOf => "oneOf"u8;
+    private static ReadOnlySpan<byte> AnyOf => "anyOf"u8;
+
     public void Preprocess()
     {
         ReadOnlySpan<byte> jsonReadOnlySpan = File.ReadAllBytes(source);
@@ -56,7 +74,27 @@ public sealed class OpenApiPreprocessor(
             File.WriteAllText(versionFile, $"{version}\n{apiMajor:00}{apiMinor:00}{apiBuild:00}");
         }
 
-        Preprocess(ref reader, writer);
+        Preprocess(ref reader, writer, collectedMetadata);
+    }
+
+    private static bool PathEquals(Stack<TreeItem> path, string?[] expected)
+    {
+        if (path.Count != expected.Length)
+        {
+            return false;
+        }
+
+        // Stack enumerates from the innermost item outwards.
+        var index = expected.Length - 1;
+        foreach (var item in path)
+        {
+            if (item.PropertyName != expected[index--])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private CollectedMetadata Collect(Utf8JsonReader reader)
@@ -100,6 +138,14 @@ public sealed class OpenApiPreprocessor(
                     {
                         collectedMetadata.AddVersion(reader.ValueSpan);
                     }
+                    else if (
+                        lastProperty.SequenceEqual(PropertyName)
+                        && reader.ValueTextEquals(MediaType)
+                        && PathEquals(currentPath, AppAssetLibraryPlacementRelationshipsDiscriminatorPath)
+                    )
+                    {
+                        collectedMetadata.RequireAppAssetLibraryPlacementRelationshipsFix();
+                    }
 
                     break;
                 case JsonTokenType.Number:
@@ -123,30 +169,68 @@ public sealed class OpenApiPreprocessor(
         return collectedMetadata;
     }
 
-    private void Preprocess(ref Utf8JsonReader reader, Utf8JsonWriter writer)
+    private void Preprocess(ref Utf8JsonReader reader, Utf8JsonWriter writer, CollectedMetadata collectedMetadata)
     {
+        var currentPath = new Stack<TreeItem>();
+        ReadOnlySpan<byte> lastProperty = default;
+
         while (reader.Read())
         {
             switch (reader.TokenType)
             {
                 case JsonTokenType.PropertyName:
+                    lastProperty = reader.ValueSpan;
+
+                    if (
+                        collectedMetadata.FixAppAssetLibraryPlacementRelationships
+                        && PathEquals(currentPath, AppAssetLibraryPlacementRelationshipsPath)
+                    )
+                    {
+                        if (reader.ValueTextEquals(Discriminator))
+                        {
+                            reader.Read();
+                            reader.Skip();
+                            lastProperty = default;
+
+                            break;
+                        }
+
+                        if (reader.ValueTextEquals(OneOf))
+                        {
+                            writer.WritePropertyName(AnyOf);
+
+                            break;
+                        }
+                    }
+
                     writer.WritePropertyName(reader.ValueSpan);
 
                     break;
 
                 case JsonTokenType.StartArray:
-                    writer.WriteStartArray();
-
-                    break;
                 case JsonTokenType.StartObject:
-                    writer.WriteStartObject();
+                    currentPath.Push(new TreeItem(reader.TokenType, lastProperty.IsEmpty ? null : Encoding.UTF8.GetString(lastProperty)));
+                    lastProperty = default;
+
+                    if (reader.TokenType == JsonTokenType.StartArray)
+                    {
+                        writer.WriteStartArray();
+                    }
+                    else
+                    {
+                        writer.WriteStartObject();
+                    }
 
                     break;
                 case JsonTokenType.EndArray:
+                    currentPath.Pop();
+                    lastProperty = default;
                     writer.WriteEndArray();
 
                     break;
                 case JsonTokenType.EndObject:
+                    currentPath.Pop();
+                    lastProperty = default;
                     writer.WriteEndObject();
 
                     break;

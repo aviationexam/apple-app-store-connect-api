@@ -1,0 +1,28 @@
+{
+  "data": {
+    "type": "appAssetLibraryPlacements",
+    "id": "placement-image-1",
+    "attributes": {
+      "mediaType": "IMAGE",
+      "placementType": "APP_SCREENSHOT",
+      "state": "PARENT_APPROVED"
+    },
+    "relationships": {
+      "appEventLocalization": {
+        "data": {
+          "type": "appEventLocalizations",
+          "id": "event-localization-1"
+        }
+      },
+      "image": {
+        "data": {
+          "type": "appAssetLibraryImages",
+          "id": "image-1"
+        }
+      }
+    }
+  },
+  "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/appAssetLibraryPlacements/placement-image-1"
+  }
+}
