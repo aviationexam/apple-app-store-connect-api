@@ -208,18 +208,15 @@ public sealed class OpenApiPreprocessor(
                     break;
 
                 case JsonTokenType.StartArray:
+                    currentPath.Push(new TreeItem(reader.TokenType, lastProperty.IsEmpty ? null : Encoding.UTF8.GetString(lastProperty)));
+                    lastProperty = default;
+                    writer.WriteStartArray();
+
+                    break;
                 case JsonTokenType.StartObject:
                     currentPath.Push(new TreeItem(reader.TokenType, lastProperty.IsEmpty ? null : Encoding.UTF8.GetString(lastProperty)));
                     lastProperty = default;
-
-                    if (reader.TokenType == JsonTokenType.StartArray)
-                    {
-                        writer.WriteStartArray();
-                    }
-                    else
-                    {
-                        writer.WriteStartObject();
-                    }
+                    writer.WriteStartObject();
 
                     break;
                 case JsonTokenType.EndArray:
