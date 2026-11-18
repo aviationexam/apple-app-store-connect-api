@@ -72,4 +72,18 @@
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.11.0" />
   </ItemGroup>
 
+  <!-- Framework-specific packages for net11.0 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.FileProviders.Embedded" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.FileProviders.Physical" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="11.0.0" />
+  </ItemGroup>
+
 </Project>
